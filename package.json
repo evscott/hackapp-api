@@ -16,5 +16,12 @@
   "bugs": {
     "url": "https://github.com/evscott/hackapp-api/issues"
   },
-  "homepage": "https://github.com/evscott/hackapp-api#readme"
+  "homepage": "https://github.com/evscott/hackapp-api#readme",
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
+    "pg": "^7.15.1",
+    "body-parser": "latest"
+  }
 }
