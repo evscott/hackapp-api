@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const handlers = require('../handlers/test');
+const handlers = require('../handlers/user');
 
 router.get('/', handlers.test);
 
