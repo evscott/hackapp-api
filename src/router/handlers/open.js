@@ -1,7 +1,27 @@
-let open = async (req, res) => {
-    res.send('handler open');
+let getOrganization = async (req, res) => {
+
+};
+
+let getHackathons = async (req, res) => {
+
+};
+
+let getHackathon = async (req, res) => {
+
+};
+
+let getHackathonDetails = async (req, res) => {
+
+};
+
+let getHackathonRegQuestion = async (req, res) => {
+
 };
 
 module.exports = {
-    test: open,
+    getOrganization: getOrganization,
+    getHackathons: getHackathons,
+    getHackathon: getHackathon,
+    getHackathonDetails: getHackathonDetails,
+    getHackathonRegQuestion: getHackathonRegQuestion,
 };

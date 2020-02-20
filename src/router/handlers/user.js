@@ -1,7 +1,22 @@
-let test = async (req, res) => {
-    res.send('handler user');
+let getUser = async (req, res) => {
+    
+};
+
+let updateUser = async (req, res) => {
+    
+};
+
+let deleteUser = async (req, res) => {
+    
+};
+
+let getUserRegForm = async (req, res) => {
+    
 };
 
 module.exports = {
-    test: test,
+    getUser: getUser,
+    updateUser: updateUser,
+    deleteUser: deleteUser,
+    getUserRegForm: getUserRegForm,
 };
