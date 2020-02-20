@@ -8,7 +8,7 @@ function migrateUp(){
             dbm.up();
             console.log('successfully ran migrations [up]...');
         }).catch(err => {
-            console.error(err);
+            console.error('Error running migrations:', err);
     });
 }
 
