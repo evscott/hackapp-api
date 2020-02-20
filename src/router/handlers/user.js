@@ -1,6 +1,6 @@
 /**
  * @swagger
- * /user:
+ * /user/:
  *  get:
  *    description: Use to request a user
  *    parameters:
@@ -25,7 +25,7 @@ let getUser = async (req, res) => {
 
 /**
  * @swagger
- * /user:
+ * /user/:
  *  put:
  *    description: Use to update a user
  *    parameters:
@@ -38,6 +38,14 @@ let getUser = async (req, res) => {
  *    responses:
  *      '200':
  *        description: Success
+ *      '400':
+ *        description: 'Invalid syntax'
+ *      '401':
+ *        description: 'JWT not found in header'
+ *      '403':
+ *        description: 'JWT does not have user privileges'
+ *      '404':
+ *        description: 'Not found'
  */
 let updateUser = async (req, res) => {
     
@@ -45,7 +53,7 @@ let updateUser = async (req, res) => {
 
 /**
  * @swagger
- * /user:
+ * /user/:
  *  delete:
  *    description: Use to delete a user
  *    parameters:
@@ -58,6 +66,14 @@ let updateUser = async (req, res) => {
  *    responses:
  *      '200':
  *        description: Success
+ *      '400':
+ *        description: 'Invalid syntax'
+ *      '401':
+ *        description: 'JWT not found in header'
+ *      '403':
+ *        description: 'JWT does not have user privileges'
+ *      '404':
+ *        description: 'Not found'
  */
 let deleteUser = async (req, res) => {
     
@@ -65,7 +81,7 @@ let deleteUser = async (req, res) => {
 
 /**
  * @swagger
- * /hacks/:hid/reg/users/csv:
+ * /hacks/:hid/reg/users/csv/:
  *  get:
  *    description: Use to delete a user
  *    parameters:
@@ -84,6 +100,14 @@ let deleteUser = async (req, res) => {
  *    responses:
  *      '200':
  *        description: Success
+ *      '400':
+ *        description: 'Invalid syntax'
+ *      '401':
+ *        description: 'JWT not found in header'
+ *      '403':
+ *        description: 'JWT does not have user privileges'
+ *      '404':
+ *        description: 'Not found'
  */
 let getUserRegForm = async (req, res) => {
     

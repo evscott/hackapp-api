@@ -16,8 +16,14 @@
  *        schema:
  *          type: object
  *    responses:
- *      '200':
- *        description: Success
+ *      '201':
+ *        description: 'Success'
+ *      '400':
+ *        description: 'Invalid syntax'
+ *      '401':
+ *        description: 'JWT not found in header'
+ *      '403':
+ *        description: 'JWT does not have admin privileges'
  */
 let createOrganization = async (req, res) => {
 
@@ -43,6 +49,14 @@ let createOrganization = async (req, res) => {
  *    responses:
  *      '200':
  *        description: Success
+ *      '400':
+ *        description: 'Invalid syntax'
+ *      '401':
+ *        description: 'JWT not found in header'
+ *      '403':
+ *        description: 'JWT does not have admin privileges'
+ *      '404':
+ *        description: 'Not found'
  */
 let updateOrganization = async (req, res) => {
 
@@ -66,8 +80,14 @@ let updateOrganization = async (req, res) => {
  *        schema:
  *          type: object
  *    responses:
- *      '200':
- *        description: Success
+ *      '201':
+ *        description: 'Success'
+ *      '400':
+ *        description: 'Invalid syntax'
+ *      '401':
+ *        description: 'JWT not found in header'
+ *      '403':
+ *        description: 'JWT does not have admin privileges'
  */
 let createHackathon = async (req, res) => {
 
@@ -94,6 +114,14 @@ let createHackathon = async (req, res) => {
  *    responses:
  *      '200':
  *        description: Success
+ *      '400':
+ *        description: 'Invalid syntax'
+ *      '401':
+ *        description: 'JWT not found in header'
+ *      '403':
+ *        description: 'JWT does not have admin privileges'
+ *      '404':
+ *        description: 'Not found'
  */
 let updateHackathon = async (req, res) => {
 
@@ -114,6 +142,14 @@ let updateHackathon = async (req, res) => {
  *    responses:
  *      '200':
  *        description: Success
+ *      '400':
+ *        description: 'Invalid syntax'
+ *      '401':
+ *        description: 'JWT not found in header'
+ *      '403':
+ *        description: 'JWT does not have admin privileges'
+ *      '404':
+ *        description: 'Not found'
  */
 let deleteHackathon = async (req, res) => {
 
@@ -137,8 +173,14 @@ let deleteHackathon = async (req, res) => {
  *        schema:
  *          type: object
  *    responses:
- *      '200':
- *        description: Success
+ *      '201':
+ *        description: 'Success'
+ *      '400':
+ *        description: 'Invalid syntax'
+ *      '401':
+ *        description: 'JWT not found in header'
+ *      '403':
+ *        description: 'JWT does not have admin privileges'
  */
 let createHackathonDetails = async (req, res) => {
 
@@ -146,7 +188,7 @@ let createHackathonDetails = async (req, res) => {
 
 /**
  * @swagger
- * /hacks/:hid/details:
+ * /hacks/:hid/details/:
  *  put:
  *    description: Use to update a hackathons details
  *    parameters:
@@ -170,6 +212,14 @@ let createHackathonDetails = async (req, res) => {
  *    responses:
  *      '200':
  *        description: Success
+ *      '400':
+ *        description: 'Invalid syntax'
+ *      '401':
+ *        description: 'JWT not found in header'
+ *      '403':
+ *        description: 'JWT does not have admin privileges'
+ *      '404':
+ *        description: 'Not found'
  */
 let updateHackathonDetails = async (req, res) => {
 
@@ -177,7 +227,7 @@ let updateHackathonDetails = async (req, res) => {
 
 /**
  * @swagger
- * /hacks/:hid/reg/q:
+ * /hacks/:hid/reg/q/:
  *  post:
  *    description: Use to update a registration question
  *    parameters:
@@ -199,8 +249,14 @@ let updateHackathonDetails = async (req, res) => {
  *        schema:
  *          type: object
  *    responses:
- *      '200':
- *        description: Success
+ *      '201':
+ *        description: 'Success'
+ *      '400':
+ *        description: 'Invalid syntax'
+ *      '401':
+ *        description: 'JWT not found in header'
+ *      '403':
+ *        description: 'JWT does not have admin privileges'
  */
 let createHackathonRegQuestion = async (req, res) => {
 
@@ -208,7 +264,7 @@ let createHackathonRegQuestion = async (req, res) => {
 
 /**
  * @swagger
- * /hacks/:hid/reg/q/:qid:
+ * /hacks/:hid/reg/q/:qid/:
  *  put:
  *    description: Use to update a registration question
  *    parameters:
@@ -233,6 +289,14 @@ let createHackathonRegQuestion = async (req, res) => {
  *    responses:
  *      '200':
  *        description: Success
+ *      '400':
+ *        description: 'Invalid syntax'
+ *      '401':
+ *        description: 'JWT not found in header'
+ *      '403':
+ *        description: 'JWT does not have admin privileges'
+ *      '404':
+ *        description: 'Not found'
  */
 let updateHackathonRegQuestion = async (req, res) => {
 
@@ -240,7 +304,7 @@ let updateHackathonRegQuestion = async (req, res) => {
 
 /**
  * @swagger
- * /hacks/:hid/reg/q/:qid:
+ * /hacks/:hid/reg/q/:qid/:
  *  delete:
  *    description: Use to delete a registration question
  *    parameters:
@@ -265,6 +329,14 @@ let updateHackathonRegQuestion = async (req, res) => {
  *    responses:
  *      '200':
  *        description: Success
+ *      '400':
+ *        description: 'Invalid syntax'
+ *      '401':
+ *        description: 'JWT not found in header'
+ *      '403':
+ *        description: 'JWT does not have admin privileges'
+ *      '404':
+ *        description: 'Not found'
  */
 let deleteHackathonRegQuestion = async (req, res) => {
 

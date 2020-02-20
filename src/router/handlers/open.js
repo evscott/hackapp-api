@@ -1,8 +1,8 @@
 /**
  * @swagger
- * /org:
+ * /org/:
  *  get:
- *    description: Use to request all customers
+ *    description: Use to request organization
  *    responses:
  *      '200':
  *        description: Success
@@ -38,7 +38,7 @@ let getHackathons = async (req, res) => {
 
 /**
  * @swagger
- * /hacks/:
+ * /hacks/:hid/:
  *  get:
  *    description: Use to request a hackathon
  *    parameters:
@@ -55,6 +55,10 @@ let getHackathons = async (req, res) => {
  *          properties:
  *            hackathon:
  *              type: object
+ *      '400':
+ *        description: 'Invalid syntax'
+ *      '404':
+ *        description: 'Not found'
  */
 let getHackathon = async (req, res) => {
 
@@ -62,9 +66,9 @@ let getHackathon = async (req, res) => {
 
 /**
  * @swagger
- * /hacks/:hid:
+ * /hacks/:hid/details/:
  *  get:
- *    description: Use to request a hackathon registration question
+ *    description: Use to request a hackathons details
  *    parameters:
  *      - name: hid
  *        in: path
@@ -77,8 +81,12 @@ let getHackathon = async (req, res) => {
  *        schema:
  *          type: object
  *          properties:
- *            hackathon:
+ *            details:
  *              type: object
+ *      '400':
+ *        description: 'Invalid syntax'
+ *      '404':
+ *        description: 'Not found'
  */
 let getHackathonDetails = async (req, res) => {
 
@@ -86,7 +94,7 @@ let getHackathonDetails = async (req, res) => {
 
 /**
  * @swagger
- * /hacks/:hid/reg/q/:qid:
+ * /hacks/:hid/reg/q/:qid/:
  *  get:
  *    description: Use to request a hackathon
  *    parameters:
@@ -108,6 +116,10 @@ let getHackathonDetails = async (req, res) => {
  *          properties:
  *            question:
  *              type: object
+ *      '400':
+ *        description: 'Invalid syntax'
+ *      '404':
+ *        description: 'Not found'
  */
 let getHackathonRegQuestion = async (req, res) => {
 
