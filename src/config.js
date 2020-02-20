@@ -15,6 +15,14 @@ const Config = {
 
         console.log(`${req.ip} ${req.method} ${req.url}`);
         next();
+    },
+    SwaggerOptions: {
+        swaggerDefinition: {
+            info: {
+                title: "Hackapp API",
+            }
+        },
+        apis: ["src/router/handlers/*.js"]
     }
 };
 

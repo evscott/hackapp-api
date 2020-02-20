@@ -1,3 +1,12 @@
+/**
+ * @swagger
+ * /org:
+ *  get:
+ *    description: Use to request all customers
+ *    responses:
+ *      '200':
+ *        description: A successful response
+ */
 let getOrganization = async (req, res) => {
 
 };
