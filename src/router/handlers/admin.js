@@ -82,6 +82,11 @@ let updateOrganization = async (req, res) => {
  *    responses:
  *      '201':
  *        description: 'Success'
+ *        schema:
+ *          type: object
+ *          properties:
+ *            hid:
+ *              type: string
  *      '400':
  *        description: 'Invalid syntax'
  *      '401':
@@ -98,7 +103,7 @@ let createHackathon = async (req, res) => {
  * @swagger
  * /hacks/:hid/:
  *  put:
- *    description: Use to update a hackathon
+ *    description: Use to update a hackathons overview
  *    parameters:
  *      - name: ha-api-token
  *        in: header
@@ -157,7 +162,7 @@ let deleteHackathon = async (req, res) => {
 
 /**
  * @swagger
- * /hacks/details/:
+ * /hacks/:hid/details/:
  *  post:
  *    description: Use to create a hackathons initial details
  *    parameters:
@@ -221,6 +226,7 @@ let createHackathonDetails = async (req, res) => {
  *      '404':
  *        description: 'Not found'
  */
+
 let updateHackathonDetails = async (req, res) => {
 
 };
@@ -229,7 +235,7 @@ let updateHackathonDetails = async (req, res) => {
  * @swagger
  * /hacks/:hid/reg/q/:
  *  post:
- *    description: Use to update a registration question
+ *    description: Use to add a registration question
  *    parameters:
  *      - name: ha-api-token
  *        in: header
@@ -251,6 +257,11 @@ let updateHackathonDetails = async (req, res) => {
  *    responses:
  *      '201':
  *        description: 'Success'
+ *        schema:
+ *          type: object
+ *          properties:
+ *            hid:
+ *              type: string
  *      '400':
  *        description: 'Invalid syntax'
  *      '401':

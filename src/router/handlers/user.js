@@ -25,11 +25,17 @@ let getUser = async (req, res) => {
 
 /**
  * @swagger
- * /user/:
+ * /user/:uid/:
  *  put:
  *    description: Use to update a user
  *    parameters:
  *      - name: ha-api-token
+ *        in: header
+ *        required: true
+ *        schema:
+ *          type: string
+ *          format: uuid
+ *      - name: uid
  *        in: header
  *        required: true
  *        schema:
@@ -53,11 +59,17 @@ let updateUser = async (req, res) => {
 
 /**
  * @swagger
- * /user/:
+ * /user/:uid/:
  *  delete:
  *    description: Use to delete a user
  *    parameters:
  *      - name: ha-api-token
+ *        in: header
+ *        required: true
+ *        schema:
+ *          type: string
+ *          format: uuid
+ *      - name: uid
  *        in: header
  *        required: true
  *        schema:
@@ -83,7 +95,7 @@ let deleteUser = async (req, res) => {
  * @swagger
  * /hacks/:hid/reg/users/csv/:
  *  get:
- *    description: Use to delete a user
+ *    description: Get a user registration form
  *    parameters:
  *      - name: ha-api-token
  *        in: header
