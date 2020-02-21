@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS Users (
     password varchar(255) NOT NULL,
     first_name varchar(255) NOT NULL,
     last_name varchar(255) NOT NULL,
-    organizer boolean DEFAULT FALSE,
+    admin boolean DEFAULT FALSE,
     PRIMARY KEY (uid)
 );
 
@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS Hackathons (
     end_date timestamp NOT NULL,
     location varchar(255) NOT NULL,
     max_reg smallint,
-    draft boolean DEFAULT FALSE,
+    draft boolean DEFAULT true,
     PRIMARY KEY (hid)
 );
 
