@@ -353,6 +353,40 @@ let deleteHackathonRegQuestion = async (req, res) => {
 
 };
 
+/**
+ * @swagger
+ * /hacks/:hid/reg/users/csv/:
+ *  get:
+ *    description: Get a user registration form
+ *    parameters:
+ *      - name: ha-api-token
+ *        in: header
+ *        required: true
+ *        schema:
+ *          type: string
+ *          format: uuid
+ *      - name: hid
+ *        in: path
+ *        required: true
+ *        schema:
+ *          type: string
+ *          format: uuid
+ *    responses:
+ *      '200':
+ *        description: Success
+ *      '400':
+ *        description: 'Invalid syntax'
+ *      '401':
+ *        description: 'JWT not found in header'
+ *      '403':
+ *        description: 'JWT does not have admin privileges'
+ *      '404':
+ *        description: 'Not found'
+ */
+let getUserRegForm = async (req, res) => {
+
+};
+
 module.exports = {
     createOrganization,
     updateOrganization,
@@ -363,5 +397,6 @@ module.exports = {
     updateHackathonDetails,
     createHackathonRegQuestion,
     updateHackathonRegQuestion,
-    deleteHackathonRegQuestion
+    deleteHackathonRegQuestion,
+    getUserRegForm
 };
