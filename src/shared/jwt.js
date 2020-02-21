@@ -55,7 +55,7 @@ let validateUserRequest = (req, res, next) => {
     let uid = req.query.uid;
 
     if (token) {
-        jwt.verify(token, config.adminPublicKey, config.verifyOptions, (err, decoded) => {
+        jwt.verify(token, config.userPublicKey, config.verifyOptions, (err, decoded) => {
             if (err)
                 res.status(500).send(err);
             if (decoded.uid !== uid)
