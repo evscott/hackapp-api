@@ -96,7 +96,7 @@ let getHackathonDetails = async (req, res) => {
  * @swagger
  * /hacks/:hid/reg/q/:
  *  get:
- *    description: Use to request hackathon registration questions
+ *    description: Use to getHackathonRegQuestionrequest hackathon registration questions
  *    parameters:
  *      - name: hid
  *        in: path
@@ -239,6 +239,7 @@ module.exports = {
     getHackathons,
     getHackathon,
     getHackathonDetails,
+    getHackathonRegQuestions,
     getHackathonRegQuestion,
     signUp,
     signIn
