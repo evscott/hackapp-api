@@ -1,3 +1,5 @@
+const DAL = require('../../dal/dal');
+
 /**
  * @swagger
  * /org/:
@@ -187,10 +189,6 @@ let getHackathonRegQuestion = async (req, res) => {
  *              type: object
  *      '400':
  *        description: 'Invalid syntax'
- *      '401':
- *        description: 'JWT not found in header'
- *      '403':
- *        description: 'JWT does not have user privileges'
  *      '404':
  *        description: 'Not found'
  */
@@ -223,15 +221,18 @@ let signUp = async (req, res) => {
  *              type: object
  *      '400':
  *        description: 'Invalid syntax'
- *      '401':
- *        description: 'JWT not found in header'
- *      '403':
- *        description: 'JWT does not have user privileges'
  *      '404':
  *        description: 'Not found'
+ *      '500':
+ *        description: 'Internal server error'
  */
 let signIn = async (req, res) => {
+    if (req.body.email == undefined || req.body.password == undefined) return res.status(400).send();
 
+    let signInRes = await DAL.signInEmailPassword(req.body.email, req.body.password);
+    if (signInRes.err) return res.status(signInRes.err).send();
+
+    return res.status(200).send({user: signInRes.user});
 };
 
 module.exports = {

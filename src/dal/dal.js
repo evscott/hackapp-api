@@ -1,7 +1,7 @@
-const test = require('./test');
+const open = require('./open');
 
 const DAL = {
-    ...test
+    ...open
 };
 
 module.exports = DAL;
