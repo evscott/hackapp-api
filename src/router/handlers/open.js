@@ -192,13 +192,19 @@ let getHackathonRegQuestion = async (req, res) => {
  *              type: string
  *      '400':
  *        description: 'Invalid syntax'
- *      '404':
- *        description: 'Not found'
- *      '500'
+ *      '500':
  *        description: 'Internal server error'
  */
 let signUp = async (req, res) => {
+    if (req.body.firstName == undefined || req.body.lastName == undefined || req.body.email == undefined || req.body.password == undefined)
+        return res.status(400).send();
 
+    let signUpRes = await DAL.signUp(req.body.firstName, req.body.lastName, req.body.email, req.body.password);
+    if (signUpRes.err) return res.status(signUpRes.err).send();
+
+    let token = JWT.issueUserToken(signUpRes.user.uid);
+
+    return res.status(201).send({user: signUpRes.user, token: token});
 };
 
 /**
@@ -239,7 +245,12 @@ let signIn = async (req, res) => {
     let signInRes = await DAL.signInEmailPassword(req.body.email, req.body.password);
     if (signInRes.err) return res.status(signInRes.err).send();
 
-    let token = JWT.issueUserToken(signInRes.user.uid);
+    let token;
+    if (signInRes.user.admin)
+        token = JWT.issueAdminToken(signInRes.user.uid);
+    else
+        token = JWT.issueUserToken(signInRes.user.uid);
+
     return res.status(200).send({user: signInRes.user, token: token});
 };
 
