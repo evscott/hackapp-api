@@ -4,7 +4,7 @@
  *  get:
  *    description: Use to request a user
  *    parameters:
- *      - name: ha-api-token
+ *      - name: ha-user-token
  *        in: header
  *        required: true
  *        schema:
@@ -29,7 +29,7 @@ let getUser = async (req, res) => {
  *  put:
  *    description: Use to update a user
  *    parameters:
- *      - name: ha-api-token
+ *      - name: ha-user-token
  *        in: header
  *        required: true
  *        schema:
@@ -63,7 +63,7 @@ let updateUser = async (req, res) => {
  *  delete:
  *    description: Use to delete a user
  *    parameters:
- *      - name: ha-api-token
+ *      - name: ha-user-token
  *        in: header
  *        required: true
  *        schema:

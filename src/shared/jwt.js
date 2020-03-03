@@ -8,7 +8,7 @@ const config = require('../config');
  * If token is not in header: return status 401
  */
 let validateUserToken = (req, res, next) => {
-    let token = req.headers['ha-api-token'];
+    let token = req.headers['ha-user-token'];
 
     if (token) {
         jwt.verify(token, config.userPublicKey, config.verifyOptions, (err) => {
@@ -51,7 +51,7 @@ let validateAdminToken = (req, res, next) => {
  * If token is not in header: return status 401
  */
 let validateUserRequest = (req, res, next) => {
-    let token = req.headers['ha-api-token'];
+    let token = req.headers['ha-user-token'];
     let uid = req.query.uid;
 
     if (token) {

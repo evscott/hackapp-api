@@ -4,7 +4,7 @@
  *  post:
  *    description: Use to create an organization
  *    parameters:
- *      - name: ha-api-token
+ *      - name: ha-admin-token
  *        in: header
  *        required: true
  *        schema:
@@ -35,7 +35,7 @@ let createOrganization = async (req, res) => {
  *  put:
  *    description: Use to update an organization
  *    parameters:
- *      - name: ha-api-token
+ *      - name: ha-admin-token
  *        in: header
  *        required: true
  *        schema:
@@ -68,7 +68,7 @@ let updateOrganization = async (req, res) => {
  *  post:
  *    description: Use to create a hackathon
  *    parameters:
- *      - name: ha-api-token
+ *      - name: ha-admin-token
  *        in: header
  *        required: true
  *        schema:
@@ -105,7 +105,7 @@ let createHackathon = async (req, res) => {
  *  put:
  *    description: Use to update a hackathons overview
  *    parameters:
- *      - name: ha-api-token
+ *      - name: ha-admin-token
  *        in: header
  *        required: true
  *        schema:
@@ -138,7 +138,7 @@ let updateHackathon = async (req, res) => {
  *  delete:
  *    description: Use to delete a hackathon
  *    parameters:
- *      - name: ha-api-token
+ *      - name: ha-admin-token
  *        in: header
  *        required: true
  *        schema:
@@ -166,7 +166,7 @@ let deleteHackathon = async (req, res) => {
  *  post:
  *    description: Use to create a hackathons initial details
  *    parameters:
- *      - name: ha-api-token
+ *      - name: ha-admin-token
  *        in: header
  *        required: true
  *        schema:
@@ -197,7 +197,7 @@ let createHackathonDetails = async (req, res) => {
  *  put:
  *    description: Use to update a hackathons details
  *    parameters:
- *      - name: ha-api-token
+ *      - name: ha-admin-token
  *        in: header
  *        required: true
  *        schema:
@@ -237,7 +237,7 @@ let updateHackathonDetails = async (req, res) => {
  *  post:
  *    description: Use to add a registration question
  *    parameters:
- *      - name: ha-api-token
+ *      - name: ha-admin-token
  *        in: header
  *        required: true
  *        schema:
@@ -279,7 +279,7 @@ let createHackathonRegQuestion = async (req, res) => {
  *  put:
  *    description: Use to update a registration question
  *    parameters:
- *      - name: ha-api-token
+ *      - name: ha-admin-token
  *        in: header
  *        required: true
  *        schema:
@@ -359,7 +359,7 @@ let deleteHackathonRegQuestion = async (req, res) => {
  *  get:
  *    description: Get a user registration form
  *    parameters:
- *      - name: ha-api-token
+ *      - name: ha-admin-token
  *        in: header
  *        required: true
  *        schema:
