@@ -1,4 +1,5 @@
 const DAL = require('../../dal/dal');
+const JWT = require('../../shared/jwt');
 
 /**
  * @swagger
@@ -187,10 +188,14 @@ let getHackathonRegQuestion = async (req, res) => {
  *          properties:
  *            user:
  *              type: object
+ *            token:
+ *              type: string
  *      '400':
  *        description: 'Invalid syntax'
  *      '404':
  *        description: 'Not found'
+ *      '500'
+ *        description: 'Internal server error'
  */
 let signUp = async (req, res) => {
 
@@ -219,6 +224,8 @@ let signUp = async (req, res) => {
  *          properties:
  *            user:
  *              type: object
+ *            token:
+ *              type: string
  *      '400':
  *        description: 'Invalid syntax'
  *      '404':
@@ -232,7 +239,8 @@ let signIn = async (req, res) => {
     let signInRes = await DAL.signInEmailPassword(req.body.email, req.body.password);
     if (signInRes.err) return res.status(signInRes.err).send();
 
-    return res.status(200).send({user: signInRes.user});
+    let token = JWT.issueUserToken(signInRes.user.uid);
+    return res.status(200).send({user: signInRes.user, token: token});
 };
 
 module.exports = {
