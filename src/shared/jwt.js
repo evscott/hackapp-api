@@ -13,13 +13,13 @@ let validateUserToken = (req, res, next) => {
     if (token) {
         jwt.verify(token, config.userPublicKey, config.verifyOptions, (err) => {
             if (err)
-                res.status(500).send(err);
+                return res.status(500).send(err);
 
             next();
         });
     }
-
-    return res.status(401).send();
+    else
+        return res.status(401).send();
 };
 
 /**
@@ -34,13 +34,12 @@ let validateAdminToken = (req, res, next) => {
     if (token) {
         jwt.verify(token, config.adminPublicKey, config.verifyOptions, (err, decoded) => {
             if (err)
-                res.status(500).send(err);
-
+                return res.status(500).send(err);
             next();
         });
     }
-
-    return res.status(401).send();
+    else
+        return res.status(401).send();
 };
 
 /**

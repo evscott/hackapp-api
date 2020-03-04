@@ -1,3 +1,5 @@
+const DAL = require('../../dal/dal');
+
 /**
  * @swagger
  * /org/:
@@ -15,18 +17,28 @@
  *        required: true
  *        schema:
  *          type: object
+ *          properties:
+ *            organizationName:
+ *              type: string
  *    responses:
  *      '201':
  *        description: 'Success'
  *      '400':
- *        description: 'Invalid syntax'
+ *        description: 'Bad request'
  *      '401':
  *        description: 'JWT not found in header'
  *      '403':
  *        description: 'JWT does not have admin privileges'
  */
 let createOrganization = async (req, res) => {
+    if (req.body.organizationName == undefined) {
+        return res.status(400).send();
+    }
 
+    let createOrgRes = await DAL.createOrganization(req.body.organizationName);
+    if (createOrgRes.err) return res.status(createOrgRes.err).send();
+
+    return res.status(200).send({org: createOrgRes.org})
 };
 
 /**
@@ -50,7 +62,7 @@ let createOrganization = async (req, res) => {
  *      '200':
  *        description: Success
  *      '400':
- *        description: 'Invalid syntax'
+ *        description: 'Bad request'
  *      '401':
  *        description: 'JWT not found in header'
  *      '403':
@@ -88,7 +100,7 @@ let updateOrganization = async (req, res) => {
  *            hid:
  *              type: string
  *      '400':
- *        description: 'Invalid syntax'
+ *        description: 'Bad request'
  *      '401':
  *        description: 'JWT not found in header'
  *      '403':
@@ -120,7 +132,7 @@ let createHackathon = async (req, res) => {
  *      '200':
  *        description: Success
  *      '400':
- *        description: 'Invalid syntax'
+ *        description: 'Bad request'
  *      '401':
  *        description: 'JWT not found in header'
  *      '403':
@@ -148,7 +160,7 @@ let updateHackathon = async (req, res) => {
  *      '200':
  *        description: Success
  *      '400':
- *        description: 'Invalid syntax'
+ *        description: 'Bad request'
  *      '401':
  *        description: 'JWT not found in header'
  *      '403':
@@ -181,7 +193,7 @@ let deleteHackathon = async (req, res) => {
  *      '201':
  *        description: 'Success'
  *      '400':
- *        description: 'Invalid syntax'
+ *        description: 'Bad request'
  *      '401':
  *        description: 'JWT not found in header'
  *      '403':
@@ -218,7 +230,7 @@ let createHackathonDetails = async (req, res) => {
  *      '200':
  *        description: Success
  *      '400':
- *        description: 'Invalid syntax'
+ *        description: 'Bad request'
  *      '401':
  *        description: 'JWT not found in header'
  *      '403':
@@ -263,7 +275,7 @@ let updateHackathonDetails = async (req, res) => {
  *            hid:
  *              type: string
  *      '400':
- *        description: 'Invalid syntax'
+ *        description: 'Bad request'
  *      '401':
  *        description: 'JWT not found in header'
  *      '403':
@@ -301,7 +313,7 @@ let createHackathonRegQuestion = async (req, res) => {
  *      '200':
  *        description: Success
  *      '400':
- *        description: 'Invalid syntax'
+ *        description: 'Bad request'
  *      '401':
  *        description: 'JWT not found in header'
  *      '403':
@@ -341,7 +353,7 @@ let updateHackathonRegQuestion = async (req, res) => {
  *      '200':
  *        description: Success
  *      '400':
- *        description: 'Invalid syntax'
+ *        description: 'Bad request'
  *      '401':
  *        description: 'JWT not found in header'
  *      '403':
@@ -375,7 +387,7 @@ let deleteHackathonRegQuestion = async (req, res) => {
  *      '200':
  *        description: Success
  *      '400':
- *        description: 'Invalid syntax'
+ *        description: 'Bad request'
  *      '401':
  *        description: 'JWT not found in header'
  *      '403':

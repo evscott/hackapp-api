@@ -45,7 +45,7 @@ let getUser = async (req, res) => {
  *      '200':
  *        description: Success
  *      '400':
- *        description: 'Invalid syntax'
+ *        description: 'Bad request'
  *      '401':
  *        description: 'JWT not found in header'
  *      '403':
@@ -79,7 +79,7 @@ let updateUser = async (req, res) => {
  *      '200':
  *        description: Success
  *      '400':
- *        description: 'Invalid syntax'
+ *        description: 'Bad request'
  *      '401':
  *        description: 'JWT not found in header'
  *      '403':

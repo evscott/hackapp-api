@@ -1,7 +1,9 @@
-const open = require('./open');
+const auth = require('./auth');
+const org = require('./org');
 
 const DAL = {
-    ...open
+    ...auth,
+    ...org
 };
 
 module.exports = DAL;

@@ -59,7 +59,7 @@ let getHackathons = async (req, res) => {
  *            hackathon:
  *              type: object
  *      '400':
- *        description: 'Invalid syntax'
+ *        description: 'Bad request'
  *      '404':
  *        description: 'Not found'
  */
@@ -87,7 +87,7 @@ let getHackathon = async (req, res) => {
  *            details:
  *              type: object
  *      '400':
- *        description: 'Invalid syntax'
+ *        description: 'Bad request'
  *      '404':
  *        description: 'Not found'
  */
@@ -120,7 +120,7 @@ let getHackathonDetails = async (req, res) => {
  *            question:
  *              type: object
  *      '400':
- *        description: 'Invalid syntax'
+ *        description: 'Bad request'
  *      '404':
  *        description: 'Not found'
  */
@@ -153,7 +153,7 @@ let getHackathonRegQuestions = async (req, res) => {
  *            question:
  *              type: object
  *      '400':
- *        description: 'Invalid syntax'
+ *        description: 'Bad request'
  *      '404':
  *        description: 'Not found'
  */
@@ -191,7 +191,7 @@ let getHackathonRegQuestion = async (req, res) => {
  *            token:
  *              type: string
  *      '400':
- *        description: 'Invalid syntax'
+ *        description: 'Bad request'
  *      '500':
  *        description: 'Internal server error'
  */
@@ -233,7 +233,7 @@ let signUp = async (req, res) => {
  *            token:
  *              type: string
  *      '400':
- *        description: 'Invalid syntax'
+ *        description: 'Bad request'
  *      '404':
  *        description: 'Not found'
  *      '500':
