@@ -3,8 +3,9 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE TYPE reg_state AS ENUM ('unregistered', 'registered');
 
 CREATE TABLE IF NOT EXISTS  Organizations (
+    id uuid DEFAULT uuid_generate_v1() UNIQUE,
     name varchar(255) NOT NULL,
-    PRIMARY KEY (name)
+    PRIMARY KEY (id)
 );
 
 CREATE TABLE IF NOT EXISTS Users (

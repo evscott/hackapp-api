@@ -29,16 +29,18 @@ const DAL = require('../../dal/dal');
  *        description: 'JWT not found in header'
  *      '403':
  *        description: 'JWT does not have admin privileges'
+ *      '500':
+ *        description: 'Internal server error'
  */
 let createOrganization = async (req, res) => {
-    if (req.body.organizationName == undefined) {
+    if (req.body.organizationName === undefined) {
         return res.status(400).send();
     }
 
     let createOrgRes = await DAL.createOrganization(req.body.organizationName);
     if (createOrgRes.err) return res.status(createOrgRes.err).send();
 
-    return res.status(200).send({org: createOrgRes.org})
+    return res.status(201).send({org: createOrgRes.org})
 };
 
 /**
@@ -58,6 +60,11 @@ let createOrganization = async (req, res) => {
  *        required: true
  *        schema:
  *          type: object
+ *          properties:
+ *            oldOrganizationName:
+ *              type: string
+ *            newOrganizationName:
+ *              type: string
  *    responses:
  *      '200':
  *        description: Success
@@ -69,9 +76,18 @@ let createOrganization = async (req, res) => {
  *        description: 'JWT does not have admin privileges'
  *      '404':
  *        description: 'Not found'
+ *      '500':
+ *        description: 'Internal server error'
  */
 let updateOrganization = async (req, res) => {
+    if (req.body.oldOrganizationName === undefined || req.body.newOrganizationName === undefined) {
+        return res.status(400).send();
+    }
 
+    let updateOrgRes = await DAL.updateOrganization(req.body.oldOrganizationName, req.body.newOrganizationName)
+    if (updateOrgRes.err) return res.status(updateOrgRes.err).send();
+
+    return res.status(200).send({org: updateOrgRes.org})
 };
 
 /**
