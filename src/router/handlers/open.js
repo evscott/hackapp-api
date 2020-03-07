@@ -196,11 +196,19 @@ let getHackathonRegQuestion = async (req, res) => {
  *        description: 'Internal server error'
  */
 let signUp = async (req, res) => {
-    if (req.body.firstName == undefined || req.body.lastName == undefined || req.body.email == undefined || req.body.password == undefined)
-        return res.status(400).send();
+    let firstName = req.body.firstName,
+        lastName = req.body.lastName,
+        email = req.body.email,
+        password = req.body.password;
 
-    let signUpRes = await DAL.signUp(req.body.firstName, req.body.lastName, req.body.email, req.body.password);
-    if (signUpRes.err) return res.status(signUpRes.err).send();
+    if (firstName === undefined || lastName === undefined || email === undefined || password === undefined) {
+        return res.status(400).send();
+    }
+
+    let signUpRes = await DAL.signUp(firstName, lastName, email, password);
+    if (signUpRes.err) {
+        return res.status(signUpRes.err).send();
+    }
 
     let token = JWT.issueUserToken(signUpRes.user.uid);
 
@@ -240,16 +248,26 @@ let signUp = async (req, res) => {
  *        description: 'Internal server error'
  */
 let signIn = async (req, res) => {
-    if (req.body.email == undefined || req.body.password == undefined) return res.status(400).send();
+    console.log('hit signin', req);
+    let email = req.body.email,
+        password = req.body.password;
 
-    let signInRes = await DAL.signInEmailPassword(req.body.email, req.body.password);
-    if (signInRes.err) return res.status(signInRes.err).send();
+    if (email === undefined || password === undefined) {
+        return res.status(400).send();
+    }
+
+    let signInRes = await DAL.signInEmailPassword(email, password);
+    if (signInRes.err) {
+        return res.status(signInRes.err).send();
+    }
 
     let token;
-    if (signInRes.user.admin)
+    if (signInRes.user.admin) {
         token = JWT.issueAdminToken(signInRes.user.uid);
-    else
+    }
+    else {
         token = JWT.issueUserToken(signInRes.user.uid);
+    }
 
     return res.status(200).send({user: signInRes.user, token: token});
 };

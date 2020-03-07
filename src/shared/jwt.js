@@ -12,10 +12,16 @@ let validateUserToken = (req, res, next) => {
 
     if (token) {
         jwt.verify(token, config.userPublicKey, config.verifyOptions, (err) => {
-            if (err)
-                return res.status(500).send(err);
+            if (err) {
+                if (err.message === 'jwt expired') {
+                    return res.status(401).send({err: err.message});
+                }
+                if (err.message === 'invalid signature') {
+                    return res.status(403).send({err: err.message});
+                }
+            }
 
-            next();
+            return next()
         });
     }
     else
@@ -31,15 +37,25 @@ let validateUserToken = (req, res, next) => {
 let validateAdminToken = (req, res, next) => {
     let token = req.headers['ha-admin-token'];
 
+    console.log('validating admin token', req);
+
     if (token) {
-        jwt.verify(token, config.adminPublicKey, config.verifyOptions, (err, decoded) => {
-            if (err)
-                return res.status(500).send(err);
-            next();
+        jwt.verify(token, config.adminPublicKey, config.verifyOptions, (err) => {
+            if (err) {
+                if (err.message === 'jwt expired') {
+                    return res.status(401).send({err: err.message});
+                }
+                if (err.message === 'invalid signature') {
+                    return res.status(403).send({err: err.message});
+                }
+            }
+
+            return next()
         });
     }
-    else
+    else {
         return res.status(401).send();
+    }
 };
 
 /**
