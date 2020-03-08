@@ -248,12 +248,11 @@ let signUp = async (req, res) => {
  *        description: 'Internal server error'
  */
 let signIn = async (req, res) => {
-    console.log('hit signin', req);
     let email = req.body.email,
         password = req.body.password;
 
     if (email === undefined || password === undefined) {
-        return res.status(400).send();
+        return res.status(400).send('must provide email and password');
     }
 
     let signInRes = await DAL.signInEmailPassword(email, password);

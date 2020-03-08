@@ -71,15 +71,20 @@ let validateUserRequest = (req, res, next) => {
 
     if (token) {
         jwt.verify(token, config.userPublicKey, config.verifyOptions, (err, decoded) => {
-            if (err)
-                res.status(500).send(err);
-            if (decoded.uid !== uid)
-                res.status(403).send();
-            next();
+            if (err) {
+                return res.status(500).send(err);
+            }
+            console.log(decoded.uid, uid);
+            if (decoded.uid !== uid) {
+                return res.status(403).send();
+            }
+
+            return next();
         });
     }
-
-    return res.status(401).send();
+    else {
+        return res.status(401).send();
+    }
 };
 
 /**

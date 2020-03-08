@@ -1,11 +1,14 @@
 const auth = require('./auth');
-const hackathon = require('./hackathon');
-const org = require('./org');
+const hackathons = require('./hackathons');
+const organizations = require('./organizations');
+const users = require('./users');
+
 
 const DAL = {
     ...auth,
-    ...hackathon,
-    ...org
+    ...hackathons,
+    ...organizations,
+    ...users
 };
 
 module.exports = DAL;

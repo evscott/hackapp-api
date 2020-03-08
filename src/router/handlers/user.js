@@ -1,3 +1,5 @@
+const DAL = require("../../dal/users");
+
 /**
  * @swagger
  * /user/:
@@ -20,7 +22,20 @@
  *              type: object
  */
 let getUser = async (req, res) => {
-    
+    let uid = req.body.uid;
+
+    if (uid === undefined) {
+        return res.status(400).send();
+    }
+
+    let getUser = await DAL.getUser(uid);
+    if (getUser.err) {
+        return res.status(getUser.err).send();
+    }
+
+    return res.status(200).send({
+        user: getUser.user
+    });
 };
 
 /**
@@ -88,7 +103,18 @@ let updateUser = async (req, res) => {
  *        description: 'Not found'
  */
 let deleteUser = async (req, res) => {
-    
+    let uid = req.query.uid;
+
+    if (uid === undefined) {
+        return res.status(400).send();
+    }
+
+    let deleteUserRes = await DAL.deleteUser(uid);
+    if (deleteUserRes.err) {
+        return res.status(deleteUserRes.err).send();
+    }
+
+    return res.status(200).send();
 };
 
 module.exports = {
