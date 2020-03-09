@@ -1,6 +1,6 @@
-const openRoutes = require('./routes/open');
-const userRoutes = require('./routes/user');
-const adminRoutes = require('./routes/admin');
+const openRoutes = require('./open');
+const userRoutes = require('./user');
+const adminRoutes = require('./admin');
 
 function init(app) {
     app.use(openRoutes);

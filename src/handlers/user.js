@@ -1,4 +1,4 @@
-const DAL = require("../../dal/users");
+const DAL = require("../dal/users");
 
 /**
  * @swagger

@@ -17,6 +17,29 @@ services:
     networks:
       - hackapp-net
 
+  hackapp-migrator:
+    container_name: hackapp-migrator
+    image: hackapp-migrator:latest
+    hostname: hackapp-api
+    build:
+      context: migrator/
+      dockerfile: Dockerfile
+    environment:
+      GET_HOSTS_FROM: dns
+      PGHOST: hackapp-db
+      PGPORT: 5432
+      PGUSER: user
+      PGPASSWORD: password
+      PGDATABASE: dev
+    networks:
+      - hackapp-net
+    depends_on:
+      - hackapp-db
+    links:
+      - hackapp-db
+    labels:
+      kompose.service.type: LoadBalancer
+
   hackapp-api:
     container_name: hackapp-api
     image: hackapp-api:latest
@@ -39,29 +62,6 @@ services:
       - hackapp-net
     ports:
       - 8080:8080
-    depends_on:
-      - hackapp-db
-    links:
-      - hackapp-db
-    labels:
-      kompose.service.type: LoadBalancer
-
-  hackapp-migrator:
-    container_name: hackapp-migrator
-    image: hackapp-migrator:latest
-    hostname: hackapp-api
-    build:
-      context: migrator/
-      dockerfile: Dockerfile
-    environment:
-      GET_HOSTS_FROM: dns
-      PGHOST: hackapp-db
-      PGPORT: 5432
-      PGUSER: user
-      PGPASSWORD: password
-      PGDATABASE: dev
-    networks:
-      - hackapp-net
     depends_on:
       - hackapp-db
     links:
