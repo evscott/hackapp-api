@@ -1,15 +1,15 @@
-const authentication = require('./authentication');
-const hackathon = require('./hackathon');
-const organization = require('./organization');
-const registration = require('./registration');
+const auth = require('./auth');
+const hack = require('./hack');
+const org = require('./org');
+const reg = require('./reg');
 const user = require('./user');
 
 
 const Handlers = {
-    auth: authentication,
-    hack: hackathon,
-    org: organization,
-    reg: registration,
+    auth: auth,
+    hack: hack,
+    org: org,
+    reg: reg,
     user: user,
 };
 

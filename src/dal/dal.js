@@ -1,13 +1,13 @@
 const auth = require('./auth');
-const hackathons = require('./hackathons');
-const organizations = require('./organizations');
+const hack = require('./hack');
+const org = require('./org');
 const users = require('./users');
 
 
 const DAL = {
     ...auth,
-    ...hackathons,
-    ...organizations,
+    ...hack,
+    ...org,
     ...users
 };
 
