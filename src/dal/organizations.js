@@ -5,6 +5,17 @@ pool.on('error', err => {
     console.error('Unexpected error on idle client', err);
 });
 
+async function getOrganization() {
+    try {
+        let res = await pool.query('SELECT * FROM organizations');
+        if (res === undefined) return {org: null, err: 400};
+        else return {org: res.rows[0], err: null}
+    } catch (err) {
+        console.error(err);
+        return {org: null, err: 500};
+    }
+}
+
 async function createOrganization(organizationName) {
     try {
         let res = await pool.query('INSERT INTO organizations (name) VALUES ($1) RETURNING name',
@@ -31,6 +42,7 @@ async function updateOrganization(oldOrganizationName, newOrganizationName) {
 }
 
 module.exports = {
+    getOrganization,
     createOrganization,
     updateOrganization
 };

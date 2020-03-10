@@ -12,8 +12,9 @@ const Config = {
             'X-Requested-With, content-type, x-access-token'
         );
         res.header('Access-Control-Allow-Credentials', true);
-
-        console.log(`${req.ip} ${req.method} ${req.url}`);
+        if (process.env.PROD) {
+            console.log(`${req.ip} ${req.method} ${req.url}`);
+        }
         next();
     },
     SwaggerOptions: {

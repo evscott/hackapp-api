@@ -1,0 +1,72 @@
+version: '3'
+
+services:
+
+  hackapp-db:
+    container_name: test.hackapp-db
+    image: postgres
+    restart: always
+    hostname: hackapp-db
+    environment:
+      GET_HOST_FROM: dns
+      POSTGRES_DB: dev
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+    ports:
+      - 5432:5432
+    networks:
+      - hackapp-net
+
+  hackapp-migrator:
+    container_name: test.hackapp-migrator
+    image: test.hackapp-migrator:latest
+    hostname: hackapp-api
+    build:
+      context: migrator/
+      dockerfile: Dockerfile
+    environment:
+      GET_HOSTS_FROM: dns
+      PGHOST: hackapp-db
+      PGPORT: 5432
+      PGUSER: user
+      PGPASSWORD: password
+      PGDATABASE: dev
+    networks:
+      - hackapp-net
+    depends_on:
+      - hackapp-db
+    links:
+      - hackapp-db
+    labels:
+      kompose.service.type: LoadBalancer
+
+  hackapp-api:
+    container_name: test.hackapp-api
+    image: test.hackapp-api:latest
+    hostname: hackapp-api
+    build:
+      context: .
+      dockerfile: test.Dockerfile
+    environment:
+      GET_HOSTS_FROM: dns
+      PGHOST: hackapp-db
+      PGPORT: 5432
+      PGUSER: user
+      PGPASSWORD: password
+      PGDATABASE: dev
+      USER_PUBLIC_KEY: "-----BEGIN PUBLIC KEY-----\nMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEArxxZm3SFwrzWT2zgaxqG\nh/jxp8AD1dYFG9eT36VM/uv2WS/o9gy/vC4mvWYydGQ1kd48g0hkIN6Mel3ferN8\n3qYGM6fsVDAj6RNL0bVc1v/6DA19weHgjiGwCWM/WkTieD8LUBuzBPFXItPR7l7+\nNDDsox2Z4smW/rzNhLgEkanAqxpJ/no2CfVJmPr3gnmoFKFl0/2e9dONOnNLBYM+\nXD/4cQYP+oXtI2pwaSFphCdAYq/cNdZbFlwJnJyJJ9AJqbgIjyqcgb4fQN+F+X8l\n1/jS7EY/P8z08ape0fOxMd4JYlnXPiWxi8i5FJwKdVZkXlt88rqSvrrsRBHRdYKU\nhnX4h7qX+Yx09Gdcw2Tfi6nocfVFmTJK1kKZyVzokwVoMZI8PDf58QN1zdjTEAZ1\nfhEuIW1bQimEUE9D/gwz7+E0jRZx9jRdARGgtLHg84ZeSlfgEyED7m2wXQImgZ2L\nItroBml8ZoGU7Ja7f/dEcArlKCAVcVjnPOri7AR0cA+nWoN+zoErEmp0UDsVXLcX\nhKh84QrdUKofqCnTGVQo1/WJ6XQQMEfdLKmSBGB7KrNtqsd9chdHiuQMb8s+IOOi\nP+bVuBDnQd5yAl5u0K52kkscDzeRsBHsh7yNRLV+vew+8Rz0ZiFe1X8zTHu5U/Hc\nzmWOqbsovm3BRUg14RasSl0CAwEAAQ==\n-----END PUBLIC KEY-----"
+      USER_PRIVATE_KEY: "-----BEGIN RSA PRIVATE KEY-----\n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\n-----END RSA PRIVATE KEY-----"
+      ADMIN_PUBLIC_KEY: "-----BEGIN PUBLIC KEY-----\nMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAnR2FOH8qrf0KQDteTMZJ\noAOzNy9n0jc6cG2d73k5fh5CPWMIa0GozR+QQLR7mjLvJcjlPbQHZdv5M7x1e0wr\nVll0R5+LGEHEGmVd9H3BpGEup39BvcasRKW4utWW+/cGTuZSEx3KZT0sDjeOklil\nxo7IHu6CLDbPIuUjW7+r3TY4lgHmbid9xraoIFDR5HPfb1ITPvneso+XC9lcplXa\ng2yfpGmD6ZFDGAy+livj/UCQYSV5WYEhD0y2CvI4LX3J1Yn/NNPiiS9TR/zYV9DK\nVeaAbwvrCYI5G6e7yOHA1Pk4LzLac8RBws4ZCVvsUYbTQVU43Z7by2MsV0f0otcF\nclxW+Lt7FEhwYHVHC/0QOOWZA61GnyYvUpF5CCrI7X+x4O4OYHB211SLwfVrVqOW\n73ihWnJFoIgup1Oe2dI/UX9Cj3lilnm0XqIwhs18Hb1UR1XIKmPC8zehlwpUDKQQ\nE7XBD5HdQ0A/NNJPW13dHdrxXCNGdB/EtvryUAIMj69vRSLfNRD2p204lxBm7Ixo\nIZcCDTzyfwlr99kjdck02cbDJqA/YNHej7yzynJQTQajVDtiudl0DJirD7nFjgxr\nX6lfBVAWn4QmPyc9jxdjdEGRulT2J33etSS8FXuRKThZj4dio3csjDNm9MFFdT5q\nd/+YwY2mVxd1VuYA+wHnUZkCAwEAAQ==\n-----END PUBLIC KEY-----"
+      ADMIN_PRIVATE_KEY: "-----BEGIN RSA PRIVATE KEY-----\nMIIJJwIBAAKCAgEAnR2FOH8qrf0KQDteTMZJoAOzNy9n0jc6cG2d73k5fh5CPWMI\na0GozR+QQLR7mjLvJcjlPbQHZdv5M7x1e0wrVll0R5+LGEHEGmVd9H3BpGEup39B\nvcasRKW4utWW+/cGTuZSEx3KZT0sDjeOklilxo7IHu6CLDbPIuUjW7+r3TY4lgHm\nbid9xraoIFDR5HPfb1ITPvneso+XC9lcplXag2yfpGmD6ZFDGAy+livj/UCQYSV5\nWYEhD0y2CvI4LX3J1Yn/NNPiiS9TR/zYV9DKVeaAbwvrCYI5G6e7yOHA1Pk4LzLa\nc8RBws4ZCVvsUYbTQVU43Z7by2MsV0f0otcFclxW+Lt7FEhwYHVHC/0QOOWZA61G\nnyYvUpF5CCrI7X+x4O4OYHB211SLwfVrVqOW73ihWnJFoIgup1Oe2dI/UX9Cj3li\nlnm0XqIwhs18Hb1UR1XIKmPC8zehlwpUDKQQE7XBD5HdQ0A/NNJPW13dHdrxXCNG\ndB/EtvryUAIMj69vRSLfNRD2p204lxBm7IxoIZcCDTzyfwlr99kjdck02cbDJqA/\nYNHej7yzynJQTQajVDtiudl0DJirD7nFjgxrX6lfBVAWn4QmPyc9jxdjdEGRulT2\nJ33etSS8FXuRKThZj4dio3csjDNm9MFFdT5qd/+YwY2mVxd1VuYA+wHnUZkCAwEA\nAQKCAgAlMebnABv/gqcZm7RwYoTtj9KuntdqSc7Y7Op11fIJbGpsE/TbR3kJzo4c\n811LnQFGpa+3ktYphBET8WqynM6pq5W+mwOX44Hkadj7V4YvPx6HYrYSkmUX/0+j\nU4th7RIePaJyihvvKbMzTm2/MaNVRVoVEIvaocMZ1LsxLkgmn3537M07iLfbAkT9\nGYUHG3Nq7DhIMWlKRnoQwQ2RB0Qq1t1YU+55rfz/RY0dChj4TH+hr/hxewNzlsqF\n/t/TzTKqDfhP7lVz+rMxmKcy6ufrvBztrRmgb6bLaEMphGBdSv7FFbnnrC+RSa9d\nqthgWJXMortKpCAOn1TQ+OTuZA8Sq9pmLGptRfCE+/syhjDoeOPmuEVfNwFkmoQ6\nWK5BlOA06k5crtadJ43bt4g3LPCvun8SKCO9imM1EgLSNEoVKVx4PNq5PUz+IHNT\nv3pW+EmwP2ds32+og6l9NiD1z05VjT9A5DQumCMdIXM49eCF/Na33a9G6YUlorYr\nKv6bDohNQZce3Lmdm4G3dnyctxHBH2ldAAHBFqqvOS95S0HSDCNF+ksiYv5n74OM\n5kOc/GrW1CdmpZzRlReveC/LyvPbY3GFprMi3/Dv6PKICP6CL1Nf4b8gTgbVyYU6\nqHIpegyJn6OCL9Yv08bCJzNQD+PYcHPQxQHP25nwqk2HwIaG/QKCAQEAyJrtpKa1\nGYFk77RCWYjyKcqIbx0UEbVflx0FVZkxo6QrI6BjsvCYuHaW1nK27fYTKbZfU7cP\npOziXzAI5GmssdV7LpA8B5SVmSeImINN4kk5gJJDXxPuvFBmXyPBmMP+KWPAfdPE\ng8+TLCtzIwP8/QiOW62SeeDeN4uIbw9kiyWajowolQmMIBZxT9H4Jou3XO+qTzRb\nxj/FOMn9pzuURo5xc/t3sH2rLxRltTl8SFB1cJ3BVcmpZSqu0KhJxy0OyTFcT9z5\nJ89xnZwsupibMraIoJdCLTbY8H9YULUqACGBYgr7LOkzQ2x+CxV/uFr1vcFV3ORV\nTAgxiUXOY56GbwKCAQEAyIA608NVEAxz+y78gJthCce5CHggIt74NcNFdkBHdxvr\nkqNVHKSWpttp1OcwIgDyTMrtRbJtFIwLp4cEsC9p5/Kr0wwzibtoYvQZu38Mw412\nZJHBFjK0w57sqU4HBqy+lTY3vU+fw55Sje2/MTyxTaMHjnze7ce+kDihcIpTmQ2x\nFQ1tV7NRTedO8ydTA9vZzFZ1lZHmNHEWdnXoWtCcLUVSS2ptZMCHZQYy/mNnr7lV\nDICUtGIDu5LqW+sGJso3FLucBzEX4Wp9cp803OQB9vRrYxt1cQKdN5HtI4UPEqGg\n8eSJ5B70Hz3eN8WceA2wOMMfLqDC7BVgj5CelYBsdwKCAQAUEUuMmRCsyIDsab/p\nbQWsoJIda29Chj5Vw5VxBq4sjJO0MKtIj0D30wUr1rXuABvSpGfM3Bc4jGno08lP\n8DJSZ+S2t78JkxeUBpxnhVsZM/IIppkOvdO4CuLyyYToX1LhmRT8gV67QNycIoyW\nCCQau+xhx29Lue8A53hyg7uvH8fiUqsMnbPi0dvr/Dkywe9J4L/MxJQZtO9pyusQ\n+6jNlhpLW/CRO0EQqJ20D1gbc9ELvvxENLQ5ZpeuT+dxgVRlVAbEBnr2PI5FEgZ3\ndCSyYggw6HC6TS5OgK65BCZ7dN6YjDisOXfjWssRGMl6C79hiCGqwzy1KmyqKs2G\nsakJAoIBAFywcwGcpoFR0HhJg2+M5TJZQ1/38JtOSp7IFB+TnbYhkSjsGxevuvmO\nK4HCEs1VdK4tjb0PvD+ocmbTE0bD1Ijm9aoOVPESUzKTuCWmmWb5yca6XvH9JPXe\nTXgDW1opl71xIBmDas9LLMzyINYJQcorWP31GjYAhkcz9uYI/Jaf7sJVv7uwaSDD\nkwrznfwFsc02Fwu7NBoAQasn3O/Gyrxe9KlqnQHbw3vffsl9eNySqA+sjZJKUYFw\nbKlroB9kkkwiYwIsHucVjMLleNG5EnNxEQfzFLrWw4mCC4fFJm+tirLovRpZeO/M\ncSOFVk1lvpavFYY/yXzMcSRNbhKdGQcCggEAUfr1kFRicMDaF79LPIUIBpi3E1hP\nvZUoRKb8GL73r7z/e4V5rh9GipHKQ/35VL/x5w+59bETiNRpATP7oHCRxlMj5uL+\np/LzapwtbWJBFKu81eZc1/pcpq0VaYiJxKj5kfHuE22CxQJEkZDFcerOUOD467s/\nchezIgZgmq+ECLVn5EVJJJVaaOO161WMYlLL/8QLTD+7l6X4DIMRrsu0jvwrUxXG\nsYzLQ7ynz7gMzHMHvoVAXImxqLXFachHxsQThK84F7P6hIQDD2ysPcH4RfWZSnyx\np8slzqwQzfxydM6zQpnHS8Pl+LUu7ev44pTvspSvVv1BjO15IpQ8rk0TEQ==\n-----END RSA PRIVATE KEY-----"
+    networks:
+      - hackapp-net
+    depends_on:
+      - hackapp-db
+    links:
+      - hackapp-db
+    labels:
+      kompose.service.type: LoadBalancer
+
+networks:
+  hackapp-net:
+    driver: bridge

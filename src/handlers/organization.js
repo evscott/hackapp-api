@@ -5,7 +5,7 @@ const JWT = require('../shared/jwt');
  * @swagger
  * /org/:
  *  get:
- *    description: Use to request organization
+ *    description: Use to request organization - Note: There should only be *one* organization in Hackapp v0.0.1
  *    responses:
  *      '200':
  *        description: Success
@@ -17,7 +17,12 @@ const JWT = require('../shared/jwt');
  *              example: Mount Allison
  */
 let getOrganization = async (req, res) => {
+    let getOrgRes = await DAL.getOrganization(name);
+    if (getOrgRes.err) {
+        return res.status(getOrgRes.err).send();
+    }
 
+    return res.status(201).send({org: getOrgRes.org})
 };
 
 /**
