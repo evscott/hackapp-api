@@ -98,10 +98,22 @@ let issueAdminToken = (uid) => {
     return jwt.sign({uid: uid}, config.adminPrivateKey, config.signOptions);
 };
 
+/**
+ * Get UID from decoding user token
+ */
+let getUIDFromToken = async (token) => {
+    let err, decoded = await jwt.verify(token, config.userPublicKey, config.verifyOptions);
+    if (err) {
+        return { uid: null, err: err };
+    }
+    return { uid: decoded.uid, err: null };
+};
+
 module.exports = {
     validateUserToken,
     validateAdminToken,
     validateUserRequest,
     issueUserToken,
-    issueAdminToken
+    issueAdminToken,
+    getUIDFromToken
 };

@@ -1,8 +1,9 @@
 const DAL = require("../dal/users");
+const JWT = require("../shared/jwt");
 
 /**
  * @swagger
- * /user/:
+ * /users/:uid/:
  *  get:
  *    description: Use to request a user
  *    parameters:
@@ -22,13 +23,13 @@ const DAL = require("../dal/users");
  *              type: object
  */
 let getUser = async (req, res) => {
-    let uid = req.body.uid;
-
-    if (uid === undefined) {
-        return res.status(400).send();
+    let token = req.headers['ha-user-token'];
+    let getUIDRes = await JWT.getUIDFromToken(token);
+    if (getUIDRes.err) {
+        res.status(500).send();
     }
 
-    let getUser = await DAL.getUser(uid);
+    let getUser = await DAL.getUser(getUIDRes.uid);
     if (getUser.err) {
         return res.status(getUser.err).send();
     }
@@ -103,13 +104,13 @@ let updateUser = async (req, res) => {
  *        description: 'Not found'
  */
 let deleteUser = async (req, res) => {
-    let uid = req.query.uid;
-
-    if (uid === undefined) {
-        return res.status(400).send();
+    let token = req.headers['ha-user-token'];
+    let getUIDRes = await JWT.getUIDFromToken(token);
+    if (getUIDRes.err) {
+        res.status(500).send();
     }
 
-    let deleteUserRes = await DAL.deleteUser(uid);
+    let deleteUserRes = await DAL.deleteUser(getUIDRes.uid);
     if (deleteUserRes.err) {
         return res.status(deleteUserRes.err).send();
     }

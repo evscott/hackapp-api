@@ -1,3 +1,5 @@
+const DAL = require('../dal/dal');
+
 /**
  * @swagger
  * /hacks/:
@@ -105,8 +107,6 @@ let getHackathonDetails = async (req, res) => {
 let getHackathonRegQuestions = async (req, res) => {
 
 };
-const DAL = require('../dal/dal');
-const JWT = require('../shared/jwt');
 
 /**
  * @swagger
