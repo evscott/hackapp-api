@@ -28,6 +28,15 @@ const JWT = require('../shared/jwt');
  *          properties:
  *            user:
  *              type: object
+ *              properties:
+ *                uid:
+ *                  type: string
+ *                firstName:
+ *                  type: string
+ *                lastName:
+ *                  type: string
+ *                email:
+ *                  type: string
  *            token:
  *              type: string
  *      '400':
@@ -78,6 +87,15 @@ let signUp = async (req, res) => {
  *          properties:
  *            user:
  *              type: object
+ *              properties:
+ *                uid:
+ *                  type: string
+ *                firstName:
+ *                  type: string
+ *                lastName:
+ *                  type: string
+ *                email:
+ *                  type: string
  *            token:
  *              type: string
  *      '400':

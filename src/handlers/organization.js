@@ -1,20 +1,21 @@
 const DAL = require('../dal/dal');
-const JWT = require('../shared/jwt');
 
 /**
  * @swagger
  * /org/:
  *  get:
- *    description: Use to request organization - Note: There should only be *one* organization in Hackapp v0.0.1
+ *    description: Use to request organization - Important! There should only be *one* organization in Hackapp v0.0.1
  *    responses:
  *      '200':
  *        description: Success
  *        schema:
  *          type: object
  *          properties:
- *            organizationName:
- *              type: string
- *              example: Mount Allison
+ *            org:
+ *              type: object
+ *              properties:
+ *                name:
+ *                  type: string
  */
 let getOrganization = async (req, res) => {
     let getOrgRes = await DAL.getOrganization();
@@ -43,11 +44,22 @@ let getOrganization = async (req, res) => {
  *        schema:
  *          type: object
  *          properties:
- *            organizationName:
- *              type: string
+ *            org:
+ *              type: object
+ *              properties:
+ *                name:
+ *                  type: string
  *    responses:
  *      '201':
  *        description: 'Success'
+ *        schema:
+ *          type: object
+ *          properties:
+ *            org:
+ *              type: object
+ *              properties:
+ *                name:
+ *                  type: string
  *      '400':
  *        description: 'Bad request'
  *      '401':
@@ -97,6 +109,14 @@ let createOrganization = async (req, res) => {
  *    responses:
  *      '200':
  *        description: Success
+ *        schema:
+ *          type: object
+ *          properties:
+ *            org:
+ *              type: object
+ *              properties:
+ *                name:
+ *                  type: string
  *      '400':
  *        description: 'Bad request'
  *      '401':

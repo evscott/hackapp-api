@@ -23,7 +23,7 @@ const Config = {
                 title: "Hackapp API",
             }
         },
-        apis: ["src/router/handlers/*.js"]
+        apis: ["src/handlers/*.js"]
     },
     userPublicKey: process.env.USER_PUBLIC_KEY,
     userPrivateKey: process.env.USER_PRIVATE_KEY,

@@ -6,7 +6,7 @@ const { expect } = chai;
 chai.use(chaiHttp);
 
 describe('hackathon', () => {
-    let token;
+    let token, hid;
 
     before('get admin api token', function(done) {
         chai.request(app)
@@ -37,9 +37,10 @@ describe('hackathon', () => {
                 .set('ha-admin-token', token)
                 .end((err, res) => {
                     expect(res).to.have.status(201);
+                    expect(res.body.hack.hid).lengthOf(36);
                     done();
                 })
-        }) ;
+        });
 
         it('create hack without admin-token should fail', function(done) {
             chai.request(app)
@@ -143,6 +144,100 @@ describe('hackathon', () => {
                 .set('ha-admin-token', token)
                 .end((err, res) => {
                     expect(res).to.have.status(400);
+                    done();
+                })
+        });
+    });
+
+    describe('GET /hacks', function () {
+        it('should get the only hackathon successfully', function(done) {
+            chai.request(app)
+                .get('/hacks')
+                .set('Accept', 'application/json')
+                .end((err, res) => {
+                    expect(res).to.have.status(200);
+                    expect(res.body.hacks[0].hid).lengthOf(36);
+                    done();
+                })
+        });
+
+        it('should get many hackathons successfully', function(done) {
+            chai.request(app)
+                .post('/hacks')
+                .send('name=MtaHacks 2')
+                .send('startDate=1999-01-08 04:05:06')
+                .send('endDate=1999-01-09 04:05:06')
+                .send('location=MtA')
+                .send('maxReg=100')
+                .set('Accept', 'application/json')
+                .set('ha-admin-token', token)
+                .end((err, res) => {
+                    expect(res).to.have.status(201);
+                });
+
+            chai.request(app)
+                .get('/hacks')
+                .set('Accept', 'application/json')
+                .end((err, res) => {
+                    expect(res).to.have.status(200);
+                    expect(res.body.hacks[0].hid).lengthOf(36);
+                    expect(res.body.hacks[1].hid).lengthOf(36);
+                    done();
+                })
+        });
+    });
+
+    describe('GET /hacks/:hid', function() {
+        let badHid = '8f717842-62e1-11ea-9ba6-0242ac190002';
+
+        before(function(done) {
+            chai.request(app)
+                .post('/hacks')
+                .send('name=MtaHacks 3')
+                .send('startDate=1999-01-08 04:05:06')
+                .send('endDate=1999-01-09 04:05:06')
+                .send('location=MtA')
+                .send('maxReg=100')
+                .set('Accept', 'application/json')
+                .set('ha-admin-token', token)
+                .end((err, res) => {
+                    expect(res).to.have.status(201)
+                    expect(res.body.hack.hid).lengthOf(36);
+                    hid = res.body.hack.hid;
+                    done();
+                });
+        });
+
+        it('getting hackathon by hid should succeed', function(done) {
+            chai.request(app)
+                .get('/hacks/:hid')
+                .query({hid: hid})
+                .set('Accept', 'application/json')
+                .end((err, res) => {
+                    expect(res).to.have.status(200);
+                    expect(res.body.hack.hid).equal(hid);
+                    expect(res.body.hack.name).equal('MtaHacks 3');
+                    done();
+                })
+        });
+
+        it('getting hackathon without hid should fail', function(done) {
+            chai.request(app)
+                .get('/hacks/:hid')
+                .set('Accept', 'application/json')
+                .end((err, res) => {
+                    expect(res).to.have.status(400);
+                    done();
+                })
+        });
+
+        it('getting hackathon with bad hid should fail', function(done) {
+            chai.request(app)
+                .get('/hacks/:hid')
+                .query({hid: badHid})
+                .set('Accept', 'application/json')
+                .end((err, res) => {
+                    expect(res).to.have.status(404);
                     done();
                 })
         });

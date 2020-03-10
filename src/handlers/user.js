@@ -21,6 +21,15 @@ const JWT = require("../shared/jwt");
  *          properties:
  *            user:
  *              type: object
+ *              properties:
+ *                uid:
+ *                  type: string
+ *                firstName:
+ *                  type: string
+ *                lastName:
+ *                  type: string
+ *                email:
+ *                  type: string
  */
 let getUser = async (req, res) => {
     let token = req.headers['ha-user-token'];

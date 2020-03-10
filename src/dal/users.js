@@ -10,7 +10,7 @@ async function getUser(uid) {
         let res = await pool.query('SELECT uid, first_name, last_name, email FROM users WHERE uid=$1',
             [uid]);
 
-        if (res === undefined) return {user: null, err: 404};
+        if (res.rowCount === 0) return {user: null, err: 404};
         else return {user: res.rows[0], err: null}
     } catch (err) {
         console.error(err)
@@ -23,7 +23,7 @@ async function deleteUser(uid) {
         let res = await pool.query('DELETE FROM users WHERE uid=$1',
             [uid]);
 
-        if (res === undefined) return {err: 404};
+        if (res.rowCount === 404) return {err: 404};
         else return {err: null}
     } catch (err) {
         console.error(err)

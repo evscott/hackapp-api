@@ -12,11 +12,30 @@ const DAL = require('../dal/dal');
  *          type: object
  *          properties:
  *            hackathons:
- *              type: string
- *              example: []
+ *              type: array
+ *              items:
+ *                type: object
+ *                properties:
+ *                  hid:
+ *                    type: string
+ *                  name:
+ *                    type: string
+ *                  startDate:
+ *                    type: number
+ *                  endDate:
+ *                    type: number
+ *                  location:
+ *                    type: string
+ *                  maxReg:
+ *                    type: number
  */
 let getHackathons = async (req, res) => {
+    let getHackathonsRes = await DAL.getHackathons();
+    if (getHackathonsRes.err) {
+        return res.status(getHackathonsRes.err).send();
+    }
 
+    return res.status(200).send({hacks: getHackathonsRes.hacks});
 };
 
 /**
@@ -38,13 +57,36 @@ let getHackathons = async (req, res) => {
  *          properties:
  *            hackathon:
  *              type: object
+ *              properties:
+ *                hid:
+ *                  type: string
+ *                name:
+ *                  type: string
+ *                startDate:
+ *                  type: number
+ *                endDate:
+ *                  type: number
+ *                location:
+ *                  type: string
+ *                maxReg:
+ *                  type: number
  *      '400':
  *        description: 'Bad request'
  *      '404':
  *        description: 'Not found'
  */
 let getHackathon = async (req, res) => {
+    let hid = req.query.hid;
+    if (hid === undefined) {
+        return res.status(400).send();
+    }
 
+    let getHackathonRes = await DAL.getHackathon(hid);
+    if (getHackathonRes.err) {
+        return res.status(getHackathonRes.err).send();
+    }
+
+    return res.status(200).send({hack: getHackathonRes.hack})
 };
 
 /**
@@ -158,14 +200,40 @@ let getHackathonRegQuestion = async (req, res) => {
  *        required: true
  *        schema:
  *          type: object
+ *          properties:
+ *            hid:
+ *              type: string
+ *            name:
+ *              type: string
+ *            startDate:
+ *              type: number
+ *            endDate:
+ *              type: number
+ *            location:
+ *              type: string
+ *            maxReg:
+ *              type: number
  *    responses:
  *      '201':
  *        description: 'Success'
  *        schema:
  *          type: object
  *          properties:
- *            hid:
- *              type: string
+ *            hack:
+ *              type: object
+ *              properties:
+ *                hid:
+ *                  type: string
+ *                name:
+ *                  type: string
+ *                startDate:
+ *                  type: number
+ *                endDate:
+ *                  type: number
+ *                location:
+ *                  type: string
+ *                maxReg:
+ *                  type: number
  *      '400':
  *        description: 'Bad request'
  *      '401':
@@ -191,7 +259,7 @@ let createHackathon = async (req, res) => {
         return res.status(createHackathonRes.err).send();
     }
 
-    return res.status(201).send({hackathon: createHackathonRes.hackathon})
+    return res.status(201).send({hack: createHackathonRes.hackathon})
 };
 
 
