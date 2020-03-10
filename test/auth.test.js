@@ -2,16 +2,16 @@ const app = require('../src/index.js');
 const chai = require("chai");
 const chaiHttp = require("chai-http");
 const { expect } = chai;
-const { describe, it } = require('mocha');
+const { before, describe, it } = require('mocha');
 chai.use(chaiHttp);
 
-describe('authentication', () => {
-    before('wait for db migrations', function(done) {
-        setTimeout(()=>{
-            done();
-        },1500);
-    });
+before('wait for db migrations', function(done) {
+    setTimeout(()=>{
+        done();
+    },1500);
+});
 
+describe('authentication', () => {
     describe('PUT /auth', () => {
         it('admin login should succeed', function(done) {
             chai.request(app)

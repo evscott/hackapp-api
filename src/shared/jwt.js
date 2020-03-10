@@ -37,8 +37,6 @@ let validateUserToken = (req, res, next) => {
 let validateAdminToken = (req, res, next) => {
     let token = req.headers['ha-admin-token'];
 
-    console.log('validating admin token', req);
-
     if (token) {
         jwt.verify(token, config.adminPublicKey, config.verifyOptions, (err) => {
             if (err) {
@@ -74,7 +72,6 @@ let validateUserRequest = (req, res, next) => {
             if (err) {
                 return res.status(500).send(err);
             }
-            console.log(decoded.uid, uid);
             if (decoded.uid !== uid) {
                 return res.status(403).send();
             }

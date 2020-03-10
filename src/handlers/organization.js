@@ -17,12 +17,12 @@ const JWT = require('../shared/jwt');
  *              example: Mount Allison
  */
 let getOrganization = async (req, res) => {
-    let getOrgRes = await DAL.getOrganization(name);
+    let getOrgRes = await DAL.getOrganization();
     if (getOrgRes.err) {
         return res.status(getOrgRes.err).send();
     }
 
-    return res.status(201).send({org: getOrgRes.org})
+    return res.status(200).send({org: getOrgRes.org})
 };
 
 /**
