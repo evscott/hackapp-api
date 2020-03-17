@@ -164,7 +164,7 @@ let getHackathonRegQuestions = async (req, res) => {
  *        schema:
  *          type: string
  *      - name: qid
- *        in: pathregDeadline
+ *        in: path
  *        required: true
  *        schema:
  *          type: string
