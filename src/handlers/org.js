@@ -32,7 +32,7 @@ let getOrganization = async (req, res) => {
  *  post:
  *    description: Use to create an organization
  *    parameters:
- *      - name: ha-admin-token
+ *      - name: ha-api-token
  *        in: header
  *        required: true
  *        schema:
@@ -90,7 +90,7 @@ let createOrganization = async (req, res) => {
  *  put:
  *    description: Use to update an organization
  *    parameters:
- *      - name: ha-admin-token
+ *      - name: ha-api-token
  *        in: header
  *        required: true
  *        schema:

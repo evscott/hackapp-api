@@ -16,7 +16,7 @@ describe('organization', () => {
             .set('Accept', 'application/json')
             .end((err, res) => {
                 expect(res).to.have.status(200);
-                expect(res.body.token).lengthOf(828);
+                expect(res.body.token.length).greaterThan(0);
                 token = res.body.token;
                 done();
             })
@@ -30,7 +30,7 @@ describe('organization', () => {
                 .post('/org')
                 .send('name=neworg')
                 .set('Accept', 'application/json')
-                .set('ha-admin-token', token)
+                .set('ha-api-token', token)
                 .end((err, res) => {
                     expect(res).to.have.status(201);
                     expect(res.body.org.name).equal('neworg');
@@ -54,9 +54,9 @@ describe('organization', () => {
                 .post('/org')
                 .send('name=neworg')
                 .set('Accept', 'application/json')
-                .set('ha-admin-token', expiredToken)
+                .set('ha-api-token', expiredToken)
                 .end((err, res) => {
-                    expect(res).to.have.status(401);
+                    expect(res).to.have.status(403);
                     done();
                 })
         });
@@ -65,7 +65,7 @@ describe('organization', () => {
             chai.request(app)
                 .post('/org')
                 .set('Accept', 'application/json')
-                .set('ha-admin-token', token)
+                .set('ha-api-token', token)
                 .end((err, res) => {
                     expect(res).to.have.status(400);
                     done();

@@ -59,7 +59,7 @@ let signUp = async (req, res) => {
         return res.status(signUpRes.err).send();
     }
 
-    let token = JWT.issueUserToken(signUpRes.user.uid);
+    let token = JWT.issueToken(signUpRes.user.uid, signUpRes.user.admin);
 
     return res.status(201).send({user: signUpRes.user, token: token});
 };
@@ -118,13 +118,8 @@ let signIn = async (req, res) => {
         return res.status(signInRes.err).send();
     }
 
-    let token;
-    if (signInRes.user.admin) {
-        token = JWT.issueAdminToken(signInRes.user.uid);
-    }
-    else {
-        token = JWT.issueUserToken(signInRes.user.uid);
-    }
+    let token = JWT.issueToken(signInRes.user.uid, signInRes.user.admin);
+
 
     return res.status(200).send({user: signInRes.user, token: token});
 };

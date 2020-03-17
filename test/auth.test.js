@@ -56,7 +56,7 @@ describe('authentication', () => {
                 .send('password=password')
                 .set('Accept', 'application/json')
                 .end((err, res) => {
-                    expect(res.body.token).lengthOf(828);
+                    expect(res.body.token.length).greaterThan(0);
                     done();
                 });
         });

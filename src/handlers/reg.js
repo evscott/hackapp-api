@@ -4,7 +4,7 @@
  *  post:
  *    description: Use to create a registration question
  *    parameters:
- *      - name: ha-admin-token
+ *      - name: ha-api-token
  *        in: header
  *        required: true
  *        schema:
@@ -36,7 +36,7 @@ let createRegQuestion = async (req, res) => {
  *  put:
  *    description: Use to update a registration question
  *    parameters:
- *      - name: ha-admin-token
+ *      - name: ha-api-token
  *        in: header
  *        required: true
  *        schema:
@@ -76,7 +76,7 @@ let updateRegQuestion = async (req, res) => {
  *  delete:
  *    description: Use to delete a registration question
  *    parameters:
- *      - name: ha-admin-token
+ *      - name: ha-api-token
  *        in: header
  *        required: true
  *        schema:
@@ -116,7 +116,7 @@ let deleteRegQuestion = async (req, res) => {
  *  get:
  *    description: Get a user registration form
  *    parameters:
- *      - name: ha-admin-token
+ *      - name: ha-api-token
  *        in: header
  *        required: true
  *        schema:

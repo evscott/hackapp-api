@@ -1,9 +1,4 @@
-const { Pool } = require('pg');
-const pool = new Pool();
-
-pool.on('error', err => {
-    console.error('Unexpected error on idle client', err);
-});
+const pool = require('./dal-pool');
 
 async function getHackathon(hid) {
     try {
@@ -29,20 +24,20 @@ async function getHackathons() {
     }
 }
 
-async function createHackathon(name, startDate, endDate, location, maxReg) {
+async function createHackathon(name, startDate, endDate, location, maxReg, regDeadline) {
     try {
-        let res = await pool.query('INSERT INTO hackathons (name, start_date, end_date, location, max_reg) VALUES ($1, $2, $3, $4, $5) RETURNING hid, name, start_date, end_date, location, max_reg',
-            [name, startDate, endDate, location, maxReg]);
+        let res = await pool.query('INSERT INTO hackathons (name, start_date, end_date, location, max_reg, regDeadline) VALUES ($1, $2, $3, $4, $5, $6) RETURNING hid, name, start_date, end_date, location, max_reg, regDeadline',
+            [name, startDate, endDate, location, maxReg, regDeadline]);
 
         if (res === undefined) {
-            return {hackathon: null, err: 400};
+            return {hack: null, err: 400};
         }
         else {
-            return {hackathon: res.rows[0], err: null}
+            return {hack: res.rows[0], err: null}
         }
     } catch (err) {
         console.error(err);
-        return {hackathon: null, err: 500}
+        return {hack: null, err: 500}
     }
 }
 

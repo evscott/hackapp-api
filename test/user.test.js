@@ -18,7 +18,7 @@ describe('user', () => {
             .set('Accept', 'application/json')
             .end((err, res) => {
                 expect(res).to.have.status(201);
-                expect(res.body.token).lengthOf(828);
+                expect(res.body.token.length).greaterThan(0);
                 expect(res.body.user.uid).lengthOf(36);
                 token = res.body.token;
                 uid = res.body.user.uid;
@@ -33,7 +33,7 @@ describe('user', () => {
             chai.request(app)
                 .get('/users')
                 .set('Accept', 'application/json')
-                .set('ha-user-token', token)
+                .set('ha-api-token', token)
                 .end((err, res) => {
                     expect(res).to.have.status(200);
                     done();
@@ -54,7 +54,7 @@ describe('user', () => {
             chai.request(app)
                 .get('/users')
                 .set('Accept', 'application/json')
-                .set('ha-user-token', expiredToken)
+                .set('ha-api-token', expiredToken)
                 .end((err, res) => {
                     expect(res).to.have.status(401);
                     done();
@@ -69,7 +69,7 @@ describe('user', () => {
             chai.request(app)
                 .delete('/users')
                 .set('Accept', 'application/json')
-                .set('ha-user-token', token)
+                .set('ha-api-token', token)
                 .end((err, res) => {
                     expect(res).to.have.status(200);
                     done();
@@ -90,7 +90,7 @@ describe('user', () => {
             chai.request(app)
                 .delete('/users')
                 .set('Accept', 'application/json')
-                .set('ha-user-token', expiredToken)
+                .set('ha-api-token', expiredToken)
                 .end((err, res) => {
                     expect(res).to.have.status(401);
                     done();

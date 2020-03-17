@@ -28,6 +28,8 @@ const DAL = require('../dal/dal');
  *                    type: string
  *                  maxReg:
  *                    type: number
+ *                  regDeadline:
+ *                    type: number
  */
 let getHackathons = async (req, res) => {
     let getHackathonsRes = await DAL.getHackathons();
@@ -162,7 +164,7 @@ let getHackathonRegQuestions = async (req, res) => {
  *        schema:
  *          type: string
  *      - name: qid
- *        in: path
+ *        in: pathregDeadline
  *        required: true
  *        schema:
  *          type: string
@@ -189,7 +191,7 @@ let getHackathonRegQuestion = async (req, res) => {
  *  post:
  *    description: Use to create a hackathon
  *    parameters:
- *      - name: ha-admin-token
+ *      - name: ha-api-token
  *        in: header
  *        required: true
  *        schema:
@@ -213,6 +215,8 @@ let getHackathonRegQuestion = async (req, res) => {
  *              type: string
  *            maxReg:
  *              type: number
+ *            regDeadline:
+ *              type: number
  *    responses:
  *      '201':
  *        description: 'Success'
@@ -234,6 +238,8 @@ let getHackathonRegQuestion = async (req, res) => {
  *                  type: string
  *                maxReg:
  *                  type: number
+ *                regDeadline:
+ *                  type: number
  *      '400':
  *        description: 'Bad request'
  *      '401':
@@ -248,18 +254,19 @@ let createHackathon = async (req, res) => {
         startDate = req.body.startDate,
         endDate = req.body.endDate,
         location = req.body.location,
-        maxReg = req.body.maxReg;
+        maxReg = req.body.maxReg,
+        regDeadline = req.body.regDeadline;
 
-    if (name === undefined || startDate === undefined || endDate === undefined || location === undefined || maxReg === undefined){
+    if (name === undefined || startDate === undefined || endDate === undefined || location === undefined || maxReg === undefined || regDeadline === undefined){
         return res.status(400).send();
     }
 
-    let createHackathonRes = await DAL.createHackathon(name, startDate, endDate, location, maxReg);
+    let createHackathonRes = await DAL.createHackathon(name, startDate, endDate, location, maxReg, regDeadline);
     if (createHackathonRes.err) {
         return res.status(createHackathonRes.err).send();
     }
 
-    return res.status(201).send({hack: createHackathonRes.hackathon})
+    return res.status(201).send({hack: createHackathonRes.hack})
 };
 
 
@@ -269,7 +276,7 @@ let createHackathon = async (req, res) => {
  *  put:
  *    description: Use to update a hackathons overview
  *    parameters:
- *      - name: ha-admin-token
+ *      - name: ha-api-token
  *        in: header
  *        required: true
  *        schema:
@@ -302,7 +309,7 @@ let updateHackathon = async (req, res) => {
  *  delete:
  *    description: Use to delete a hackathon
  *    parameters:
- *      - name: ha-admin-token
+ *      - name: ha-api-token
  *        in: header
  *        required: true
  *        schema:
@@ -330,7 +337,7 @@ let deleteHackathon = async (req, res) => {
  *  post:
  *    description: Use to create a hackathons initial details
  *    parameters:
- *      - name: ha-admin-token
+ *      - name: ha-api-token
  *        in: header
  *        required: true
  *        schema:
@@ -361,7 +368,7 @@ let createHackathonDetails = async (req, res) => {
  *  put:
  *    description: Use to update a hackathons details
  *    parameters:
- *      - name: ha-admin-token
+ *      - name: ha-api-token
  *        in: header
  *        required: true
  *        schema:

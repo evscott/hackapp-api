@@ -1,13 +1,8 @@
-const { Pool } = require('pg');
-const pool = new Pool();
-
-pool.on('error', err => {
-    console.error('Unexpected error on idle client', err);
-});
+const pool = require('./dal-pool');
 
 async function getUser(uid) {
     try {
-        let res = await pool.query('SELECT uid, first_name, last_name, email FROM users WHERE uid=$1',
+        let res = await pool.query('SELECT uid, first_name, last_name, email, admin FROM users WHERE uid=$1',
             [uid]);
 
         if (res.rowCount === 0) return {user: null, err: 404};

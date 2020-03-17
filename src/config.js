@@ -25,10 +25,8 @@ const Config = {
         },
         apis: ["src/handlers/*.js"]
     },
-    userPublicKey: process.env.USER_PUBLIC_KEY,
-    userPrivateKey: process.env.USER_PRIVATE_KEY,
-    adminPublicKey: process.env.ADMIN_PUBLIC_KEY,
-    adminPrivateKey: process.env.ADMIN_PRIVATE_KEY,
+    publicKey: process.env.PUBLIC_KEY,
+    privateKey: process.env.PRIVATE_KEY,
     signOptions: {
         expiresIn: '12h',
         algorithm: 'RS256'

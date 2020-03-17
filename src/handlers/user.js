@@ -7,7 +7,7 @@ const JWT = require("../shared/jwt");
  *  get:
  *    description: Use to request a user
  *    parameters:
- *      - name: ha-user-token
+ *      - name: ha-api-token
  *        in: header
  *        required: true
  *        schema:
@@ -32,7 +32,7 @@ const JWT = require("../shared/jwt");
  *                  type: string
  */
 let getUser = async (req, res) => {
-    let token = req.headers['ha-user-token'];
+    let token = req.headers['ha-api-token'];
     let getUIDRes = await JWT.getUIDFromToken(token);
     if (getUIDRes.err) {
         res.status(500).send();
@@ -54,7 +54,7 @@ let getUser = async (req, res) => {
  *  put:
  *    description: Use to update a user
  *    parameters:
- *      - name: ha-user-token
+ *      - name: ha-api-token
  *        in: header
  *        required: true
  *        schema:
@@ -88,7 +88,7 @@ let updateUser = async (req, res) => {
  *  delete:
  *    description: Use to delete a user
  *    parameters:
- *      - name: ha-user-token
+ *      - name: ha-api-token
  *        in: header
  *        required: true
  *        schema:
@@ -113,7 +113,7 @@ let updateUser = async (req, res) => {
  *        description: 'Not found'
  */
 let deleteUser = async (req, res) => {
-    let token = req.headers['ha-user-token'];
+    let token = req.headers['ha-api-token'];
     let getUIDRes = await JWT.getUIDFromToken(token);
     if (getUIDRes.err) {
         res.status(500).send();

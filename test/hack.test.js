@@ -16,7 +16,7 @@ describe('hackathon', () => {
             .set('Accept', 'application/json')
             .end((err, res) => {
                 expect(res).to.have.status(200);
-                expect(res.body.token).lengthOf(828);
+                expect(res.body.token.length).greaterThan(0);
                 token = res.body.token;
                 done();
             })
@@ -33,8 +33,9 @@ describe('hackathon', () => {
                 .send('endDate=1999-01-09 04:05:06')
                 .send('location=MtA')
                 .send('maxReg=100')
+                .send('regDeadline=1999-01-09 04:05:06')
                 .set('Accept', 'application/json')
-                .set('ha-admin-token', token)
+                .set('ha-api-token', token)
                 .end((err, res) => {
                     expect(res).to.have.status(201);
                     expect(res.body.hack.hid).lengthOf(36);
@@ -50,6 +51,7 @@ describe('hackathon', () => {
                 .send('endDate=1999-01-09 04:05:06')
                 .send('location=MtA')
                 .send('maxReg=100')
+                .send('regDeadline=1999-01-09 04:05:06')
                 .set('Accept', 'application/json')
                 .end((err, res) => {
                     expect(res).to.have.status(401);
@@ -65,10 +67,11 @@ describe('hackathon', () => {
                 .send('endDate=1999-01-09 04:05:06')
                 .send('location=MtA')
                 .send('maxReg=100')
+                .send('regDeadline=1999-01-09 04:05:06')
                 .set('Accept', 'application/json')
-                .set('ha-admin-token', expiredToken)
+                .set('ha-api-token', expiredToken)
                 .end((err, res) => {
-                    expect(res).to.have.status(401);
+                    expect(res).to.have.status(403);
                     done();
                 })
         });
@@ -80,8 +83,9 @@ describe('hackathon', () => {
                 .send('endDate=1999-01-09 04:05:06')
                 .send('location=MtA')
                 .send('maxReg=100')
+                .send('regDeadline=1999-01-09 04:05:06')
                 .set('Accept', 'application/json')
-                .set('ha-admin-token', token)
+                .set('ha-api-token', token)
                 .end((err, res) => {
                     expect(res).to.have.status(400);
                     done();
@@ -95,8 +99,9 @@ describe('hackathon', () => {
                 .send('endDate=1999-01-09 04:05:06')
                 .send('location=MtA')
                 .send('maxReg=100')
+                .send('regDeadline=1999-01-09 04:05:06')
                 .set('Accept', 'application/json')
-                .set('ha-admin-token', token)
+                .set('ha-api-token', token)
                 .end((err, res) => {
                     expect(res).to.have.status(400);
                     done();
@@ -110,8 +115,10 @@ describe('hackathon', () => {
                 .send('startDate=1999-01-08 04:05:06')
                 .send('location=MtA')
                 .send('maxReg=100')
+                .send('regDeadline=1999-01-09 04:05:06')
+                .send('regDeadline=1999-01-09 04:05:06')
                 .set('Accept', 'application/json')
-                .set('ha-admin-token', token)
+                .set('ha-api-token', token)
                 .end((err, res) => {
                     expect(res).to.have.status(400);
                     done();
@@ -125,8 +132,9 @@ describe('hackathon', () => {
                 .send('startDate=1999-01-08 04:05:06')
                 .send('endDate=1999-01-09 04:05:06')
                 .send('maxReg=100')
+                .send('regDeadline=1999-01-09 04:05:06')
                 .set('Accept', 'application/json')
-                .set('ha-admin-token', token)
+                .set('ha-api-token', token)
                 .end((err, res) => {
                     expect(res).to.have.status(400);
                     done();
@@ -140,8 +148,25 @@ describe('hackathon', () => {
                 .send('startDate=1999-01-08 04:05:06')
                 .send('endDate=1999-01-09 04:05:06')
                 .send('location=MtA')
+                .send('regDeadline=1999-01-09 04:05:06')
                 .set('Accept', 'application/json')
-                .set('ha-admin-token', token)
+                .set('ha-api-token', token)
+                .end((err, res) => {
+                    expect(res).to.have.status(400);
+                    done();
+                })
+        });
+
+        it('create hack without registration deadline should fail', function(done) {
+            chai.request(app)
+                .post('/hacks')
+                .send('name=MtaHacks')
+                .send('startDate=1999-01-08 04:05:06')
+                .send('endDate=1999-01-09 04:05:06')
+                .send('location=MtA')
+                .send('maxReg=100')
+                .set('Accept', 'application/json')
+                .set('ha-api-token', token)
                 .end((err, res) => {
                     expect(res).to.have.status(400);
                     done();
@@ -169,8 +194,9 @@ describe('hackathon', () => {
                 .send('endDate=1999-01-09 04:05:06')
                 .send('location=MtA')
                 .send('maxReg=100')
+                .send('regDeadline=1999-01-09 04:05:06')
                 .set('Accept', 'application/json')
-                .set('ha-admin-token', token)
+                .set('ha-api-token', token)
                 .end((err, res) => {
                     expect(res).to.have.status(201);
                 });
@@ -198,8 +224,9 @@ describe('hackathon', () => {
                 .send('endDate=1999-01-09 04:05:06')
                 .send('location=MtA')
                 .send('maxReg=100')
+                .send('regDeadline=1999-01-09 04:05:06')
                 .set('Accept', 'application/json')
-                .set('ha-admin-token', token)
+                .set('ha-api-token', token)
                 .end((err, res) => {
                     expect(res).to.have.status(201)
                     expect(res.body.hack.hid).lengthOf(36);
