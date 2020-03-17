@@ -66,6 +66,8 @@ let getOrganization = async (req, res) => {
  *        description: 'JWT not found in header'
  *      '403':
  *        description: 'JWT does not have admin privileges'
+ *      '409':
+ *        description: 'Organization already exists'
  *      '500':
  *        description: 'Internal server error'
  */
@@ -74,6 +76,11 @@ let createOrganization = async (req, res) => {
 
     if (name === undefined) {
         return res.status(400).send();
+    }
+
+    let getOrgRes = await DAL.getOrganization();
+    if (getOrgRes.org) {
+        return res.status(409).send();
     }
 
     let createOrgRes = await DAL.createOrganization(name);

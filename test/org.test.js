@@ -38,6 +38,18 @@ describe('organization', () => {
                 })
         });
 
+        it('create org when org already exists should fail', function(done) {
+            chai.request(app)
+                .post('/org')
+                .send('name=neworg 2')
+                .set('Accept', 'application/json')
+                .set('ha-api-token', token)
+                .end((err, res) => {
+                    expect(res).to.have.status(409);
+                    done();
+                })
+        });
+
         it('create org without admin-token token should fail', function(done) {
             chai.request(app)
                 .post('/org')
