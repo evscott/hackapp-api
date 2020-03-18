@@ -1,7 +1,14 @@
-const test = require('./test');
+const auth = require('./auth');
+const hack = require('./hack');
+const org = require('./org');
+const users = require('./users');
+
 
 const DAL = {
-    ...test
+    ...auth,
+    ...hack,
+    ...org,
+    ...users
 };
 
 module.exports = DAL;

@@ -2,6 +2,12 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 CREATE TYPE reg_state AS ENUM ('unregistered', 'registered');
 
+CREATE TABLE IF NOT EXISTS  Organizations (
+    id uuid DEFAULT uuid_generate_v1() UNIQUE,
+    name varchar(255) NOT NULL,
+    PRIMARY KEY (id)
+);
+
 CREATE TABLE IF NOT EXISTS Users (
     uid uuid DEFAULT uuid_generate_v1() UNIQUE,
     email varchar(255) NOT NULL,
@@ -20,6 +26,7 @@ CREATE TABLE IF NOT EXISTS Hackathons (
     end_date timestamp NOT NULL,
     location varchar(255) NOT NULL,
     max_reg smallint,
+    regDeadline timestamp NOT NULL,
     draft boolean DEFAULT true,
     PRIMARY KEY (hid)
 );

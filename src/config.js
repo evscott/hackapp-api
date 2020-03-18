@@ -12,8 +12,9 @@ const Config = {
             'X-Requested-With, content-type, x-access-token'
         );
         res.header('Access-Control-Allow-Credentials', true);
-
-        console.log(`${req.ip} ${req.method} ${req.url}`);
+        if (process.env.PROD) {
+            console.log(`${req.ip} ${req.method} ${req.url}`);
+        }
         next();
     },
     SwaggerOptions: {
@@ -22,12 +23,10 @@ const Config = {
                 title: "Hackapp API",
             }
         },
-        apis: ["src/router/handlers/*.js"]
+        apis: ["src/handlers/*.js"]
     },
-    userPublicKey: process.env.USER_PUBLIC_KEY,
-    userPrivateKey: process.env.USER_PRIVATE_KEY,
-    adminPublicKey: process.env.ADMIN_PUBLIC_KEY,
-    adminPrivateKey: process.env.ADMIN_PRIVATE_KEY,
+    publicKey: process.env.PUBLIC_KEY,
+    privateKey: process.env.PRIVATE_KEY,
     signOptions: {
         expiresIn: '12h',
         algorithm: 'RS256'

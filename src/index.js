@@ -20,3 +20,5 @@ app.use("/api", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 router.init(app);
 
 app.listen(port, () => console.log(`hackapp-api listening at: ${port}...`));
+
+module.exports = app;

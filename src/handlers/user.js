@@ -1,6 +1,9 @@
+const DAL = require("../dal/users");
+const JWT = require("../shared/jwt");
+
 /**
  * @swagger
- * /user/:
+ * /users/:uid/:
  *  get:
  *    description: Use to request a user
  *    parameters:
@@ -18,9 +21,31 @@
  *          properties:
  *            user:
  *              type: object
+ *              properties:
+ *                uid:
+ *                  type: string
+ *                firstName:
+ *                  type: string
+ *                lastName:
+ *                  type: string
+ *                email:
+ *                  type: string
  */
 let getUser = async (req, res) => {
-    
+    let token = req.headers['ha-api-token'];
+    let getUIDRes = await JWT.getUIDFromToken(token);
+    if (getUIDRes.err) {
+        res.status(500).send();
+    }
+
+    let getUser = await DAL.getUser(getUIDRes.uid);
+    if (getUser.err) {
+        return res.status(getUser.err).send();
+    }
+
+    return res.status(200).send({
+        user: getUser.user
+    });
 };
 
 /**
@@ -45,7 +70,7 @@ let getUser = async (req, res) => {
  *      '200':
  *        description: Success
  *      '400':
- *        description: 'Invalid syntax'
+ *        description: 'Bad request'
  *      '401':
  *        description: 'JWT not found in header'
  *      '403':
@@ -79,7 +104,7 @@ let updateUser = async (req, res) => {
  *      '200':
  *        description: Success
  *      '400':
- *        description: 'Invalid syntax'
+ *        description: 'Bad request'
  *      '401':
  *        description: 'JWT not found in header'
  *      '403':
@@ -88,7 +113,18 @@ let updateUser = async (req, res) => {
  *        description: 'Not found'
  */
 let deleteUser = async (req, res) => {
-    
+    let token = req.headers['ha-api-token'];
+    let getUIDRes = await JWT.getUIDFromToken(token);
+    if (getUIDRes.err) {
+        res.status(500).send();
+    }
+
+    let deleteUserRes = await DAL.deleteUser(getUIDRes.uid);
+    if (deleteUserRes.err) {
+        return res.status(deleteUserRes.err).send();
+    }
+
+    return res.status(200).send();
 };
 
 module.exports = {
