@@ -38,24 +38,25 @@ CREATE TABLE IF NOT EXISTS Registrants (
     PRIMARY KEY (uid, hid)
 );
 
-CREATE TABLE IF NOT EXISTS Questions (
+CREATE TABLE IF NOT EXISTS Reg_Questions (
     qid uuid DEFAULT uuid_generate_v1() UNIQUE,
     hid uuid REFERENCES Hackathons(hid) NOT NULL,
+    question text NOT NULL,
     PRIMARY KEY (qid)
 );
 
-CREATE TABLE IF NOT EXISTS Options (
+CREATE TABLE IF NOT EXISTS Reg_Options (
     oid uuid DEFAULT uuid_generate_v1() UNIQUE,
-    qid uuid REFERENCES Questions(qid) NOT NULL,
+    qid uuid REFERENCES Reg_Questions(qid) NOT NULL,
     option varchar(255) NOT NULL,
     PRIMARY KEY (oid)
 );
 
-CREATE TABLE IF NOT EXISTS Answers (
+CREATE TABLE IF NOT EXISTS Reg_Answers (
     uid uuid REFERENCES Users(uid) NOT NULL,
-    qid uuid REFERENCES Questions(qid) NOT NULL,
-    oid uuid REFERENCES Options(oid) NOT NULL,
-    answer varchar(255),
+    qid uuid REFERENCES Reg_Questions(qid) NOT NULL,
+    oid uuid REFERENCES Reg_Options(oid) NOT NULL,
+    answer text,
     PRIMARY KEY (uid, qid)
 );
 
