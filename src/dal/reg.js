@@ -69,8 +69,50 @@ async function deleteRegQuestion(qid) {
     }
 }
 
+async function createRegQuestionOption(qid, option) {
+    try {
+        let res = await pool.query('INSERT INTO reg_options(qid, option) VALUES ($1, $2) RETURNING qid, oid, option',
+            [qid, option]);
+
+        if (res.rowCount[0] === 0) return {err: 400};
+        else return {option: res.rows[0], err: null}
+    } catch (err) {
+        console.error(err)
+        return {err: 500}
+    }
+}
+
+async function updateRegQuestionOption(oid, option) {
+    try {
+        let res = await pool.query('UPDATE reg_options SET option = $1 WHERE oid = $2 RETURNING oid, qid, option',
+            [option, oid]);
+
+        if (res.rowCount[0] === 0) return {err: 400};
+        else return {option: res.rows[0], err: null}
+    } catch (err) {
+        console.error(err)
+        return {err: 500}
+    }
+}
+
+async function deleteRegQuestionOption(oid) {
+    try {
+        let res = await pool.query('DELETE FROM reg_options WHERE oid = $1',
+            [oid]);
+
+        if (res.rowCount[0] === 0) return {err: 400};
+        else return {err: null}
+    } catch (err) {
+        console.error(err)
+        return {err: 500}
+    }
+}
+
 module.exports = {
-    createRegQuestion,
+    createRegQuestionTx,
     updateRegQuestion,
-    deleteRegQuestion
+    deleteRegQuestion,
+    createRegQuestionOption,
+    updateRegQuestionOption,
+    deleteRegQuestionOption
 };

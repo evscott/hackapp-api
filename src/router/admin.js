@@ -13,6 +13,9 @@ router.put('/hacks/details', JWT.validateAdminToken, Handlers.hack.updateHackath
 router.post('/hacks/reg/q', JWT.validateAdminToken, Handlers.reg.createRegQuestion);
 router.put('/hacks/reg/q', JWT.validateAdminToken, Handlers.reg.updateRegQuestion);
 router.delete('/hacks/reg/q', JWT.validateAdminToken, Handlers.reg.deleteRegQuestion);
+router.post('/hacks/reg/q/o', JWT.validateAdminToken, Handlers.reg.createRegQuestionOption);
+router.put('/hacks/reg/q/o', JWT.validateAdminToken, Handlers.reg.updateRegQuestionOption);
+router.delete('/hacks/reg/q/o', JWT.validateAdminToken, Handlers.reg.deleteRegQuestionOption);
 router.get('/hacks/reg/users/csv', JWT.validateAdminToken, Handlers.reg.getUserRegForm);
 
 module.exports = router;

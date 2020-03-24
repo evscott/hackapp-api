@@ -147,6 +147,54 @@ let deleteRegQuestion = async (req, res) => {
     return res.status(200).send()
 };
 
+let createRegQuestionOption = async (req, res) => {
+    let qid = req.body.qid,
+        option = req.body.option;
+
+    if (qid === undefined || option === undefined) {
+        return res.status(400);
+    }
+    
+    let createRegQuestionOptionRes = await DAL.createRegQuestionOption(qid, option)
+    if (createRegQuestionOptionRes. err) {
+        return res.status(createRegQuestionOptionRes.err).send();
+    }
+
+    return res.status(200).send({regOption: createRegQuestionOptionRes.option})
+};
+
+// TODO
+let updateRegQuestionOption = async (req, res) => {
+    let oid = req.body.oid,
+        option = req.body.option;
+
+    if (oid === undefined || option === undefined) {
+        return res.status(400);
+    }
+    
+    let updateReqQuestionOptionRes = await DAL.updateRegQuestionOption(oid, option)
+    if (updateReqQuestionOptionRes. err) {
+        return res.status(updateReqQuestionOptionRes.err).send();
+    }
+
+    return res.status(200).send({regOption: updateReqQuestionOptionRes.option})
+};
+
+// TODO
+let deleteRegQuestionOption = async (req, res) => {
+    let oid = req.body.oid
+    if (oid === undefined) {
+        return res.status(400);
+    }
+
+    let deleteRegQuestionOptionRes = await DAL.deleteRegQuestionOption(oid)
+    if (deleteRegQuestionOptionRes.err) {
+        return res.status(deleteRegQuestionOptionRes.err).send();
+    }
+
+    return res.status(200).send()
+};
+
 /**
  * @swagger
  * /hacks/reg/users/csv/:
@@ -182,8 +230,11 @@ let getUserRegForm = async (req, res) => {
 };
 
 module.exports = {
-    createRegQuestion: createRegQuestion,
-    updateRegQuestion: updateRegQuestion,
-    deleteRegQuestion: deleteRegQuestion,
+    createRegQuestion,
+    updateRegQuestion,
+    deleteRegQuestion,
+    createRegQuestionOption,
+    updateRegQuestionOption,
+    deleteRegQuestionOption,
     getUserRegForm
 };
