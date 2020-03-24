@@ -44,13 +44,6 @@ CREATE TABLE IF NOT EXISTS Questions (
     PRIMARY KEY (qid)
 );
 
-CREATE TABLE IF NOT EXISTS Txt_Answers (
-    uid uuid REFERENCES Users(uid) NOT NULL,
-    qid uuid REFERENCES Questions(qid) NOT NULL,
-    answer varchar(255) NOT NULL,
-    PRIMARY KEY (uid, qid)
-);
-
 CREATE TABLE IF NOT EXISTS Options (
     oid uuid DEFAULT uuid_generate_v1() UNIQUE,
     qid uuid REFERENCES Questions(qid) NOT NULL,
@@ -58,10 +51,12 @@ CREATE TABLE IF NOT EXISTS Options (
     PRIMARY KEY (oid)
 );
 
-CREATE TABLE IF NOT EXISTS MC_Answers (
+CREATE TABLE IF NOT EXISTS Answers (
     uid uuid REFERENCES Users(uid) NOT NULL,
-    oid uuid DEFAULT uuid_generate_v1() UNIQUE,
-    PRIMARY KEY (uid, oid)
+    qid uuid REFERENCES Questions(qid) NOT NULL,
+    oid uuid REFERENCES Options(oid) NOT NULL,
+    answer varchar(255),
+    PRIMARY KEY (uid, qid)
 );
 
 CREATE TABLE IF NOT EXISTS Img_Files (
