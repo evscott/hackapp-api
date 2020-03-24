@@ -20,7 +20,12 @@ describe('authentication', () => {
                 .send('password=admin')
                 .set('Accept', 'application/json')
                 .end((err, res) => {
+                    expect(err).equal(null);
                     expect(res).to.have.status(200);
+                    expect(res.body.user.firstName).equal('admin');
+                    expect(res.body.user.lastName).equal('admin');
+                    expect(res.body.user.email).equal('admin');
+                    expect(res.body.user.admin).equal(true);
                     done();
                 })
         });
@@ -30,6 +35,7 @@ describe('authentication', () => {
                 .put('/auth')
                 .send('password=password')
                 .end((err, res) => {
+                    expect(err).equal(null);
                     expect(res).to.have.status(400);
                     done();
                 });
@@ -40,6 +46,7 @@ describe('authentication', () => {
                 .put('/auth')
                 .send('password=password')
                 .end((err, res) => {
+                    expect(err).equal(null);
                     expect(res).to.have.status(400);
                     done();
                 });
@@ -56,7 +63,12 @@ describe('authentication', () => {
                 .send('password=password')
                 .set('Accept', 'application/json')
                 .end((err, res) => {
+                    expect(err).equal(null);
                     expect(res.body.token.length).greaterThan(0);
+                    expect(res.body.user.firstName).equal('john');
+                    expect(res.body.user.lastName).equal('doe');
+                    expect(res.body.user.email).equal('johndoe@email.com');
+                    expect(res.body.user.admin).equal(false);
                     done();
                 });
         });
@@ -68,6 +80,7 @@ describe('authentication', () => {
                 .send('email=johndoe@email.com')
                 .send('password=password')
                 .end((err, res) => {
+                    expect(err).equal(null);
                     expect(res).to.have.status(400);
                     done();
                 });
@@ -80,6 +93,7 @@ describe('authentication', () => {
                 .send('email=johndoe@email.com')
                 .send('password=password')
                 .end((err, res) => {
+                    expect(err).equal(null);
                     expect(res).to.have.status(400);
                     done();
                 });
@@ -92,6 +106,7 @@ describe('authentication', () => {
                 .send('lastName=doe')
                 .send('password=password')
                 .end((err, res) => {
+                    expect(err).equal(null);
                     expect(res).to.have.status(400);
                     done();
                 });
@@ -104,6 +119,7 @@ describe('authentication', () => {
                 .send('lastName=doe')
                 .send('email=johndoe@email.com')
                 .end((err, res) => {
+                    expect(err).equal(null);
                     expect(res).to.have.status(400);
                     done();
                 });

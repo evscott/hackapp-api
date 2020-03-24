@@ -61,7 +61,13 @@ let signUp = async (req, res) => {
 
     let token = JWT.issueToken(signUpRes.user.uid, signUpRes.user.admin);
 
-    return res.status(201).send({user: signUpRes.user, token: token});
+    return res.status(201).send({user: {
+        uid: signUpRes.user.uid,
+        firstName: signUpRes.user.first_name,
+        lastName: signUpRes.user.last_name,
+        email: signUpRes.user.email,
+        admin: signUpRes.user.admin
+    }, token: token});
 };
 
 /**
@@ -120,8 +126,13 @@ let signIn = async (req, res) => {
 
     let token = JWT.issueToken(signInRes.user.uid, signInRes.user.admin);
 
-
-    return res.status(200).send({user: signInRes.user, token: token});
+    return res.status(200).send({user: {
+        uid: signInRes.user.uid,
+        firstName: signInRes.user.first_name,
+        lastName: signInRes.user.last_name,
+        email: signInRes.user.email,
+        admin: signInRes.user.admin
+    }, token: token});
 };
 
 module.exports = {
