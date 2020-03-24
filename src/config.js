@@ -15,6 +15,9 @@ const Config = {
         if (process.env.PROD) {
             console.log(`${req.ip} ${req.method} ${req.url}`);
         }
+        if (req.method === 'OPTIONS') {
+            res.sendStatus(200);
+        }
         next();
     },
     SwaggerOptions: {
