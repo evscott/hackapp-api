@@ -198,9 +198,7 @@ let deleteRegOption = async (req, res) => {
 };
 
 // TODO
-let createRegAnswer = async (req, res) => {
-    console.log('createRegAnswer');
-    
+let createRegAnswer = async (req, res) => {    
     let qid = req.body.qid,
         oid = req.body.oid,
         answer = req.body.answer;
