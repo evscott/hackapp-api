@@ -32,32 +32,33 @@ CREATE TABLE IF NOT EXISTS Hackathons (
 );
 
 CREATE TABLE IF NOT EXISTS Registrants (
-    uid uuid REFERENCES Users(uid) NOT NULL,
-    hid uuid REFERENCES Hackathons(hid) NOT NULL,
+    uid uuid REFERENCES Users(uid) ON DELETE CASCADE NOT NULL,
+    hid uuid REFERENCES Hackathons(hid) ON DELETE CASCADE NOT NULL,
     state reg_state DEFAULT 'unregistered',
     PRIMARY KEY (uid, hid)
 );
 
 CREATE TABLE IF NOT EXISTS Reg_Questions (
     qid uuid DEFAULT uuid_generate_v1() UNIQUE,
-    hid uuid REFERENCES Hackathons(hid) NOT NULL,
+    hid uuid REFERENCES Hackathons(hid) ON DELETE CASCADE NOT NULL,
     question text NOT NULL,
     PRIMARY KEY (qid)
 );
 
 CREATE TABLE IF NOT EXISTS Reg_Options (
     oid uuid DEFAULT uuid_generate_v1() UNIQUE,
-    qid uuid REFERENCES Reg_Questions(qid) NOT NULL,
+    qid uuid REFERENCES Reg_Questions(qid) ON DELETE CASCADE NOT NULL,
     option varchar(255) NOT NULL,
     PRIMARY KEY (oid)
 );
 
 CREATE TABLE IF NOT EXISTS Reg_Answers (
-    uid uuid REFERENCES Users(uid) NOT NULL,
-    qid uuid REFERENCES Reg_Questions(qid) NOT NULL,
-    oid uuid REFERENCES Reg_Options(oid) NOT NULL,
+    aid uuid DEFAULT uuid_generate_v1() UNIQUE,
+    uid uuid REFERENCES Users(uid) ON DELETE CASCADE NOT NULL,
+    qid uuid REFERENCES Reg_Questions(qid) ON DELETE CASCADE NOT NULL,
+    oid uuid REFERENCES Reg_Options(oid) ON DELETE CASCADE ,
     answer text,
-    PRIMARY KEY (uid, qid)
+    PRIMARY KEY (aid)
 );
 
 CREATE TABLE IF NOT EXISTS Img_Files (

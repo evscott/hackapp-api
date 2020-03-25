@@ -41,8 +41,22 @@ async function createHackathon(name, startDate, endDate, location, maxReg, regDe
     }
 }
 
+async function deleteHackathon(hid) {
+    try {
+        let res = await pool.query('DELETE FROM hackathons WHERE hid=$1',
+            [hid]);
+
+        if (res.rowCount === 0) return {err: 404};
+        else return {err: null}
+    } catch (err) {
+        console.error(err);
+        return {err: 500};
+    }
+}
+
 module.exports = {
     getHackathon,
     getHackathons,
     createHackathon,
+    deleteHackathon
 };

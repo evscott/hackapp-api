@@ -1,4 +1,5 @@
 const DAL = require('../dal/dal');
+const JWT = require('../shared/jwt');
 
 /**
  * @swagger
@@ -34,7 +35,7 @@ let createRegQuestion = async (req, res) => {
         options = req.body.options;
 
     if (hid === undefined || question === undefined) {
-        return res.status(400);
+        return res.status(400).send();
     }
 
     let createRegQuestionRes = await DAL.createRegQuestionTx(hid, question, options)
@@ -42,7 +43,7 @@ let createRegQuestion = async (req, res) => {
         return res.status(createRegQuestion.err).send();
     }
 
-    return res.status(201).send({regQuestion: createRegQuestionRes.question, regQuestionOptions: createRegQuestionRes.options})
+    return res.status(201).send({regQuestion: createRegQuestionRes.question, regOptions: createRegQuestionRes.options})
 };
 
 /**
@@ -86,7 +87,7 @@ let updateRegQuestion = async (req, res) => {
         question = req.body.question;
 
     if (qid === undefined || question === undefined) {
-        return res.status(400);
+        return res.status(400).send();
     }
 
     let updateRegQuestionRes = await DAL.updateRegQuestion(qid, question)
@@ -136,7 +137,7 @@ let updateRegQuestion = async (req, res) => {
 let deleteRegQuestion = async (req, res) => {
     let qid = req.body.qid
     if (qid === undefined) {
-        return res.status(400);
+        return res.status(400).send();
     }
 
     let deleteRegQuestionRes = await DAL.deleteRegQuestion(qid)
@@ -147,32 +148,33 @@ let deleteRegQuestion = async (req, res) => {
     return res.status(200).send()
 };
 
-let createRegQuestionOption = async (req, res) => {
+// TODO
+let createRegOption = async (req, res) => {
     let qid = req.body.qid,
         option = req.body.option;
 
     if (qid === undefined || option === undefined) {
-        return res.status(400);
+        return res.status(400).send();
     }
     
-    let createRegQuestionOptionRes = await DAL.createRegQuestionOption(qid, option)
-    if (createRegQuestionOptionRes. err) {
-        return res.status(createRegQuestionOptionRes.err).send();
+    let createregOptionRes = await DAL.createRegOption(qid, option)
+    if (createregOptionRes. err) {
+        return res.status(createregOptionRes.err).send();
     }
 
-    return res.status(200).send({regOption: createRegQuestionOptionRes.option})
+    return res.status(200).send({regOption: createregOptionRes.option})
 };
 
 // TODO
-let updateRegQuestionOption = async (req, res) => {
+let updateRegOption = async (req, res) => {
     let oid = req.body.oid,
         option = req.body.option;
 
     if (oid === undefined || option === undefined) {
-        return res.status(400);
+        return res.status(400).send();
     }
     
-    let updateReqQuestionOptionRes = await DAL.updateRegQuestionOption(oid, option)
+    let updateReqQuestionOptionRes = await DAL.updateRegOption(oid, option)
     if (updateReqQuestionOptionRes. err) {
         return res.status(updateReqQuestionOptionRes.err).send();
     }
@@ -181,18 +183,70 @@ let updateRegQuestionOption = async (req, res) => {
 };
 
 // TODO
-let deleteRegQuestionOption = async (req, res) => {
+let deleteRegOption = async (req, res) => {
     let oid = req.body.oid
     if (oid === undefined) {
-        return res.status(400);
+        return res.status(400).send();
     }
 
-    let deleteRegQuestionOptionRes = await DAL.deleteRegQuestionOption(oid)
-    if (deleteRegQuestionOptionRes.err) {
-        return res.status(deleteRegQuestionOptionRes.err).send();
+    let deleteRegOptionRes = await DAL.deleteRegOption(oid)
+    if (deleteRegOptionRes.err) {
+        return res.status(deleteRegOptionRes.err).send();
     }
 
     return res.status(200).send()
+};
+
+// TODO
+let createRegAnswer = async (req, res) => {
+    console.log('createRegAnswer');
+    
+    let qid = req.body.qid,
+        oid = req.body.oid,
+        answer = req.body.answer;
+
+    if (qid === undefined) {
+        return res.status(400).send();
+    }
+    if (oid === undefined && answer === undefined) {
+        return res.status(400).send();
+    }
+
+    let t = req.headers['ha-api-token'];
+    let claims = await JWT.getUIDFromToken(t);
+    if (claims.err) {
+        res.status(500).send(claims.err)
+    }
+    
+    let createRegAnswerRes = await DAL.createRegAnswer(qid, claims.uid, oid, answer)
+    if (createRegAnswerRes. err) {
+        return res.status(createRegAnswerRes.err).send();
+    }
+
+    return res.status(201).send({regAnswer: createRegAnswerRes.answer})
+};
+
+// TODO
+let updateRegAnswer = async (req, res) => {
+    console.log('createRegAnswer');
+    
+    let aid = req.body.aid,
+        oid = req.body.oid,
+        answer = req.body.answer;
+
+    if (aid === undefined) {
+        return res.status(400).send();
+    }
+    if (oid === undefined && answer === undefined) {
+        return res.status(400).send();
+    }
+    
+    let updateRegAnswerRes = await DAL.updateRegAnswer(aid, oid, answer)
+    if (updateRegAnswerRes. err) {
+        return res.status(updateRegAnswerRes.err).send();
+    }
+
+    return res.status(201).send({regAnswer: updateRegAnswerRes.answer})
 };
 
 /**
@@ -233,8 +287,9 @@ module.exports = {
     createRegQuestion,
     updateRegQuestion,
     deleteRegQuestion,
-    createRegQuestionOption,
-    updateRegQuestionOption,
-    deleteRegQuestionOption,
+    createRegOption,
+    updateRegOption,
+    deleteRegOption,
+    createRegAnswer,
     getUserRegForm
 };

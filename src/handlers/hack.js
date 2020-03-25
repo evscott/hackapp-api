@@ -328,7 +328,18 @@ let updateHackathon = async (req, res) => {
  *        description: 'Not found'
  */
 let deleteHackathon = async (req, res) => {
+    let hid = req.body.hid;
 
+    if (name === undefined){
+        return res.status(400).send();
+    }
+
+    let deleteHackathonRes = await DAL.deleteHackathon(hid);
+    if (deleteHackathonRes.err) {
+        return res.status(deleteHackathonRes.err).send();
+    }
+
+    return res.status(200).send()
 };
 
 /**
