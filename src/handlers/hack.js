@@ -490,7 +490,7 @@ let deleteHackathonDetail = async (req, res) => {
  *                properties:
  *                  did:
  *                    type: string
- *                    format: uuid
+ *                    format: uuidw
  *                  hid:
  *                    type: string
  *                    format: uuid
