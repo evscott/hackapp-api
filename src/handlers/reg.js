@@ -3,7 +3,7 @@ const JWT = require('../shared/jwt');
 
 /**
  * @swagger
- * /hacks/reg/q/:
+ * /hacks/reg/quest/:
  *  post:
  *    description: Use to create a registration question
  *    parameters:
@@ -14,14 +14,51 @@ const JWT = require('../shared/jwt');
  *          type: string
  *          format: uuid
  *      - name: hid
- *        in: path
+ *        in: body
  *        required: true
  *        schema:
  *          type: string
  *          format: uuid
+ *      - name: question
+ *        in: body
+ *        required: true
+ *        schema:
+ *          type: string
+ *          format: uuid
+ *      - name: options
+ *        in: body
+ *        required: true
+ *        schema:
+ *          type: array
+ *          items:
+ *            type: string
  *    responses:
- *      '200':
+ *      '201':
  *        description: Success
+ *        schema:
+ *          type: object
+ *          properties:
+ *            qid:
+ *              type: string
+ *              format: uuid
+ *            hid:
+ *              type: string
+ *              format: uuid
+ *            question:
+ *              type: string
+ *            options:
+ *              type: array
+ *              items:
+ *                type: object
+ *                properties:
+ *                  oid:
+ *                    type: string
+ *                    format: uuidw
+ *                  qid:
+ *                    type: string
+ *                    format: uuid
+ *                  option:
+ *                    type: string
  *      '400':
  *        description: 'Bad request'
  *      '401':
@@ -48,7 +85,7 @@ let createRegQuestion = async (req, res) => {
 
 /**
  * @swagger
- * /hacks/reg/q/:
+ * /hacks/reg/quest/:
  *  put:
  *    description: Use to update a registration question
  *    parameters:
@@ -59,13 +96,13 @@ let createRegQuestion = async (req, res) => {
  *          type: string
  *          format: uuid
  *      - name: hid
- *        in: path
+ *        in: body
  *        required: true
  *        schema:
  *          type: string
  *          format: uuid
- *      - name: qid
- *        in: path
+ *      - name: question
+ *        in: body
  *        required: true
  *        schema:
  *          type: string
@@ -73,14 +110,23 @@ let createRegQuestion = async (req, res) => {
  *    responses:
  *      '200':
  *        description: Success
+ *        schema:
+ *          type: object
+ *          properties:
+ *            qid:
+ *              type: string
+ *              format: uuid
+ *            hid:
+ *              type: string
+ *              format: uuid
+ *            question:
+ *              type: string
  *      '400':
  *        description: 'Bad request'
  *      '401':
  *        description: 'JWT not found in header'
  *      '403':
  *        description: 'JWT does not have admin privileges'
- *      '404':
- *        description: 'Not found'
  */
 let updateRegQuestion = async (req, res) => {
     let qid = req.body.qid,
@@ -100,18 +146,12 @@ let updateRegQuestion = async (req, res) => {
 
 /**
  * @swagger
- * /hacks/reg/q/:
+ * /hacks/reg/quest/:
  *  delete:
  *    description: Use to delete a registration question
  *    parameters:
  *      - name: ha-api-token
  *        in: header
- *        required: true
- *        schema:
- *          type: string
- *          format: uuid
- *      - name: hid
- *        in: path
  *        required: true
  *        schema:
  *          type: string
@@ -148,7 +188,50 @@ let deleteRegQuestion = async (req, res) => {
     return res.status(200).send()
 };
 
-// TODO
+/**
+ * @swagger
+ * /hacks/reg/opt/:
+ *  post:
+ *    description: Use to create a registration option
+ *    parameters:
+ *      - name: ha-api-token
+ *        in: header
+ *        required: true
+ *        schema:
+ *          type: string
+ *          format: uuid
+ *      - name: qid
+ *        in: body
+ *        required: true
+ *        schema:
+ *          type: string
+ *          format: uuid
+ *      - name: option
+ *        in: body
+ *        required: true
+ *        schema:
+ *          type: string
+ *    responses:
+ *      '201':
+ *        description: Success
+ *        schema:
+ *          type: object
+ *          properties:
+ *            oid:
+ *              type: string
+ *              format: uuid
+ *            qid:
+ *              type: string
+ *              format: uuid
+ *            option:
+ *              type: string
+ *      '400':
+ *        description: 'Bad request'
+ *      '401':
+ *        description: 'JWT not found in header'
+ *      '403':
+ *        description: 'JWT does not have admin privileges'
+ */
 let createRegOption = async (req, res) => {
     let qid = req.body.qid,
         option = req.body.option;
@@ -165,7 +248,50 @@ let createRegOption = async (req, res) => {
     return res.status(200).send({regOption: createregOptionRes.option})
 };
 
-// TODO
+/**
+ * @swagger
+ * /hacks/reg/opt/:
+ *  post:
+ *    description: Use to update a registration option
+ *    parameters:
+ *      - name: ha-api-token
+ *        in: header
+ *        required: true
+ *        schema:
+ *          type: string
+ *          format: uuid
+ *      - name: oid
+ *        in: body
+ *        required: true
+ *        schema:
+ *          type: string
+ *          format: uuid
+ *      - name: option
+ *        in: body
+ *        required: true
+ *        schema:
+ *          type: string
+ *    responses:
+ *      '200':
+ *        description: Success
+ *        schema:
+ *          type: object
+ *          properties:
+ *            oid:
+ *              type: string
+ *              format: uuid
+ *            qid:
+ *              type: string
+ *              format: uuid
+ *            option:
+ *              type: string
+ *      '400':
+ *        description: 'Bad request'
+ *      '401':
+ *        description: 'JWT not found in header'
+ *      '403':
+ *        description: 'JWT does not have admin privileges'
+ */
 let updateRegOption = async (req, res) => {
     let oid = req.body.oid,
         option = req.body.option;
@@ -182,7 +308,34 @@ let updateRegOption = async (req, res) => {
     return res.status(200).send({regOption: updateReqQuestionOptionRes.option})
 };
 
-// TODO
+/**
+ * @swagger
+ * /hacks/reg/opt/:
+ *  delete:
+ *    description: Use to delete a registration option
+ *    parameters:
+ *      - name: ha-api-token
+ *        in: header
+ *        required: true
+ *        schema:
+ *          type: string
+ *          format: uuid
+ *      - name: oid
+ *        in: body
+ *        required: true
+ *        schema:
+ *          type: string
+ *          format: uuid
+ *    responses:
+ *      '200':
+ *        description: Success
+ *      '400':
+ *        description: 'Bad request'
+ *      '401':
+ *        description: 'JWT not found in header'
+ *      '403':
+ *        description: 'JWT does not have admin privileges'
+ */
 let deleteRegOption = async (req, res) => {
     let oid = req.body.oid
     if (oid === undefined) {
@@ -197,7 +350,62 @@ let deleteRegOption = async (req, res) => {
     return res.status(200).send()
 };
 
-// TODO
+/**
+ * @swagger
+ * /hacks/reg/ans/:
+ *  post:
+ *    description: Use to create a registration answer
+ *    parameters:
+ *      - name: ha-api-token
+ *        in: header
+ *        required: true
+ *        schema:
+ *          type: string
+ *          format: uuid
+ *      - name: qid
+ *        in: body
+ *        required: true
+ *        schema:
+ *          type: string
+ *          format: uuid
+ *      - name: oid
+ *        in: body
+ *        required: true
+ *        schema:
+ *          type: string
+ *          format: uuid
+ *      - name: answer
+ *        in: body
+ *        required: true
+ *        schema:
+ *          type: string
+ *    responses:
+ *      '201':
+ *        description: Success
+ *        schema:
+ *          type: object
+ *          properties:
+ *            aid:
+ *              type: string
+ *              format: uuid
+ *            oid:
+ *              type: string
+ *              format: uuid
+ *            qid:
+ *              type: string
+ *              format: uuid
+ *            uid:
+ *              type: string
+ *              format: uuid
+ *            answer:
+ *              type: string
+ *      '400':
+ *        description: 'Bad request'
+ *      '401':
+ *        description: 'JWT not found in header'
+ *      '403':
+ *        description: 'JWT does not have user privileges'
+ */
 let createRegAnswer = async (req, res) => {    
     let qid = req.body.qid,
         oid = req.body.oid,
@@ -224,10 +432,63 @@ let createRegAnswer = async (req, res) => {
     return res.status(201).send({regAnswer: createRegAnswerRes.answer})
 };
 
-// TODO
-let updateRegAnswer = async (req, res) => {
-    console.log('createRegAnswer');
-    
+/**
+ * @swagger
+ * /hacks/reg/ans/:
+ *  put:
+ *    description: Use to update a registration answer
+ *    parameters:
+ *      - name: ha-api-token
+ *        in: header
+ *        required: true
+ *        schema:
+ *          type: string
+ *          format: uuid
+ *      - name: aid
+ *        in: body
+ *        required: true
+ *        schema:
+ *          type: string
+ *          format: uuid
+ *      - name: oid
+ *        in: body
+ *        required: true
+ *        schema:
+ *          type: string
+ *          format: uuid
+ *      - name: answer
+ *        in: body
+ *        required: true
+ *        schema:
+ *          type: string
+ *    responses:
+ *      '200':
+ *        description: Success
+ *        schema:
+ *          type: object
+ *          properties:
+ *            aid:
+ *              type: string
+ *              format: uuid
+ *            oid:
+ *              type: string
+ *              format: uuid
+ *            qid:
+ *              type: string
+ *              format: uuid
+ *            uid:
+ *              type: string
+ *              format: uuid
+ *            answer:
+ *              type: string
+ *      '400':
+ *        description: 'Bad request'
+ *      '401':
+ *        description: 'JWT not found in header'
+ *      '403':
+ *        description: 'JWT does not have user privileges'
+ */
+let updateRegAnswer = async (req, res) => {    
     let aid = req.body.aid,
         oid = req.body.oid,
         answer = req.body.answer;
@@ -238,8 +499,14 @@ let updateRegAnswer = async (req, res) => {
     if (oid === undefined && answer === undefined) {
         return res.status(400).send();
     }
+
+    let t = req.headers['ha-api-token'];
+    let claims = await JWT.getUIDFromToken(t);
+    if (claims.err) {
+        res.status(500).send(claims.err)
+    }
     
-    let updateRegAnswerRes = await DAL.updateRegAnswer(aid, oid, answer)
+    let updateRegAnswerRes = await DAL.updateRegAnswer(aid, uid, oid, answer)
     if (updateRegAnswerRes. err) {
         return res.status(updateRegAnswerRes.err).send();
     }
@@ -249,7 +516,7 @@ let updateRegAnswer = async (req, res) => {
 
 /**
  * @swagger
- * /hacks/reg/users/csv/:
+ * /hacks/reg/users/csv/:hid/:
  *  get:
  *    description: Get a user registration form
  *    parameters:
@@ -268,6 +535,11 @@ let updateRegAnswer = async (req, res) => {
  *    responses:
  *      '200':
  *        description: Success
+ *        schema:
+ *          type: object
+ *          properties:
+ *            csv:
+ *              type: string
  *      '400':
  *        description: 'Bad request'
  *      '401':
@@ -277,8 +549,76 @@ let updateRegAnswer = async (req, res) => {
  *      '404':
  *        description: 'Not found'
  */
-let getUserRegForm = async (req, res) => {
+let getRegAnswersCSV = async (req, res) => {
+    let hid = req.query.hid;
 
+    if (hid === undefined) {
+        return res.status(400).send();
+    }
+
+    let getRegAnswersRes = await DAL.getRegAnswers(hid);
+    if (getRegAnswersRes. err) {
+        return res.status(getRegAnswersRes.err).send();
+    }
+
+    return res.status(200).send({regAnswer: getRegAnswersRes.answer})
+};
+
+/**
+ * @swagger
+ * /hacks/reg/users/csv/:hid/:
+ *  get:
+ *    description: Get a user registration form
+ *    parameters:
+ *      - name: ha-api-token
+ *        in: header
+ *        required: true
+ *        schema:
+ *          type: string
+ *          format: uuid
+ *      - name: hid
+ *        in: path
+ *        required: true
+ *        schema:
+ *          type: string
+ *          format: uuid
+ *    responses:
+ *      '200':
+ *        description: Success
+ *        schema:
+ *          type: array
+ *          items:
+ *            type: string
+ *      '400':
+ *        description: 'Bad request'
+ *      '401':
+ *        description: 'JWT not found in header'
+ *      '403':
+ *        description: 'JWT does not have user privileges'
+ *      '404':
+ *        description: 'Not found'
+ */
+let getUserRegAnswers = async (req, res) => {
+    console.log('getUserRegAnswers');
+
+    let hid = req.query.hid;
+
+    if (hid === undefined) {
+        return res.status(400).send();
+    }
+
+    let t = req.headers['ha-api-token'];
+    let claims = await JWT.getUIDFromToken(t);
+    if (claims.err) {
+        res.status(500).send(claims.err)
+    }
+
+    let getRegAnswersRes = await DAL.getUserRegAnswers(hid, t.uid);
+    if (getRegAnswersRes. err) {
+        return res.status(getRegAnswersRes.err).send();
+    }
+
+    return res.status(200).send({regAnswer: getRegAnswersRes.answer})
 };
 
 module.exports = {
@@ -289,5 +629,7 @@ module.exports = {
     updateRegOption,
     deleteRegOption,
     createRegAnswer,
-    getUserRegForm
+    updateRegAnswer,
+    getRegAnswersCSV,
+    getUserRegAnswers
 };

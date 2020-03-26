@@ -126,22 +126,48 @@ async function createRegAnswer(qid, uid, oid, answer) {
     }
 }
 
-async function updateRegAnswer(aid, oid, answer) {
+async function updateRegAnswer(aid, uid, oid, answer) {
     try {
         let res;
 
         if (oid)
-            res = await pool.query('UPDATE reg_answers SET option = $1 WHERE aid = $2 RETURNING *',
-                [oid, aid]);
+            res = await pool.query('UPDATE reg_answers SET option = $1 WHERE aid = $2 AND uid = $3 RETURNING *',
+                [oid, aid, uid]);
         else
-            res = await pool.query('UPDATE reg_answers SET answer = $1 WHERE aid = $2 RETURNING *',
-                [answer, aid]);
+            res = await pool.query('UPDATE reg_answers SET answer = $1 WHERE aid = $2 ND uid = $3 RETURNING *',
+                [answer, aid, uid]);
         
         if (res.rowCount[0] === 0) return {answer: null, err: 400};
         else return {answer: res.rows[0], err: null}
     } catch (err) {
         console.error(err)
         return {answer: null, err: 500}
+    }
+}
+
+async function getRegAnswers(hid) {
+    try {
+        let res = await pool.query('SELECT * FROM reg_answers WHERE qid in (SELECT qid FROM reg_questions WHERE hid = $1)',
+            [hid]);
+
+        if (res.rowCount[0] === 0) return {answer: null, err: 400};
+        else return {answers: res.rows, err: null}
+    } catch (err) {
+        console.error(err)
+        return {answers: null, err: 500}
+    }
+}
+
+async function getUserRegAnswers(hid, uid) {
+    try {
+        let res = await pool.query('SELECT * FROM reg_answers WHERE uid = $1 AND qid in (SELECT qid FROM reg_questions WHERE hid = $2)',
+            [uid, hid]);
+
+        if (res.rowCount[0] === 0) return {answer: null, err: 400};
+        else return {answers: res.rows[0], err: null}
+    } catch (err) {
+        console.error(err)
+        return {answers: null, err: 500}
     }
 }
 
@@ -153,5 +179,7 @@ module.exports = {
     updateRegOption,
     deleteRegOption,
     createRegAnswer,
-    updateRegAnswer
+    updateRegAnswer,
+    getRegAnswers,
+    getUserRegAnswers
 };

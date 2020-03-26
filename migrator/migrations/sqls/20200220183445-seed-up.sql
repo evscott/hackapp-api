@@ -31,11 +31,12 @@ CREATE TABLE IF NOT EXISTS Hackathons (
     PRIMARY KEY (hid)
 );
 
-CREATE TABLE IF NOT EXISTS Hackathon_Details {
+CREATE TABLE IF NOT EXISTS Hackathon_Details (
     did uuid DEFAULT uuid_generate_v1() UNIQUE,
     hid uuid REFERENCES Hackathons(hid) ON DELETE CASCADE NOT NULL,
     detail text NOT NULL,
-}
+    PRIMARY KEY(did)
+);
 
 CREATE TABLE IF NOT EXISTS Registrants (
     uid uuid REFERENCES Users(uid) ON DELETE CASCADE NOT NULL,

@@ -63,15 +63,14 @@ async function getHackathon(hid) {
 async function getHackathons() {
     try {
         let res = await pool.query('SELECT * FROM hackathons');
-        if (res.rowCount === 0) return {hacks: null, err: 404};
-        else return {hacks: res.rows, err: null}
+        return {hacks: res.rows, err: null}
     } catch (err) {
         console.error(err);
         return {hacks: null, err: 500};
     }
 }
 
-async function createHackathonDetails(hid, details) {
+async function createHackathonDetailsTx(hid, details) {
     const client = await pool.connect()
 
     try {
@@ -123,7 +122,7 @@ module.exports = {
     deleteHackathon,
     getHackathon,
     getHackathons,
-    createHackathonDetails,
+    createHackathonDetailsTx,
     updateHackathonDetail,
     deleteHackathonDetail,
     getHackathonDetails,
