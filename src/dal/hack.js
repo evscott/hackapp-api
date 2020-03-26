@@ -2,7 +2,7 @@ const pool = require('./dal-pool');
 
 async function createHackathon(name, startDate, endDate, location, maxReg, regDeadline) {
     try {
-        let res = await pool.query('INSERT INTO hackathons (name, start_date, end_date, location, max_reg, regDeadline) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
+        let res = await pool.query('INSERT INTO hackathons (name, start_date, end_date, location, max_reg, reg_deadline) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
             [name, startDate, endDate, location, maxReg, regDeadline]);
 
         if (res === undefined) {
@@ -19,7 +19,7 @@ async function createHackathon(name, startDate, endDate, location, maxReg, regDe
 
 async function updateHackathon(name, startDate, endDate, location, maxReg, regDeadline, hid) {
     try {
-        let res = await pool.query('UPDATE hackathons set name=$1, startDate=$2, endDate=$3, location=$4, maxReg=$5, regDeadline=$6 WHERE hid=$7 RETURNING *',
+        let res = await pool.query('UPDATE hackathons SET name=$1, start_date=$2, end_date=$3, location=$4, max_reg=$5, reg_deadline=$6 WHERE hid=$7 RETURNING *',
             [name, startDate, endDate, location, maxReg, regDeadline, hid]);
 
         if (res === undefined) {
@@ -79,7 +79,7 @@ async function createHackathonDetailsTx(hid, details) {
 
         for (d in details) {
             let res = await client.query('INSERT INTO hackathon_details (hid, detail) VALUES ($1, $2) RETURNING *',
-                [hid, d]);
+                [hid, details[d]]);
             if (res.rowCount === 0) return {hacks: null, err: 404};
             resList.push(res.rows[0]);
         }

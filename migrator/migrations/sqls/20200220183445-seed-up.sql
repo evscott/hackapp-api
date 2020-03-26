@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS Hackathons (
     end_date timestamp NOT NULL,
     location varchar(255) NOT NULL,
     max_reg smallint,
-    regDeadline timestamp NOT NULL,
+    reg_deadline timestamp NOT NULL,
     draft boolean DEFAULT true,
     PRIMARY KEY (hid)
 );

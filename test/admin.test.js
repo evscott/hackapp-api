@@ -28,7 +28,7 @@ describe('admin', () => {
     describe('GET /users', () => {
         it('get user with admin-api token should succeed', function(done) {
             chai.request(app)
-                .get('/users')
+                .get('/u/users/')
                 .set('Accept', 'application/json')
                 .set('ha-api-token', token)
                 .end((err, res) => {

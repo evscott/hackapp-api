@@ -21,7 +21,7 @@ async function createRegQuestionTx(hid, question, options) {
 
         for (o in options) {
             res = await client.query('INSERT INTO reg_options(qid, option) VALUES ($1, $2) RETURNING *',
-            [regQuestion.qid, o]);
+            [regQuestion.qid, options[o]]);
 
             if (res.rowCount[0] === 0) {
                 await client.query('ROLLBACK')
@@ -147,7 +147,9 @@ async function updateRegAnswer(aid, uid, oid, answer) {
 
 async function getRegAnswers(hid) {
     try {
-        let res = await pool.query('SELECT * FROM reg_answers WHERE qid in (SELECT qid FROM reg_questions WHERE hid = $1)',
+        let res = await pool.query('SELECT question, COALESCE(o.option, a.answer) as answer, a.uid ' +
+                                   'FROM reg_questions AS q JOIN reg_answers AS a ON q.qid = a.qid FULL JOIN reg_options as o ON o.oid = a.oid ' +
+                                   'WHERE a.oid IS NOT NULL OR a.answer IS NOT NULL AND q.hid = $1',
             [hid]);
 
         if (res.rowCount[0] === 0) return {answer: null, err: 400};
@@ -160,11 +162,13 @@ async function getRegAnswers(hid) {
 
 async function getUserRegAnswers(hid, uid) {
     try {
-        let res = await pool.query('SELECT * FROM reg_answers WHERE uid = $1 AND qid in (SELECT qid FROM reg_questions WHERE hid = $2)',
-            [uid, hid]);
-
+        let res = await pool.query('SELECT question, COALESCE(o.option, a.answer) as answer, a.uid ' +
+                                   'FROM reg_questions AS q JOIN reg_answers AS a ON q.qid = a.qid FULL JOIN reg_options as o ON o.oid = a.oid ' +
+                                   'WHERE a.oid IS NOT NULL OR a.answer IS NOT NULL AND q.hid = $1 AND a.uid = $2',
+            [hid, uid]);
+        console.log('got user reg answers', hid, uid, res.rows)
         if (res.rowCount[0] === 0) return {answer: null, err: 400};
-        else return {answers: res.rows[0], err: null}
+        else return {answers: res.rows, err: null}
     } catch (err) {
         console.error(err)
         return {answers: null, err: 500}

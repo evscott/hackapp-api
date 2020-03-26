@@ -31,7 +31,7 @@ describe('user', () => {
 
         it('get user with user-api token should succeed', function(done) {
             chai.request(app)
-                .get('/users')
+                .get('/u/users')
                 .set('Accept', 'application/json')
                 .set('ha-api-token', token)
                 .end((err, res) => {
@@ -42,7 +42,7 @@ describe('user', () => {
 
         it('get user without user-api token should fail', function(done) {
             chai.request(app)
-                .get('/users')
+                .get('/u/users')
                 .set('Accept', 'application/json')
                 .end((err, res) => {
                     expect(res).to.have.status(401);
@@ -52,7 +52,7 @@ describe('user', () => {
 
         it('get user with expired user-api token should fail', function(done) {
             chai.request(app)
-                .get('/users')
+                .get('/u/users')
                 .set('Accept', 'application/json')
                 .set('ha-api-token', expiredToken)
                 .end((err, res) => {
@@ -67,7 +67,7 @@ describe('user', () => {
 
         it('delete user with user-api token should succeed', function(done) {
             chai.request(app)
-                .delete('/users')
+                .delete('/u/users')
                 .set('Accept', 'application/json')
                 .set('ha-api-token', token)
                 .end((err, res) => {
@@ -78,7 +78,7 @@ describe('user', () => {
 
         it('delete user without user-api token should fail', function(done) {
             chai.request(app)
-                .delete('/users')
+                .delete('/u/users')
                 .set('Accept', 'application/json')
                 .end((err, res) => {
                     expect(res).to.have.status(401);
@@ -88,7 +88,7 @@ describe('user', () => {
 
         it('delete user with expired user-api token should fail', function(done) {
             chai.request(app)
-                .delete('/users')
+                .delete('/u/users')
                 .set('Accept', 'application/json')
                 .set('ha-api-token', expiredToken)
                 .end((err, res) => {

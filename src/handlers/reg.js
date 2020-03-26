@@ -506,7 +506,7 @@ let updateRegAnswer = async (req, res) => {
         res.status(500).send(claims.err)
     }
     
-    let updateRegAnswerRes = await DAL.updateRegAnswer(aid, uid, oid, answer)
+    let updateRegAnswerRes = await DAL.updateRegAnswer(aid, claims.uid, oid, answer)
     if (updateRegAnswerRes. err) {
         return res.status(updateRegAnswerRes.err).send();
     }
@@ -561,7 +561,7 @@ let getRegAnswersCSV = async (req, res) => {
         return res.status(getRegAnswersRes.err).send();
     }
 
-    return res.status(200).send({regAnswer: getRegAnswersRes.answer})
+    return res.status(200).send({regAnswers: getRegAnswersRes.answers})
 };
 
 /**
@@ -588,7 +588,15 @@ let getRegAnswersCSV = async (req, res) => {
  *        schema:
  *          type: array
  *          items:
- *            type: string
+ *            type: object
+ *            properties:
+ *              question:
+ *                type: string
+ *              answer:
+ *                type: string
+ *              uid:
+ *                type: string
+ *                format: uuid
  *      '400':
  *        description: 'Bad request'
  *      '401':
@@ -599,8 +607,6 @@ let getRegAnswersCSV = async (req, res) => {
  *        description: 'Not found'
  */
 let getUserRegAnswers = async (req, res) => {
-    console.log('getUserRegAnswers');
-
     let hid = req.query.hid;
 
     if (hid === undefined) {
@@ -613,12 +619,12 @@ let getUserRegAnswers = async (req, res) => {
         res.status(500).send(claims.err)
     }
 
-    let getRegAnswersRes = await DAL.getUserRegAnswers(hid, t.uid);
+    let getRegAnswersRes = await DAL.getUserRegAnswers(hid, claims.uid);
     if (getRegAnswersRes. err) {
         return res.status(getRegAnswersRes.err).send();
     }
 
-    return res.status(200).send({regAnswer: getRegAnswersRes.answer})
+    return res.status(200).send({regAnswers: getRegAnswersRes.answers})
 };
 
 module.exports = {

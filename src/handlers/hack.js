@@ -86,7 +86,7 @@ let createHackathon = async (req, res) => {
 
 /**
  * @swagger
- * /hacks/:hid/:
+ * /hacks/:
  *  put:
  *    description: Use to update a hackathons overview
  *    parameters:
@@ -160,6 +160,8 @@ let updateHackathon = async (req, res) => {
     if (name === undefined || startDate === undefined || endDate === undefined || location === undefined || maxReg === undefined || regDeadline === undefined || hid === undefined){
         return res.status(400).send();
     }
+
+    console.log('gonna update a hackathon', hid)
 
     let updateHackathonRes = await DAL.updateHackathon(name, startDate, endDate, location, maxReg, regDeadline, hid);
     if (updateHackathonRes.err) {
