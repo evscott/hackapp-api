@@ -162,7 +162,7 @@ async function getRegAnswers(hid) {
 
 async function getUserRegAnswers(hid, uid) {
     try {
-        let res = await pool.query('SELECT question, COALESCE(o.option, a.answer) as answer, a.uid ' +
+        let res = await pool.query('SELECT question, COALESCE(o.option, a.answer) as answer ' +
                                    'FROM reg_questions AS q JOIN reg_answers AS a ON q.qid = a.qid FULL JOIN reg_options as o ON o.oid = a.oid ' +
                                    'WHERE a.oid IS NOT NULL OR a.answer IS NOT NULL AND q.hid = $1 AND a.uid = $2',
             [hid, uid]);
