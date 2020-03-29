@@ -1,5 +1,6 @@
 const DAL = require('../dal/dal');
 const JWT = require('../shared/jwt');
+const createCsvStringifier = require('csv-writer').createObjectCsvStringifier;
 
 /**
  * @swagger
@@ -724,12 +725,23 @@ let getRegAnswersCSV = async (req, res) => {
         return res.status(400).send();
     }
 
+    console.log('getting reg answers')
+
     let getRegAnswersRes = await DAL.getRegAnswers(hid);
     if (getRegAnswersRes. err) {
         return res.status(getRegAnswersRes.err).send();
     }
 
-    return res.status(200).send(getRegAnswersRes.answers)
+    const csvStringifier = createCsvStringifier({
+        header: [
+            {id: 'question', title: 'QUESTION'},
+            {id: 'answer', title: 'ANSWER'},
+            {id: 'uid', title: 'UID'}
+        ]
+    });
+    let records = csvStringifier.stringifyRecords(getRegAnswersRes.answers);
+
+    return res.status(200).send({csv: records})
 };
 
 /**
