@@ -55,6 +55,8 @@ const DAL = require('../dal/dal');
  *                  type: number
  *                regDeadline:
  *                  type: number
+ *                draft
+ *                  type: boolean
  *      '400':
  *        description: 'Bad request'
  *      '401':
@@ -139,6 +141,8 @@ let createHackathonOverview = async (req, res) => {
  *                  type: number
  *                regDeadline:
  *                  type: number
+ *                draft
+ *                  type: boolean
  *      '400':
  *        description: 'Bad request'
  *      '401':
@@ -245,6 +249,8 @@ let deleteHackathon = async (req, res) => {
  *                    type: number
  *                  regDeadline:
  *                    type: number
+ *                  draft
+ *                    type: boolean
  */
 let getHackathonOverviews = async (req, res) => {
     let getHackathonsRes = await DAL.getHackathons();
@@ -287,6 +293,10 @@ let getHackathonOverviews = async (req, res) => {
  *                  type: string
  *                maxReg:
  *                  type: number
+ *                regDeadline:
+ *                  type: number
+ *                draft
+ *                  type: boolean
  *      '400':
  *        description: 'Bad request'
  *      '404':
@@ -322,21 +332,33 @@ let getHackathonOverview = async (req, res) => {
  *        in: body
  *        required: true
  *        schema:
- *          type: object
+ *          type: array
+ *          items:
+ *            type: object
+ *            properties:
+ *              hid:
+ *                type: string
+ *                format: uuid
+ *              detail:
+ *                type: string
  *    responses:
  *      '201':
  *        description: 'Success'
  *        schema:
- *          type: object
- *          properties:
- *            did:
- *              type: string
- *              format: uuid
- *            hid:
- *              type: string
- *              format: uuid
- *            detail:
- *              type: string
+ *          type: array
+ *          items:
+ *            type: object
+ *            properties:
+ *              did:
+ *                type: string
+ *                format: uuid
+ *              hid:
+ *                type: string
+ *                format: uuid
+ *              detail:
+ *                type: string
+ *              index:
+ *                type: number
  *      '400':
  *        description: 'Bad request'
  *      '401':
@@ -346,13 +368,13 @@ let getHackathonOverview = async (req, res) => {
  */
 let createHackathonDetails = async (req, res) => {
     let hid = req.body.hid,
-        detail = req.body.detail;
+        details = req.body.details;
 
-    if (hid === undefined || detail === undefined){
+    if (hid === undefined || details === undefined){
         return res.status(400).send();
     }
 
-    let createHackathonDetailRes = await DAL.createHackathonDetailsTx(hid, detail);
+    let createHackathonDetailRes = await DAL.createHackathonDetailsTx(hid, details);
     if (createHackathonDetailRes.err) {
         return res.status(createHackathonDetailRes.err).send();
     }
@@ -372,22 +394,26 @@ let createHackathonDetails = async (req, res) => {
  *        schema:
  *          type: string
  *          format: uuid
- *      - name: did
+ *      - name: details
  *        in: body
  *        required: true
  *        schema:
- *          type: string
- *          format: uuid
- *      - name: detail
- *        in: body
- *        required: true
- *        schema:
- *          type: string
+ *          type: array
+ *          items:
+ *            type: object
+ *            properties:
+ *              did:
+ *                type: string
+ *                format: uuid
+ *              detail:
+ *                type: string
+ *              index:
+ *                type: number
  *    responses:
  *      '200':
  *        description: 'Success'
  *        schema:
- *          type: object
+ *          type: array
  *          properties:
  *            did:
  *              type: string
@@ -397,6 +423,8 @@ let createHackathonDetails = async (req, res) => {
  *              format: uuid
  *            detail:
  *              type: string
+ *            index:
+ *              type: number
  *      '400':
  *        description: 'Bad request'
  *      '401':
@@ -407,14 +435,13 @@ let createHackathonDetails = async (req, res) => {
  *        description: 'Not found'
  */
 let updateHackathonDetail = async (req, res) => {
-    let did = req.body.did,
-        detail = req.body.detail;
+    let details = req.body.details;
 
-    if (did === undefined || detail === undefined){
+    if (detail === undefined){
         return res.status(400).send();
     }
 
-    let updateHackathonDetailRes = await DAL.updateHackathonDetail(did, detail);
+    let updateHackathonDetailRes = await DAL.updateHackathonDetailTx(details);
     if (updateHackathonDetailRes.err) {
         return res.status(updateHackathonDetailRes.err).send();
     }
@@ -496,13 +523,15 @@ let deleteHackathonDetail = async (req, res) => {
  *                    format: uuid
  *                  detail:
  *                    type: string
+ *                  index:
+ *                    type: number
  *      '400':
  *        description: 'Bad request'
  *      '404':
  *        description: 'Not found'
  */
 let getHackathonDetails = async (req, res) => {
-    let hid = req.body.did;
+    let hid = req.body.hid;
     
     if (hid === undefined){
         return res.status(400).send();
@@ -516,6 +545,66 @@ let getHackathonDetails = async (req, res) => {
     return res.status(200).send(getHackathonDetailsRes.details)
 };
 
+/**
+ * @swagger
+ * /hacks/pub/:
+ *  put:
+ *    description: Use to publish (or publish) a hackathon
+ *    parameters:
+ *      - name: hid
+ *        in: body
+ *        required: true
+ *        schema:
+ *          type: string
+ *    responses:
+ *      '200':
+ *        description: Success
+ *        schema:
+ *          type: object
+ *          properties:
+ *            hackathon:
+ *              type: object
+ *              properties:
+ *                hid:
+ *                  type: string
+ *                name:
+ *                  type: string
+ *                startDate:
+ *                  type: number
+ *                endDate:
+ *                  type: number
+ *                location:
+ *                  type: string
+ *                maxReg:
+ *                  type: number
+ *                regDeadline:
+ *                  type: number
+ *                draft
+ *                  type: boolean
+ *      '400':
+ *        description: 'Bad request'
+ *      '401':
+ *        description: 'JWT not found in header'
+ *      '403':
+ *        description: 'JWT does not have admin privileges'
+ *      '404':
+ *        description: 'Not found'
+ */
+let publishHackathon = async (req, res) => {
+    let hid = req.body.hid;
+    
+    if (hid === undefined){
+        return res.status(400).send();
+    }
+
+    let publishHackathonRes = await DAL.publishHackathon(hid);
+    if (publishHackathonRes.err) {
+        return res.status(publishHackathonRes.err).send();
+    }
+
+    return res.status(200).send(publishHackathonRes.hack)
+};
+
 module.exports = {
     createHackathonOverview,
     updateHackathonOverview,
@@ -526,4 +615,5 @@ module.exports = {
     updateHackathonDetail,
     deleteHackathonDetail,
     getHackathonDetails,
+    publishHackathon
 };

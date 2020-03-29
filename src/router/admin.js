@@ -18,5 +18,6 @@ router.post('/hacks/reg/opt', JWT.validateAdminToken, Handlers.reg.createRegOpti
 router.put('/hacks/reg/opt', JWT.validateAdminToken, Handlers.reg.updateRegOption);
 router.delete('/hacks/reg/opt/:oid', JWT.validateAdminToken, Handlers.reg.deleteRegOption);
 router.get('/hacks/reg/ans/csv', JWT.validateAdminToken, Handlers.reg.getRegAnswersCSV);
+router.put('/hacks/pub', JWT.validateAdminToken, Handlers.hack.publishHackathon)
 
 module.exports = router;

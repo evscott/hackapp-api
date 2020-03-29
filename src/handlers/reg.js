@@ -327,7 +327,6 @@ let deleteRegQuestion = async (req, res) => {
  *        description: 'Not found'
  */
 let getRegQuestions = async (req, res) => {
-
     let hid = req.query.hid;
 
     if (hid === undefined){
@@ -402,7 +401,7 @@ let getRegQuestions = async (req, res) => {
 let createRegOption = async (req, res) => {
     let qid = req.body.qid,
         option = req.body.option,
-        index;
+        index = req.body.option;
 
     if (qid === undefined || option === undefined || index === undefined) {
         return res.status(400).send();
