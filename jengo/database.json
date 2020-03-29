@@ -1,9 +1,0 @@
-{
-  "dev": {
-    "driver": "pg",
-    "user": {"ENV": "PGUSER"},
-    "password": {"ENV": "PGPASSWORD"},
-    "database": {"ENV":  "PGDATABASE"},
-    "host": {"ENV":  "PGHOST"}
-  }
-}
