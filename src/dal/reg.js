@@ -71,7 +71,6 @@ async function deleteRegQuestion(qid) {
 
 async function getRegQuestions(hid) {
     try {
-        console.log('gettingRegQuestions for', hid)
         let res = await pool.query('SELECT * FROM reg_questions WHERE hid = $1',
             [hid]);
 
