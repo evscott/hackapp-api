@@ -2,9 +2,9 @@ const DAL = require('../dal/dal');
 
 /**
  * @swagger
- * /hacks/:
+ * /a/hacks/ov/:
  *  post:
- *    description: Use to create a hackathon
+ *    description: Use to create a hackathon overview
  *    parameters:
  *      - name: ha-api-token
  *        in: header
@@ -64,7 +64,7 @@ const DAL = require('../dal/dal');
  *      '500':
  *        description: 'Internal server error'
  */
-let createHackathon = async (req, res) => {
+let createHackathonOverview = async (req, res) => {
     let name = req.body.name,
         startDate = req.body.startDate,
         endDate = req.body.endDate,
@@ -81,12 +81,12 @@ let createHackathon = async (req, res) => {
         return res.status(createHackathonRes.err).send();
     }
 
-    return res.status(201).send({hack: createHackathonRes.hack})
+    return res.status(201).send(createHackathonRes.hack)
 };
 
 /**
  * @swagger
- * /hacks/:
+ * /a/hacks/ov/:
  *  put:
  *    description: Use to update a hackathons overview
  *    parameters:
@@ -148,7 +148,7 @@ let createHackathon = async (req, res) => {
  *      '404':
  *        description: 'Not found'
  */
-let updateHackathon = async (req, res) => {
+let updateHackathonOverview = async (req, res) => {
     let name = req.body.name,
     startDate = req.body.startDate,
     endDate = req.body.endDate,
@@ -168,12 +168,12 @@ let updateHackathon = async (req, res) => {
         return res.status(updateHackathonRes.err).send();
     }
 
-    return res.status(200).send({hack: updateHackathonRes.hack})
+    return res.status(200).send(updateHackathonRes.hack)
 };
 
 /**
  * @swagger
- * /hacks/:
+ * /a/hacks/:
  *  delete:
  *    description: Use to delete a hackathon
  *    parameters:
@@ -184,7 +184,7 @@ let updateHackathon = async (req, res) => {
  *          type: string
  *          format: uuid
  *      - name: hid
- *        in: body
+ *        in: path
  *        required: true
  *        schema:
  *          type: string
@@ -201,8 +201,8 @@ let updateHackathon = async (req, res) => {
  *        description: 'Not found'
  */
 let deleteHackathon = async (req, res) => {
-    let hid = req.body.hid;
-
+    let hid = req.query.hid;
+    
     if (name === undefined){
         return res.status(400).send();
     }
@@ -217,9 +217,9 @@ let deleteHackathon = async (req, res) => {
 
 /**
  * @swagger
- * /hacks/:
+ * /hacks/ov/:
  *  get:
- *    description: Use to request all hackathons
+ *    description: Use to request all hackathon overviews
  *    responses:
  *      '200':
  *        description: Success
@@ -246,18 +246,18 @@ let deleteHackathon = async (req, res) => {
  *                  regDeadline:
  *                    type: number
  */
-let getHackathons = async (req, res) => {
+let getHackathonOverviews = async (req, res) => {
     let getHackathonsRes = await DAL.getHackathons();
     if (getHackathonsRes.err) {
         return res.status(getHackathonsRes.err).send();
     }
 
-    return res.status(200).send({hacks: getHackathonsRes.hacks});
+    return res.status(200).send(getHackathonsRes.hacks);
 };
 
 /**
  * @swagger
- * /hacks/:hid/:
+ * /hacks/ov/:hid/:
  *  get:
  *    description: Use to request a hackathon overview
  *    parameters:
@@ -292,7 +292,7 @@ let getHackathons = async (req, res) => {
  *      '404':
  *        description: 'Not found'
  */
-let getHackathon = async (req, res) => {
+let getHackathonOverview = async (req, res) => {
     let hid = req.query.hid;
     if (hid === undefined) {
         return res.status(400).send();
@@ -303,12 +303,12 @@ let getHackathon = async (req, res) => {
         return res.status(getHackathonRes.err).send();
     }
 
-    return res.status(200).send({hack: getHackathonRes.hack})
+    return res.status(200).send(getHackathonRes.hac)
 };
 
 /**
  * @swagger
- * /hacks/det/:
+ * /a/hacks/det/:
  *  post:
  *    description: Use to create a hackathons initial details
  *    parameters:
@@ -357,12 +357,12 @@ let createHackathonDetails = async (req, res) => {
         return res.status(createHackathonDetailRes.err).send();
     }
 
-    return res.status(201).send({detail: createHackathonDetailRes.detail})
+    return res.status(201).send(createHackathonDetailRes.detail)
 };
 
 /**
  * @swagger
- * /hacks/det/:
+ * /a/hacks/det/:
  *  put:
  *    description: Use to update a hackathon detail
  *    parameters:
@@ -419,12 +419,12 @@ let updateHackathonDetail = async (req, res) => {
         return res.status(updateHackathonDetailRes.err).send();
     }
 
-    return res.status(200).send({detail: updateHackathonDetailRes.detail})
+    return res.status(200).send(updateHackathonDetailRes.detail)
 };
 
 /**
  * @swagger
- * /hacks/det/:
+ * /a/hacks/det/:did/:
  *  delete:
  *    description: Use to update a hackathon detail
  *    parameters:
@@ -435,7 +435,7 @@ let updateHackathonDetail = async (req, res) => {
  *          type: string
  *          format: uuid
  *      - name: did
- *        in: body
+ *        in: path
  *        required: true
  *        schema:
  *          type: string
@@ -453,8 +453,7 @@ let updateHackathonDetail = async (req, res) => {
  *        description: 'Not found'
  */
 let deleteHackathonDetail = async (req, res) => {
-    let did = req.body.did;
-
+    let did = req.query.did;
     if (did === undefined){
         return res.status(400).send();
     }
@@ -466,7 +465,6 @@ let deleteHackathonDetail = async (req, res) => {
 
     return res.status(200).send()
 };
-
 
 /**
  * @swagger
@@ -492,7 +490,7 @@ let deleteHackathonDetail = async (req, res) => {
  *                properties:
  *                  did:
  *                    type: string
- *                    format: uuidw
+ *                    format: uuid
  *                  hid:
  *                    type: string
  *                    format: uuid
@@ -505,7 +503,7 @@ let deleteHackathonDetail = async (req, res) => {
  */
 let getHackathonDetails = async (req, res) => {
     let hid = req.body.did;
-
+    
     if (hid === undefined){
         return res.status(400).send();
     }
@@ -515,15 +513,15 @@ let getHackathonDetails = async (req, res) => {
         return res.status(getHackathonDetailsRes.err).send();
     }
 
-    return res.status(200).send({details: getHackathonDetailsRes.details})
+    return res.status(200).send(getHackathonDetailsRes.details)
 };
 
 module.exports = {
-    createHackathon,
-    updateHackathon,
+    createHackathonOverview,
+    updateHackathonOverview,
     deleteHackathon,
-    getHackathons,
-    getHackathon,
+    getHackathonOverviews,
+    getHackathonOverview,
     createHackathonDetails,
     updateHackathonDetail,
     deleteHackathonDetail,

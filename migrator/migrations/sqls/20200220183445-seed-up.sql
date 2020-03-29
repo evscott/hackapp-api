@@ -35,6 +35,7 @@ CREATE TABLE IF NOT EXISTS Hackathon_Details (
     did uuid DEFAULT uuid_generate_v1() UNIQUE,
     hid uuid REFERENCES Hackathons(hid) ON DELETE CASCADE NOT NULL,
     detail text NOT NULL,
+    index SMALLINT,
     PRIMARY KEY(did)
 );
 
@@ -49,6 +50,10 @@ CREATE TABLE IF NOT EXISTS Reg_Questions (
     qid uuid DEFAULT uuid_generate_v1() UNIQUE,
     hid uuid REFERENCES Hackathons(hid) ON DELETE CASCADE NOT NULL,
     question text NOT NULL,
+    descr text NOT NULL,
+    required bool,
+    index SMALLINT,
+    type varchar(255),
     PRIMARY KEY (qid)
 );
 
@@ -56,6 +61,7 @@ CREATE TABLE IF NOT EXISTS Reg_Options (
     oid uuid DEFAULT uuid_generate_v1() UNIQUE,
     qid uuid REFERENCES Reg_Questions(qid) ON DELETE CASCADE NOT NULL,
     option varchar(255) NOT NULL,
+    index SMALLINT,
     PRIMARY KEY (oid)
 );
 
@@ -63,7 +69,7 @@ CREATE TABLE IF NOT EXISTS Reg_Answers (
     aid uuid DEFAULT uuid_generate_v1() UNIQUE,
     uid uuid REFERENCES Users(uid) ON DELETE CASCADE NOT NULL,
     qid uuid REFERENCES Reg_Questions(qid) ON DELETE CASCADE NOT NULL,
-    oid uuid REFERENCES Reg_Options(oid) ON DELETE CASCADE ,
+    oid uuid REFERENCES Reg_Options(oid) ON DELETE CASCADE,
     answer text,
     PRIMARY KEY (aid)
 );

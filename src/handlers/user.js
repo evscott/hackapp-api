@@ -3,7 +3,7 @@ const JWT = require("../shared/jwt");
 
 /**
  * @swagger
- * /users/:uid/:
+ * /u/users/:
  *  get:
  *    description: Use to request a user
  *    parameters:
@@ -43,14 +43,12 @@ let getUser = async (req, res) => {
         return res.status(getUser.err).send();
     }
 
-    return res.status(200).send({
-        user: getUser.user
-    });
+    return res.status(200).send(getUser.user);
 };
 
 /**
  * @swagger
- * /user/:uid/:
+ * /u/users/:
  *  put:
  *    description: Use to update a user
  *    parameters:
@@ -84,7 +82,7 @@ let updateUser = async (req, res) => {
 
 /**
  * @swagger
- * /user/:uid/:
+ * /u/users/:
  *  delete:
  *    description: Use to delete a user
  *    parameters:

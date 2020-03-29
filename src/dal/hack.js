@@ -49,7 +49,8 @@ async function deleteHackathon(hid) {
 
 async function getHackathon(hid) {
     try {
-        let res = await pool.query('SELECT * FROM hackathons WHERE hid=$1',
+        let res = await pool.query('SELECT hid, name, start_date as startDate, end_date as endDate, location, max_reg as maxReg, reg_deadline as regDeadline, draft' + 
+                                    'FROM hackathons WHERE hid=$1',
             [hid]);
 
         if (res.rowCount === 0) return {hack: null, err: 404};
@@ -62,7 +63,10 @@ async function getHackathon(hid) {
 
 async function getHackathons() {
     try {
-        let res = await pool.query('SELECT * FROM hackathons');
+        let res = await pool.query('SELECT hid, name, start_date as startDate, end_date as endDate, location, max_reg as maxReg, reg_deadline as regDeadline, draft' + 
+                                    'FROM hackathons',
+            [hid]);
+            
         return {hacks: res.rows, err: null}
     } catch (err) {
         console.error(err);
