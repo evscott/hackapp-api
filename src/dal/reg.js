@@ -5,6 +5,7 @@ async function createRegQuestionTx(hid, question, descr, required, index, type, 
 
     try {
         await client.query('BEGIN')
+        console.log('gonna insert into reg_questions', hid, question, descr, required, index, type, options)
         let res = await client.query('INSERT INTO reg_questions(hid, question, descr, required, index, type) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
             [hid, question, descr, required, index, type]);
 
@@ -20,7 +21,7 @@ async function createRegQuestionTx(hid, question, descr, required, index, type, 
 
         for (o in options) {
             res = await client.query('INSERT INTO reg_options(qid, option, index) VALUES ($1, $2, $3) RETURNING *',
-            [regQuestion.qid, options[o], o]);
+            [regQuestion.qid, options[o], ]);
 
             if (res.rowCount[0] === 0) {
                 await client.query('ROLLBACK')
