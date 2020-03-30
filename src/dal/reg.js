@@ -5,7 +5,6 @@ async function createRegQuestionTx(hid, question, descr, required, index, type, 
 
     try {
         await client.query('BEGIN')
-        console.log('gonna insert into reg_questions', hid, question, descr, required, index, type, options)
         let res = await client.query('INSERT INTO reg_questions(hid, question, descr, required, index, type) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
             [hid, question, descr, required, index, type]);
 
@@ -21,7 +20,7 @@ async function createRegQuestionTx(hid, question, descr, required, index, type, 
 
         for (o in options) {
             res = await client.query('INSERT INTO reg_options(qid, option, index) VALUES ($1, $2, $3) RETURNING *',
-            [regQuestion.qid, options[o], ]);
+            [regQuestion.qid, options[o], o]);
 
             if (res.rowCount[0] === 0) {
                 await client.query('ROLLBACK')
@@ -43,16 +42,43 @@ async function createRegQuestionTx(hid, question, descr, required, index, type, 
     }
 }
 
-async function updateRegQuestion(qid, question, descr, required, index, type) {
-    try {
-        let res = await pool.query('UPDATE reg_questions SET question = $1, descr = $2, required = $4, index = $5, type = $6 WHERE qid = $7 RETURNING *',
-            [question, descr, required, index, type, qid]);
+async function updateRegQuestionTx(qid, question, descr, required, index, type, options) {
+    const client = await pool.connect()
 
-        if (res.rowCount[0] === 0) return {regQuestion: null, err: 404};
-        else return {question: res.rows[0], err: null}
+    try {
+        await client.query('BEGIN')
+        let res = await client.query('UPDATE reg_questions SET question = $2, descr = $3, required = $4, index = $5, type = $6 WHERE qid = $1 RETURNING *',
+            [qid, question, descr, required, index, type]);
+
+        if (res.rowCount[0] === 0) {
+            await client.query('ROLLBACK')
+            return {question: null, options: null, err: 400}
+        }
+        
+        let regQuestion = res.rows[0];
+        let resList = [];
+
+        for (o in options) {
+            res = await client.query('UPDATE reg_options SET option = $1, index = $2 WHERE qid = $3 RETURNING *',
+            [options[o].option, options[o].index, qid]);
+
+            if (res.rowCount[0] === 0) {
+                await client.query('ROLLBACK')
+                return { question: null, options: null, err: 400 };
+            }
+
+            await client.query('ROLLBACK')
+            resList.push(res.rows[0])
+        }
+
+        await client.query('COMMIT')
+        return {question: regQuestion, options: resList, err: null}
     } catch (err) {
         console.error(err)
-        return {question: null, err: 500}
+        await client.query('ROLLBACK')
+        return {question: null, options: null, err: 500}
+    } finally {
+        client.release()
     }
 }
 
@@ -201,7 +227,7 @@ async function getUserRegAnswers(hid, uid) {
 
 module.exports = {
     createRegQuestionTx,
-    updateRegQuestion,
+    updateRegQuestionTx,
     deleteRegQuestion,
     getRegQuestions,
     createRegOption,

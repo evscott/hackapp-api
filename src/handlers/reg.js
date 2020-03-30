@@ -32,8 +32,6 @@ const createCsvStringifier = require('csv-writer').createObjectCsvStringifier;
  *                type: string
  *              required:
  *                type: boolean
- *              index:
- *                type: number
  *              type:
  *                type: string
  *              options:
@@ -111,7 +109,6 @@ let createRegQuestions = async (req, res) => {
         question = questions[q].question,
         descr = questions[q].descr,
         required = questions[q].required,
-        index = questions[q].index,
         type = questions[q].type,
         options = questions[q].options;
 
@@ -119,13 +116,13 @@ let createRegQuestions = async (req, res) => {
             return res.status(400).send();
         }
 
-        let createRegQuestionRes = await DAL.createRegQuestionTx(hid, question, descr, required, index, type, options)
+        let createRegQuestionRes = await DAL.createRegQuestionTx(hid, question, descr, required, q, type, options)
         if (createRegQuestionRes.err) {
-            return res.status(createRegQuestion.err).send();
+            return res.status(createRegQuestionRes.err).send();
         }
 
         questionCreated = createRegQuestionRes.question;
-        questionCreated.options = options;
+        questionCreated.options = createRegQuestionRes.options;
 
         questionsCreated.push(questionCreated);
     }
@@ -145,60 +142,79 @@ let createRegQuestions = async (req, res) => {
  *        schema:
  *          type: string
  *          format: uuid
- *      - name: hid
+ *      - name: questions
  *        in: body
  *        required: true
  *        schema:
- *          type: string
- *          format: uuid
- *      - name: question
- *        in: body
- *        required: true
- *        schema:
- *          type: string
- *          format: uuid
- *      - name: descr
- *        in: body
- *        required: true
- *        schema:
- *          type: string
- *      - name: required
- *        in: body
- *        required: true
- *        schema:
- *          type: boolean
- *      - name: index
- *        in: body
- *        required: true
- *        schema:
- *          type: number
- *      - name: type
- *        in: body
- *        required: true
- *        schema:
- *          type: string
+ *          type: array
+ *          items:
+ *            type: object
+ *            properties:
+ *              qid:
+ *                type: string
+ *                format: uuid
+ *              question:
+ *                type: string
+ *                format: uuid
+ *              descr:
+ *                type: string
+ *              required:
+ *                type: boolean
+ *              index:
+ *                type: number
+ *              type:
+ *                type: string
+ *              options:
+ *                type: array
+ *                items:
+ *                  type: string
+ *                  properties:
+ *                    oid: 
+ *                      type: string
+ *                      format: uuid
+ *                    option: 
+ *                      type: string
+ *                    index: 
+ *                      type: number
  *    responses:
  *      '200':
  *        description: Success
  *        schema:
- *          type: object
- *          properties:
- *            qid:
- *              type: string
- *              format: uuid
- *            hid:
- *              type: string
- *              format: uuid
- *            question:
- *              type: string
- *            descr:
- *              type: string
- *            required:
- *              type: boolean
- *            index:
- *              type: number
- *            type:
- *              type: string
+ *          type: array
+ *          items:
+ *            type: object
+ *            properties:
+ *              qid:
+ *                type: string
+ *                format: uuid
+ *              hid:
+ *                type: string
+ *                format: uuid
+ *              question:
+ *                type: string
+ *              descr:
+ *                type: string
+ *              required:
+ *                type: boolean
+ *              index:
+ *                type: number
+ *              type:
+ *                type: string
+ *              options:
+ *                type: array
+ *                items:
+ *                  type: object
+ *                  properties:
+ *                    oid:
+ *                      type: string
+ *                      format: uuid
+ *                    qid:
+ *                      type: string
+ *                      format: uuid
+ *                    option:
+ *                      type: string
+ *                    index:
+ *                      type: number
  *      '400':
  *        description: 'Bad request'
  *      '401':
@@ -207,23 +223,41 @@ let createRegQuestions = async (req, res) => {
  *        description: 'JWT does not have admin privileges'
  */
 let updateRegQuestions = async (req, res) => {
-    let qid = req.body.qid,
-        question = req.body.question,
-        descr = req.body.descr,
-        required = req.body.required,
-        index = req.body.index,
-        type = req.body.type;
+    let questions = req.body.questions;
 
-    if (qid === undefined || question === undefined || descr === undefined || required === undefined || index === undefined || type === undefined) {
+    if (questions === undefined) {
         return res.status(400).send();
     }
 
-    let updateRegQuestionRes = await DAL.updateRegQuestion(qid, question, descr, required, index, type)
-    if (updateRegQuestionRes.err) {
-        return res.status(updateRegQuestionRes.err).send();
+    let questionsUpdated = [];
+
+    for (q in questions) {
+        let qid = questions[q].qid,
+        question = questions[q].question,
+        descr = questions[q].descr,
+        required = questions[q].required,
+        index = questions[q].index,
+        type = questions[q].type,
+        options = questions[q].options;
+
+        if (qid === undefined || question === undefined || descr === undefined || required === undefined || index === undefined || type === undefined) {
+            return res.status(400).send();
+        }
+
+        let updateRegQuestionRes = await DAL.updateRegQuestionTx(qid, question, descr, required, index, type, options)
+        if (updateRegQuestionRes.err) {
+            return res.status(updateRegQuestionRes.err).send();
+        }
+
+        questionUpdated = updateRegQuestionRes.question;
+        if (updateRegQuestionRes.options) {
+            questionUpdated.options = updateRegQuestionRes.options;
+        }
+
+        questionsUpdated.push(questionUpdated);
     }
 
-    return res.status(200).send(updateRegQuestionRes.question)
+    return res.status(200).send(questionsUpdated)
 };
 
 /**
