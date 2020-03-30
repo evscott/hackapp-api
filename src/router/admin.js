@@ -12,12 +12,12 @@ router.post('/hacks/det', JWT.validateAdminToken, Handlers.hack.createHackathonD
 router.put('/hacks/det', JWT.validateAdminToken, Handlers.hack.updateHackathonDetail);
 router.delete('/hacks/det/:did', JWT.validateAdminToken, Handlers.hack.deleteHackathonDetail);
 router.post('/hacks/reg/quest', JWT.validateAdminToken, Handlers.reg.createRegQuestions);
-router.put('/hacks/reg/quest', JWT.validateAdminToken, Handlers.reg.updateRegQuestion);
+router.put('/hacks/reg/quest', JWT.validateAdminToken, Handlers.reg.updateRegQuestions);
 router.delete('/hacks/reg/quest/:qid', JWT.validateAdminToken, Handlers.reg.deleteRegQuestion);
 router.post('/hacks/reg/opt', JWT.validateAdminToken, Handlers.reg.createRegOption);
 router.put('/hacks/reg/opt', JWT.validateAdminToken, Handlers.reg.updateRegOption);
 router.delete('/hacks/reg/opt/:oid', JWT.validateAdminToken, Handlers.reg.deleteRegOption);
-router.get('/hacks/reg/ans/csv', JWT.validateAdminToken, Handlers.reg.getRegAnswersCSV);
+router.get('/hacks/reg/ans/csv/:hid', JWT.validateAdminToken, Handlers.reg.getRegAnswersCSV);
 router.put('/hacks/pub', JWT.validateAdminToken, Handlers.hack.publishHackathon)
 
 module.exports = router;

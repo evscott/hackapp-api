@@ -55,7 +55,7 @@ const DAL = require('../dal/dal');
  *                  type: number
  *                regDeadline:
  *                  type: number
- *                draft
+ *                draft:
  *                  type: boolean
  *      '400':
  *        description: 'Bad request'
@@ -141,7 +141,7 @@ let createHackathonOverview = async (req, res) => {
  *                  type: number
  *                regDeadline:
  *                  type: number
- *                draft
+ *                draft:
  *                  type: boolean
  *      '400':
  *        description: 'Bad request'
@@ -249,11 +249,11 @@ let deleteHackathon = async (req, res) => {
  *                    type: number
  *                  regDeadline:
  *                    type: number
- *                  draft
+ *                  draft:
  *                    type: boolean
  */
 let getHackathonOverviews = async (req, res) => {
-    let getHackathonsRes = await DAL.getHackathons();
+    let getHackathonsRes = await DAL.getHackathonOverviews();
     if (getHackathonsRes.err) {
         return res.status(getHackathonsRes.err).send();
     }
@@ -295,7 +295,7 @@ let getHackathonOverviews = async (req, res) => {
  *                  type: number
  *                regDeadline:
  *                  type: number
- *                draft
+ *                draft:
  *                  type: boolean
  *      '400':
  *        description: 'Bad request'
@@ -308,7 +308,7 @@ let getHackathonOverview = async (req, res) => {
         return res.status(400).send();
     }
 
-    let getHackathonRes = await DAL.getHackathon(hid);
+    let getHackathonRes = await DAL.getHackathonOverview(hid);
     if (getHackathonRes.err) {
         return res.status(getHackathonRes.err).send();
     }
@@ -547,7 +547,7 @@ let getHackathonDetails = async (req, res) => {
 
 /**
  * @swagger
- * /hacks/pub/:
+ * /a/hacks/pub/:
  *  put:
  *    description: Use to publish (or publish) a hackathon
  *    parameters:
@@ -579,7 +579,7 @@ let getHackathonDetails = async (req, res) => {
  *                  type: number
  *                regDeadline:
  *                  type: number
- *                draft
+ *                draft:
  *                  type: boolean
  *      '400':
  *        description: 'Bad request'

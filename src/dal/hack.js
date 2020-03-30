@@ -2,7 +2,7 @@ const pool = require('./dal-pool');
 
 async function createHackathon(name, startDate, endDate, location, maxReg, regDeadline) {
     try {
-        let res = await pool.query('INSERT INTO hackathons (name, start_date, end_date, location, max_reg, reg_deadline) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
+        let res = await pool.query('INSERT INTO hackathons (name, start_date, end_date, location, max_reg, reg_deadline) VALUES ($1, $2, $3, $4, $5, $6) RETURNING hid, name, start_date as "startDate", end_date as "endDate", location, max_reg as "maxReg", reg_deadline as "regDeadline", draft',
             [name, startDate, endDate, location, maxReg, regDeadline]);
 
         if (res === undefined) {
@@ -19,7 +19,7 @@ async function createHackathon(name, startDate, endDate, location, maxReg, regDe
 
 async function updateHackathon(name, startDate, endDate, location, maxReg, regDeadline, hid) {
     try {
-        let res = await pool.query('UPDATE hackathons SET name=$1, start_date=$2, end_date=$3, location=$4, max_reg=$5, reg_deadline=$6 WHERE hid=$7 RETURNING *',
+        let res = await pool.query('UPDATE hackathons SET name=$1, start_date=$2, end_date=$3, location=$4, max_reg=$5, reg_deadline=$6 WHERE hid=$7 RETURNING hid, name, start_date as "startDate", end_date as "endDate", location, max_reg as "maxReg", reg_deadline as "regDeadline", draft',
             [name, startDate, endDate, location, maxReg, regDeadline, hid]);
 
         if (res === undefined) {
@@ -47,9 +47,9 @@ async function deleteHackathon(hid) {
     }
 }
 
-async function getHackathon(hid) {
+async function getHackathonOverview(hid) {
     try {
-        let res = await pool.query('SELECT hid, name, start_date as startDate, end_date as endDate, location, max_reg as maxReg, reg_deadline as regDeadline, draft' + 
+        let res = await pool.query('SELECT hid, name, start_date as "startDate", end_date as "endDate", location, max_reg as "maxReg", reg_deadline as "regDeadline", draft ' + 
                                     'FROM hackathons WHERE hid=$1',
             [hid]);
 
@@ -61,11 +61,10 @@ async function getHackathon(hid) {
     }
 }
 
-async function getHackathons() {
+async function getHackathonOverviews() {
     try {
-        let res = await pool.query('SELECT hid, name, start_date as startDate, end_date as endDate, location, max_reg as maxReg, reg_deadline as regDeadline, draft' + 
-                                    'FROM hackathons',
-            [hid]);
+        let res = await pool.query('SELECT hid, name, start_date as "startDate", end_date as "endDate", location, max_reg as "maxReg", reg_deadline as "regDeadline", draft ' + 
+                                    'FROM hackathons');
             
         return {hacks: res.rows, err: null}
     } catch (err) {
@@ -174,8 +173,8 @@ module.exports = {
     createHackathon,
     updateHackathon,
     deleteHackathon,
-    getHackathon,
-    getHackathons,
+    getHackathonOverview,
+    getHackathonOverviews,
     createHackathonDetailsTx,
     updateHackathonDetailsTx,
     deleteHackathonDetail,

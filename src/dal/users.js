@@ -2,7 +2,7 @@ const pool = require('./dal-pool');
 
 async function getUser(uid) {
     try {
-        let res = await pool.query('SELECT uid, first_name as firstName, last_name as lastName, email, admin FROM users WHERE uid=$1',
+        let res = await pool.query('SELECT uid, first_name as "firstName", last_name as "lastName", email, admin FROM users WHERE uid=$1',
             [uid]);
 
         if (res.rowCount === 0) return {user: null, err: 404};

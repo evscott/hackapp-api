@@ -206,7 +206,7 @@ let createRegQuestions = async (req, res) => {
  *      '403':
  *        description: 'JWT does not have admin privileges'
  */
-let updateRegQuestion = async (req, res) => {
+let updateRegQuestions = async (req, res) => {
     let qid = req.body.qid,
         question = req.body.question,
         descr = req.body.descr,
@@ -808,7 +808,7 @@ let getUserRegAnswers = async (req, res) => {
 
 module.exports = {
     createRegQuestions,
-    updateRegQuestion,
+    updateRegQuestions,
     deleteRegQuestion,
     getRegQuestions,
     createRegOption,
