@@ -132,7 +132,7 @@ async function updateHackathonDetailsTx(details) {
 
 async function deleteHackathonDetail(did) {
     try {
-        let res = await pool.query('SELET * FROM hackathon_details WHERE did=$1',
+        let res = await pool.query('SELECT * FROM hackathon_details WHERE did=$1',
             [did]);
 
         if (res.rows === 0) return {err: 404};
@@ -145,7 +145,7 @@ async function deleteHackathonDetail(did) {
 
 async function getHackathonDetails(hid) {
     try {
-        let res = await pool.query('SELET * FROM hackathon_details WHERE hid=$1',
+        let res = await pool.query('SELECT * FROM hackathon_details WHERE hid=$1',
             [hid]);
 
         if (res.rows === 0) return {details: null, err: 404};

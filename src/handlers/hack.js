@@ -204,8 +204,6 @@ let updateHackathonOverview = async (req, res) => {
  */
 let deleteHackathon = async (req, res) => {
     let hid = req.query.hid;
-
-    console.log('checking hid', hid === undefined, hid === null, !hid, hid)
     
     if (hid === undefined){
         return res.status(400).send();
