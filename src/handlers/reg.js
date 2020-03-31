@@ -14,6 +14,12 @@ const createCsvStringifier = require('csv-writer').createObjectCsvStringifier;
  *        schema:
  *          type: string
  *          format: uuid
+ *      - name: hid
+ *        in: body
+ *        required: true
+ *        schema:
+ *          type: string
+ *          format: uuid
  *      - name: questions
  *        in: body
  *        required: true
@@ -96,27 +102,28 @@ const createCsvStringifier = require('csv-writer').createObjectCsvStringifier;
  *        description: 'JWT does not have admin privileges'
  */
 let createRegQuestions = async (req, res) => {
-    let questions = req.body.questions;
+    let hid = req.body.hid,
+        questions = req.body.questions;
 
-    if (questions === undefined) {
+    if (hid === undefined || questions === undefined) {
         return res.status(400).send();
     }
 
     let questionsCreated = [];
 
     for (q in questions) {
-        let hid = questions[q].hid,
-        question = questions[q].question,
+        let question = questions[q].question,
         descr = questions[q].descr,
         required = questions[q].required,
+        index = questions[q].index,
         type = questions[q].type,
         options = questions[q].options;
 
-        if (hid === undefined || question === undefined || descr === undefined || required === undefined || type === undefined) {
+        if (hid === undefined || question === undefined || descr === undefined || required === undefined || index === undefined || type === undefined) {
             return res.status(400).send();
         }
 
-        let createRegQuestionRes = await DAL.createRegQuestionTx(hid, question, descr, required, q, type, options)
+        let createRegQuestionRes = await DAL.createRegQuestionTx(hid, question, descr, required, index, type, options)
         if (createRegQuestionRes.err) {
             return res.status(createRegQuestionRes.err).send();
         }
