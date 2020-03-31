@@ -33,7 +33,7 @@ describe('organization', () => {
                 .set('ha-api-token', token)
                 .end((err, res) => {
                     expect(res).to.have.status(201);
-                    expect(res.body.org.name).equal('neworg');
+                    expect(res.body.name).equal('neworg');
                     done();
                 })
         });
@@ -92,7 +92,7 @@ describe('organization', () => {
                 .set('Accept', 'application/json')
                 .end((err, res) => {
                     expect(res).to.have.status(200);
-                    expect(res.body.org.name).equal('neworg');
+                    expect(res.body.name).equal('neworg');
                     done();
                 })
         });

@@ -17,10 +17,10 @@ describe('admin', () => {
             .end((err, res) => {
                 expect(res).to.have.status(200);
                 expect(res.body.token.length).greaterThan(0);
-                expect(res.body.user.uid).lengthOf(36);
-                expect(res.body.user.admin).equal(true);
+                expect(res.body.uid).lengthOf(36);
+                expect(res.body.admin).equal(true);
                 token = res.body.token;
-                uid = res.body.user.uid;
+                uid = res.body.uid;
                 done();
             })
     });
@@ -33,7 +33,7 @@ describe('admin', () => {
                 .set('ha-api-token', token)
                 .end((err, res) => {
                     expect(res).to.have.status(200);
-                    expect(res.body.user.uid).equal(uid);
+                    expect(res.body.uid).equal(uid);
                     done();
                 });
         });

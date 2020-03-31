@@ -311,7 +311,7 @@ let getHackathonOverview = async (req, res) => {
         return res.status(getHackathonRes.err).send();
     }
 
-    return res.status(200).send(getHackathonRes.hac)
+    return res.status(200).send(getHackathonRes.hack)
 };
 
 /**

@@ -19,9 +19,9 @@ describe('user', () => {
             .end((err, res) => {
                 expect(res).to.have.status(201);
                 expect(res.body.token.length).greaterThan(0);
-                expect(res.body.user.uid).lengthOf(36);
+                expect(res.body.uid).lengthOf(36);
                 token = res.body.token;
-                uid = res.body.user.uid;
+                uid = res.body.uid;
                 done();
             })
     });
