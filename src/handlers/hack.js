@@ -165,8 +165,6 @@ let updateHackathonOverview = async (req, res) => {
         return res.status(400).send();
     }
 
-    console.log('gonna update a hackathon', hid)
-
     let updateHackathonRes = await DAL.updateHackathon(name, startDate, endDate, location, maxReg, regDeadline, hid);
     if (updateHackathonRes.err) {
         return res.status(updateHackathonRes.err).send();
@@ -177,7 +175,7 @@ let updateHackathonOverview = async (req, res) => {
 
 /**
  * @swagger
- * /a/hacks/:
+ * /a/hacks/:hid/:
  *  delete:
  *    description: Use to delete a hackathon
  *    parameters:
@@ -206,8 +204,10 @@ let updateHackathonOverview = async (req, res) => {
  */
 let deleteHackathon = async (req, res) => {
     let hid = req.query.hid;
+
+    console.log('checking hid', hid === undefined, hid === null, !hid, hid)
     
-    if (name === undefined){
+    if (hid === undefined){
         return res.status(400).send();
     }
 
@@ -328,6 +328,11 @@ let getHackathonOverview = async (req, res) => {
  *        schema:
  *          type: string
  *          format: uuid
+ *      - name: hid
+ *        in: body
+ *        required: true
+ *        schema:
+ *          type: string
  *      - name: details
  *        in: body
  *        required: true
@@ -336,11 +341,10 @@ let getHackathonOverview = async (req, res) => {
  *          items:
  *            type: object
  *            properties:
- *              hid:
- *                type: string
- *                format: uuid
  *              detail:
  *                type: string
+ *              index:
+ *                type: number
  *    responses:
  *      '201':
  *        description: 'Success'
@@ -355,8 +359,8 @@ let getHackathonOverview = async (req, res) => {
  *              hid:
  *                type: string
  *                format: uuid
- *              detail:
- *                type: string
+ *              details:
+ *                type: array
  *              index:
  *                type: number
  *      '400':
@@ -379,7 +383,7 @@ let createHackathonDetails = async (req, res) => {
         return res.status(createHackathonDetailRes.err).send();
     }
 
-    return res.status(201).send(createHackathonDetailRes.detail)
+    return res.status(201).send(createHackathonDetailRes.details)
 };
 
 /**
@@ -441,7 +445,7 @@ let updateHackathonDetail = async (req, res) => {
         return res.status(400).send();
     }
 
-    let updateHackathonDetailRes = await DAL.updateHackathonDetailTx(details);
+    let updateHackathonDetailRes = await DAL.updateHackathonDetailsTx(details);
     if (updateHackathonDetailRes.err) {
         return res.status(updateHackathonDetailRes.err).send();
     }
@@ -531,7 +535,7 @@ let deleteHackathonDetail = async (req, res) => {
  *        description: 'Not found'
  */
 let getHackathonDetails = async (req, res) => {
-    let hid = req.body.hid;
+    let hid = req.query.hid;
     
     if (hid === undefined){
         return res.status(400).send();

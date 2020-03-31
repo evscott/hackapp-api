@@ -82,7 +82,7 @@ async function createHackathonDetailsTx(hid, details) {
 
         for (d in details) {
             let res = await client.query('INSERT INTO hackathon_details (hid, detail, index) VALUES ($1, $2, $3) RETURNING *',
-                [hid, details[d], d]);
+                [hid, details[d].detail, details[d].index]);
             if (res.rowCount === 0) return {hacks: null, err: 404};
             resList.push(res.rows[0]);
         }
