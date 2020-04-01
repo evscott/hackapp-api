@@ -81,6 +81,11 @@ async function createHackathonDetailsTx(hid, details) {
         let resList = [];
 
         for (d in details) {
+            if (details[d].detail === undefined || details[d].index === undefined) {
+                await client.query('ROLLBACK')
+                return {details: null, err: 400};
+            }
+
             let res = await client.query('INSERT INTO hackathon_details (hid, detail, index) VALUES ($1, $2, $3) RETURNING *',
                 [hid, details[d].detail, details[d].index]);
             if (res.rowCount === 0) return {hacks: null, err: 404};
@@ -100,20 +105,26 @@ async function createHackathonDetailsTx(hid, details) {
 
 async function updateHackathonDetailsTx(details) {
     const client = await pool.connect()
-    let resList;
+    let resList = [];
 
     try {
         await client.query('BEGIN')
 
         for (d in details) {
+            if (details[d].did === undefined || details[d].detail === undefined || details[d].index === undefined) {
+                await client.query('ROLLBACK')
+                return {details: null, err: 400};
+            }
+            
             let res = await client.query('UPDATE hackathon_details SET detail=$1, index=$2 WHERE did=$3 RETURNING *',
                 [details[d].detail, details[d].index, details[d].did]);
 
             if (res.rowCount === 0) {
-                resList.push({miss: `Could not find details for ${details[d].did}`})
+                await client.query('ROLLBACK')
+                return {details: null, err: 404};
             }
             else {
-                restList.push(res.rows[0]);
+                resList.push(res.rows[0]);
             }
         }
 
@@ -132,10 +143,10 @@ async function updateHackathonDetailsTx(details) {
 
 async function deleteHackathonDetail(did) {
     try {
-        let res = await pool.query('SELECT * FROM hackathon_details WHERE did=$1',
+        let res = await pool.query('DELETE FROM hackathon_details WHERE did=$1',
             [did]);
-
-        if (res.rows === 0) return {err: 404};
+        console.log('deleted hackathon detail?', res.rows, did)
+        if (res.rowCount === 0) return {err: 404};
         return {err: null}
     } catch (err) {
         console.error(err);
@@ -148,7 +159,7 @@ async function getHackathonDetails(hid) {
         let res = await pool.query('SELECT * FROM hackathon_details WHERE hid=$1',
             [hid]);
 
-        if (res.rows === 0) return {details: null, err: 404};
+        if (res.rowCount === 0) return {details: null, err: 404};
         return {details: res.rows, err: null}
     } catch (err) {
         console.error(err);
@@ -161,7 +172,7 @@ async function publishHackathon(hid) {
         let res = await pool.query('UPDATE hackathons SET draft = !draft WHERE hid = $1',
             [hid]);
 
-        if (res.rows === 0) return {hack: null, err: 404};
+        if (res.rowCount === 0) return {hack: null, err: 404};
         return {hacks: res.rows[0], err: null}
     } catch (err) {
         console.error(err);

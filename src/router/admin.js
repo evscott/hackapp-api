@@ -9,7 +9,7 @@ router.post('/hacks', JWT.validateAdminToken, Handlers.hack.createHackathonOverv
 router.put('/hacks/', JWT.validateAdminToken, Handlers.hack.updateHackathonOverview);
 router.delete('/hacks/:hid', JWT.validateAdminToken, Handlers.hack.deleteHackathon);
 router.post('/hacks/det', JWT.validateAdminToken, Handlers.hack.createHackathonDetails);
-router.put('/hacks/det', JWT.validateAdminToken, Handlers.hack.updateHackathonDetail);
+router.put('/hacks/det', JWT.validateAdminToken, Handlers.hack.updateHackathonDetails);
 router.delete('/hacks/det/:did', JWT.validateAdminToken, Handlers.hack.deleteHackathonDetail);
 router.post('/hacks/reg/quest', JWT.validateAdminToken, Handlers.reg.createRegQuestions);
 router.put('/hacks/reg/quest', JWT.validateAdminToken, Handlers.reg.updateRegQuestions);

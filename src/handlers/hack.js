@@ -436,10 +436,10 @@ let createHackathonDetails = async (req, res) => {
  *      '404':
  *        description: 'Not found'
  */
-let updateHackathonDetail = async (req, res) => {
+let updateHackathonDetails = async (req, res) => {
     let details = req.body.details;
 
-    if (detail === undefined){
+    if (details === undefined){
         return res.status(400).send();
     }
 
@@ -448,7 +448,7 @@ let updateHackathonDetail = async (req, res) => {
         return res.status(updateHackathonDetailRes.err).send();
     }
 
-    return res.status(200).send(updateHackathonDetailRes.detail)
+    return res.status(200).send(updateHackathonDetailRes.details)
 };
 
 /**
@@ -614,7 +614,7 @@ module.exports = {
     getHackathonOverviews,
     getHackathonOverview,
     createHackathonDetails,
-    updateHackathonDetail,
+    updateHackathonDetails,
     deleteHackathonDetail,
     getHackathonDetails,
     publishHackathon

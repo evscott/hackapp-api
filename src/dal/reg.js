@@ -14,6 +14,7 @@ async function createRegQuestionTx(hid, question, descr, required, index, type, 
         }
 
         await client.query('COMMIT')
+        await client.query('BEGIN')
 
         let regQuestion = res.rows[0];
         let resList = [];
