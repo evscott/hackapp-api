@@ -150,10 +150,10 @@ async function deleteRegOption(oid) {
 async function getRegOptions(qid) {
     try {
         console.log('gettingReg for', qid);
-        let res = await pool.query('SELECT * reg_options WHERE qid = $1',
+        let res = await pool.query('SELECT * FROM reg_options WHERE qid = $1',
             [qid]);
 
-        return {option: res.rows, err: null}
+        return {options: res.rows, err: null}
     } catch (err) {
         console.error(err)
         return {err: 500}
