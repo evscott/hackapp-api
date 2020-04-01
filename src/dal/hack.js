@@ -88,7 +88,12 @@ async function createHackathonDetailsTx(hid, details) {
 
             let res = await client.query('INSERT INTO hackathon_details (hid, detail, index) VALUES ($1, $2, $3) RETURNING *',
                 [hid, details[d].detail, details[d].index]);
-            if (res.rowCount === 0) return {hacks: null, err: 404};
+            
+            if (res.rowCount === 0) {
+                await client.query('ROLLBACK')
+                return {hacks: null, err: 404};
+            }
+            
             resList.push(res.rows[0]);
         }
         
@@ -145,7 +150,6 @@ async function deleteHackathonDetail(did) {
     try {
         let res = await pool.query('DELETE FROM hackathon_details WHERE did=$1',
             [did]);
-        console.log('deleted hackathon detail?', res.rows, did)
         if (res.rowCount === 0) return {err: 404};
         return {err: null}
     } catch (err) {

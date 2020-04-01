@@ -28,9 +28,6 @@ const createCsvStringifier = require('csv-writer').createObjectCsvStringifier;
  *          items:
  *            type: object
  *            properties:
- *              hid:
- *                type: string
- *                format: uuid
  *              question:
  *                type: string
  *                format: uuid
@@ -45,12 +42,6 @@ const createCsvStringifier = require('csv-writer').createObjectCsvStringifier;
  *                items:
  *                  type: string
  *                  properties:
- *                    oid: 
- *                      type: string
- *                      format: uuid
- *                    qid: 
- *                      type: string
- *                      format: uuid
  *                    option: 
  *                      type: string
  *                    index: 

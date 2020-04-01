@@ -4,17 +4,14 @@ async function createRegQuestionTx(hid, question, descr, required, index, type, 
     const client = await pool.connect()
 
     try {
-        await client.query('BEGIN')
         let res = await client.query('INSERT INTO reg_questions(hid, question, descr, required, index, type) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
             [hid, question, descr, required, index, type]);
 
         if (res.rowCount[0] === 0) {
-            await client.query('ROLLBACK')
             return {question: null, options: null, err: 400}
         }
 
-        await client.query('COMMIT')
-        await client.query('BEGIN')
+        await client.query('BEGIN TRANSACTION')
 
         let regQuestion = res.rows[0];
         let resList = [];
@@ -28,7 +25,6 @@ async function createRegQuestionTx(hid, question, descr, required, index, type, 
                 return { question: null, options: null, err: 400 };
             }
 
-            await client.query('ROLLBACK')
             resList.push(res.rows[0])
         }
 
@@ -68,7 +64,6 @@ async function updateRegQuestionTx(qid, question, descr, required, index, type, 
                 return { question: null, options: null, err: 400 };
             }
 
-            await client.query('ROLLBACK')
             resList.push(res.rows[0])
         }
 

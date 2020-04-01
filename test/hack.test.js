@@ -22,7 +22,7 @@ describe('hackathon', function() {
             })
     });
 
-    before(function(done) {
+    before('signing up to get user api token should succeed', function(done) {
         chai.request(app)
             .post('/auth')
             .send('firstName=user')
@@ -39,7 +39,7 @@ describe('hackathon', function() {
             });
     });
 
-    before('create hackathon to be updated should succeed', function(done) {
+    before('creating hackathon to get hid should succeed', function(done) {
         chai.request(app)
             .post('/a/hacks')
             .send('name=MtaHacks')
