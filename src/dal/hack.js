@@ -100,7 +100,7 @@ async function createHackathonDetailsTx(hid, details) {
 
 async function updateHackathonDetailsTx(details) {
     const client = await pool.connect()
-    let resList;
+    let resList = [];
 
     try {
         await client.query('BEGIN')
@@ -113,7 +113,7 @@ async function updateHackathonDetailsTx(details) {
                 resList.push({miss: `Could not find details for ${details[d].did}`})
             }
             else {
-                restList.push(res.rows[0]);
+                resList.push(res.rows[0]);
             }
         }
 
@@ -158,7 +158,7 @@ async function getHackathonDetails(hid) {
 
 async function publishHackathon(hid) {
     try {
-        let res = await pool.query('UPDATE hackathons SET draft = !draft WHERE hid = $1',
+        let res = await pool.query('UPDATE hackathons SET draft = NOT draft WHERE hid = $1',
             [hid]);
 
         if (res.rows === 0) return {hack: null, err: 404};

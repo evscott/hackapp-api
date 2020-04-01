@@ -439,7 +439,7 @@ let createHackathonDetails = async (req, res) => {
 let updateHackathonDetail = async (req, res) => {
     let details = req.body.details;
 
-    if (detail === undefined){
+    if (details === undefined){
         return res.status(400).send();
     }
 
@@ -448,7 +448,7 @@ let updateHackathonDetail = async (req, res) => {
         return res.status(updateHackathonDetailRes.err).send();
     }
 
-    return res.status(200).send(updateHackathonDetailRes.detail)
+    return res.status(200).send(updateHackathonDetailRes.details)
 };
 
 /**
