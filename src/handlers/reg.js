@@ -110,7 +110,7 @@ let createRegQuestions = async (req, res) => {
         type = questions[q].type,
         options = questions[q].options;
 
-        if (hid === undefined || question === undefined || descr === undefined || required === undefined || index === undefined || type === undefined) {
+        if (question === undefined || descr === undefined || required === undefined || index === undefined || type === undefined) {
             return res.status(400).send();
         }
 

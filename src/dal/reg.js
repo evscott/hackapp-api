@@ -4,10 +4,18 @@ async function createRegQuestionTx(hid, question, descr, required, index, type, 
     const client = await pool.connect()
 
     try {
-        let res = await client.query('INSERT INTO reg_questions(hid, question, descr, required, index, type) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
+
+        let res = await client.query('SELECT * FROM hackathons WHERE hid = $1',
+            [hid]);
+
+        if (res.rowCount === 0) {
+            return {question: null, options: null, err: 400}
+        }
+
+        res = await client.query('INSERT INTO reg_questions(hid, question, descr, required, index, type) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
             [hid, question, descr, required, index, type]);
 
-        if (res.rowCount[0] === 0) {
+        if (res.rowCount === 0) {
             return {question: null, options: null, err: 400}
         }
 
@@ -17,10 +25,14 @@ async function createRegQuestionTx(hid, question, descr, required, index, type, 
         let resList = [];
 
         for (o in options) {
+            if (options[o].option === undefined || options[o].index === undefined) {
+                return { question: null, options: null, err: 400 };
+            }
+            
             res = await client.query('INSERT INTO reg_options(qid, option, index) VALUES ($1, $2, $3) RETURNING *',
             [regQuestion.qid, options[o].option, options[o].index]);
 
-            if (res.rowCount[0] === 0) {
+            if (res.rowCount === 0) {
                 await client.query('ROLLBACK')
                 return { question: null, options: null, err: 400 };
             }
@@ -29,13 +41,12 @@ async function createRegQuestionTx(hid, question, descr, required, index, type, 
         }
 
         await client.query('COMMIT')
+        client.release()
         return {question: regQuestion, options: resList, err: null}
+
     } catch (err) {
-        console.error(err)
         await client.query('ROLLBACK')
         return {question: null, options: null, err: 500}
-    } finally {
-        client.release()
     }
 }
 
@@ -43,11 +54,11 @@ async function updateRegQuestionTx(qid, question, descr, required, index, type, 
     const client = await pool.connect()
 
     try {
-        await client.query('BEGIN')
+        await client.query('BEGIN TRANSACTION')
         let res = await client.query('UPDATE reg_questions SET question = $2, descr = $3, required = $4, index = $5, type = $6 WHERE qid = $1 RETURNING *',
             [qid, question, descr, required, index, type]);
 
-        if (res.rowCount[0] === 0) {
+        if (res.rowCount === 0) {
             await client.query('ROLLBACK')
             return {question: null, options: null, err: 400}
         }
@@ -56,10 +67,10 @@ async function updateRegQuestionTx(qid, question, descr, required, index, type, 
         let resList = [];
 
         for (o in options) {
-            res = await client.query('UPDATE reg_options SET option = $1, index = $2 WHERE qid = $3 RETURNING *',
-            [options[o].option, options[o].index, qid]);
+            res = await client.query('UPDATE reg_options SET option = $1, index = $2 WHERE oid = $3 RETURNING *',
+            [options[o].option, options[o].index, options[o].oid]);
 
-            if (res.rowCount[0] === 0) {
+            if (res.rowCount === 0) {
                 await client.query('ROLLBACK')
                 return { question: null, options: null, err: 400 };
             }
@@ -68,13 +79,12 @@ async function updateRegQuestionTx(qid, question, descr, required, index, type, 
         }
 
         await client.query('COMMIT')
+        client.release()
         return {question: regQuestion, options: resList, err: null}
     } catch (err) {
         console.error(err)
         await client.query('ROLLBACK')
         return {question: null, options: null, err: 500}
-    } finally {
-        client.release()
     }
 }
 
@@ -83,7 +93,7 @@ async function deleteRegQuestion(qid) {
         let res = await pool.query('DELETE FROM reg_questions WHERE qid = $1',
             [qid]);
 
-        if (res.rowCount[0] === 0) return {err: 404};
+        if (res.rowCount === 0) return {err: 404};
         else return {err: null}
     } catch (err) {
         console.error(err)
@@ -96,8 +106,7 @@ async function getRegQuestions(hid) {
         let res = await pool.query('SELECT * FROM reg_questions WHERE hid = $1',
             [hid]);
 
-        if (res.rowCount[0] === 0) return {err: 404};
-        else return {questions: res.rows, err: null}
+        return {questions: res.rows, err: null}
     } catch (err) {
         console.error(err)
         return {err: 500}
@@ -109,7 +118,7 @@ async function createRegOption(qid, option, index) {
         let res = await pool.query('INSERT INTO reg_options(qid, option, index) VALUES ($1, $2, $3) RETURNING *',
             [qid, option]);
 
-        if (res.rowCount[0] === 0) return {err: 400};
+        if (res.rowCount === 0) return {err: 400};
         else return {option: res.rows[0], err: null}
     } catch (err) {
         console.error(err)
@@ -122,7 +131,7 @@ async function updateRegOption(oid, index, option) {
         let res = await pool.query('UPDATE reg_options SET option = $1, index = $2 WHERE oid = $3 RETURNING *',
             [option, index, oid]);
 
-        if (res.rowCount[0] === 0) return {err: 404};
+        if (res.rowCount === 0) return {err: 404};
         else return {option: res.rows[0], err: null}
     } catch (err) {
         console.error(err)
@@ -135,7 +144,7 @@ async function deleteRegOption(oid) {
         let res = await pool.query('DELETE FROM reg_options WHERE oid = $1',
             [oid]);
 
-        if (res.rowCount[0] === 0) return {err: 404};
+        if (res.rowCount === 0) return {err: 404};
         else return {err: null}
     } catch (err) {
         console.error(err)
@@ -166,7 +175,7 @@ async function createRegAnswer(qid, uid, oid, answer) {
             res = await pool.query('INSERT INTO reg_answers(qid, uid, answer) VALUES ($1, $2, $3) RETURNING *',
                 [qid, uid, answer]);
         
-        if (res.rowCount[0] === 0) return {answer: null, err: 400};
+        if (res.rowCount === 0) return {answer: null, err: 400};
         else return {answer: res.rows[0], err: null}
     } catch (err) {
         console.error(err)
@@ -185,7 +194,7 @@ async function updateRegAnswer(aid, uid, oid, answer) {
             res = await pool.query('UPDATE reg_answers SET answer = $1 WHERE aid = $2 ND uid = $3 RETURNING *',
                 [answer, aid, uid]);
         
-        if (res.rowCount[0] === 0) return {answer: null, err: 404};
+        if (res.rowCount === 0) return {answer: null, err: 404};
         else return {answer: res.rows[0], err: null}
     } catch (err) {
         console.error(err)
