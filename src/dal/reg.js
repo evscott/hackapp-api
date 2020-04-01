@@ -21,7 +21,7 @@ async function createRegQuestionTx(hid, question, descr, required, index, type, 
 
         for (o in options) {
             res = await client.query('INSERT INTO reg_options(qid, option, index) VALUES ($1, $2, $3) RETURNING *',
-            [regQuestion.qid, options[o], o]);
+            [regQuestion.qid, options[o].option, options[o].index]);
 
             if (res.rowCount[0] === 0) {
                 await client.query('ROLLBACK')
@@ -151,10 +151,10 @@ async function deleteRegOption(oid) {
 async function getRegOptions(qid) {
     try {
         console.log('gettingReg for', qid);
-        let res = await pool.query('SELECT * reg_options WHERE qid = $1',
+        let res = await pool.query('SELECT * FROM reg_options WHERE qid = $1',
             [qid]);
 
-        return {option: res.rows, err: null}
+        return {options: res.rows, err: null}
     } catch (err) {
         console.error(err)
         return {err: 500}
