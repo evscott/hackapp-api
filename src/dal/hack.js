@@ -173,7 +173,7 @@ async function getHackathonDetails(hid) {
 
 async function publishHackathon(hid) {
     try {
-        let res = await pool.query('UPDATE hackathons SET draft = !draft WHERE hid = $1',
+        let res = await pool.query('UPDATE hackathons SET draft = NOT draft WHERE hid = $1',
             [hid]);
 
         if (res.rowCount === 0) return {hack: null, err: 404};
