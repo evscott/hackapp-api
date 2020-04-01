@@ -756,8 +756,6 @@ let getRegAnswersCSV = async (req, res) => {
         return res.status(400).send();
     }
 
-    console.log('getting reg answers')
-
     let getRegAnswersRes = await DAL.getRegAnswers(hid);
     if (getRegAnswersRes. err) {
         return res.status(getRegAnswersRes.err).send();

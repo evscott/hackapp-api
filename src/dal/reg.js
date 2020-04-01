@@ -105,7 +105,7 @@ async function getRegQuestions(hid) {
     try {
         let res = await pool.query('SELECT * FROM reg_questions WHERE hid = $1',
             [hid]);
-
+            
         return {questions: res.rows, err: null}
     } catch (err) {
         console.error(err)
@@ -154,7 +154,6 @@ async function deleteRegOption(oid) {
 
 async function getRegOptions(qid) {
     try {
-        console.log('gettingReg for', qid);
         let res = await pool.query('SELECT * FROM reg_options WHERE qid = $1',
             [qid]);
 
