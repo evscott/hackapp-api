@@ -8,6 +8,6 @@ router.put('/users', JWT.validateUserToken, Handlers.user.updateUser);
 router.delete('/users', JWT.validateUserToken, Handlers.user.deleteUser);
 router.post('/hacks/reg/ans', JWT.validateUserToken, Handlers.reg.createRegAnswer);
 router.put('/hacks/reg/ans', JWT.validateUserToken, Handlers.reg.updateRegAnswer);
-router.get('/hacks/reg/ans/:hid', JWT.validateAdminToken, Handlers.reg.getUserRegAnswers);
+router.get('/hacks/reg/ans/:hid', JWT.validateUserToken, Handlers.reg.getUserRegAnswers);
 
 module.exports = router;
