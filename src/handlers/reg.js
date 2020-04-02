@@ -433,7 +433,7 @@ let getRegQuestions = async (req, res) => {
 let createRegOption = async (req, res) => {
     let qid = req.body.qid,
         option = req.body.option,
-        index = req.body.option;
+        index = req.body.index;
 
     if (qid === undefined || option === undefined || index === undefined) {
         return res.status(400).send();
