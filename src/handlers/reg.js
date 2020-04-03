@@ -93,39 +93,18 @@ const createCsvStringifier = require('csv-writer').createObjectCsvStringifier;
  *        description: 'JWT does not have admin privileges'
  */
 let createRegQuestions = async (req, res) => {
-    let hid = req.body.hid,
-        questions = req.body.questions;
+    let questions = req.body.questions;
 
-    if (hid === undefined || questions === undefined) {
+    if (questions === undefined) {
         return res.status(400).send();
     }
 
-    let questionsCreated = [];
-
-    for (q in questions) {
-        let question = questions[q].question,
-        descr = questions[q].descr,
-        required = questions[q].required,
-        index = questions[q].index,
-        type = questions[q].type,
-        options = questions[q].options;
-
-        if (question === undefined || descr === undefined || required === undefined || index === undefined || type === undefined) {
-            return res.status(400).send();
-        }
-
-        let createRegQuestionRes = await DAL.createRegQuestionTx(hid, question, descr, required, index, type, options)
-        if (createRegQuestionRes.err) {
-            return res.status(createRegQuestionRes.err).send();
-        }
-
-        questionCreated = createRegQuestionRes.question;
-        questionCreated.options = createRegQuestionRes.options;
-
-        questionsCreated.push(questionCreated);
+    let createQuestionsRes = await DAL.createRegQuestionsTx(questions);
+    if (createQuestionshidRes.err) {
+        return res.status(createQuestionsRes.err).send();
     }
 
-    return res.status(201).send(questionsCreated)
+    return res.status(201).send({ questionsCreated: createQuestionsRes.questions, optionsCreated: createQuestionsRes.options })
 };
 
 /**
@@ -221,41 +200,53 @@ let createRegQuestions = async (req, res) => {
  *        description: 'JWT does not have admin privileges'
  */
 let updateRegQuestions = async (req, res) => {
-    let questions = req.body.questions;
+    let questionsToBeCreated = req.body.questionsToBeCreated,
+        questionsToBeUpdated = req.body.questionsToBeUpdated,
+        questionsToBeDeleted = req.body.questionsToBeDeleted,
+        optionsToBeUpdated = req.body.optionsToBeUpdated,
+        optionsToBeDeleted = req.body.optionsToBeDeleted;
 
-    if (questions === undefined) {
-        return res.status(400).send();
+    let createQuestionsRes = await DAL.createRegQuestionTx(questionsToBeCreated);
+    if (createQuestionsRes.err) {
+        return res.status(createQuestionsRes.err).send();
     }
 
-    let questionsUpdated = [];
-
-    for (q in questions) {
-        let qid = questions[q].qid,
-        question = questions[q].question,
-        descr = questions[q].descr,
-        required = questions[q].required,
-        index = questions[q].index,
-        type = questions[q].type,
-        options = questions[q].options;
-
-        if (qid === undefined || question === undefined || descr === undefined || required === undefined || index === undefined || type === undefined) {
-            return res.status(400).send();
-        }
-
-        let updateRegQuestionRes = await DAL.updateRegQuestionTx(qid, question, descr, required, index, type, options)
-        if (updateRegQuestionRes.err) {
-            return res.status(updateRegQuestionRes.err).send();
-        }
-
-        questionUpdated = updateRegQuestionRes.question;
-        if (updateRegQuestionRes.options) {
-            questionUpdated.options = updateRegQuestionRes.options;
-        }
-
-        questionsUpdated.push(questionUpdated);
+    let updateQuestionsRes = await DAL.updateRegQuestionsTx(questionsToBeUpdated);
+    if (updateQuestionsRes.err) {
+        return res.status(updateQuestionsRes.err).send();
     }
 
-    return res.status(200).send(questionsUpdated)
+    let deletedQuestionIDs = [];
+    for (const qid of questionsToBeDeleted) {
+        let deleteQuestionRes = await DAL.deleteRegQuestion(qid);
+        if (deleteQuestionRes.err) {
+            return res.status(deleteQuestionRes.err).send();
+        }
+        deletedQuestionIDs.push(qid)
+    }
+
+    let updateOptionsRes = await DAL.updateRegOptionsTx(optionsToBeUpdated)
+    if (updateOptionsRes.err) {
+        return res.status(updateQuestionsRes.err).send();
+    }
+
+    let deletedOptionsIDs = [];
+    for (const oid of optionsToBeDeleted) {
+        let deleteOptionRes = await DAL.deleteRegOption(oid);
+        if (deleteOptionRes.err) {
+            return res.status(deleteOptionRes.err).send();
+        }
+        deletedOptionsIDs.push(oid)
+    }
+
+
+    return res.status(200).send({
+        questionsCreated: createQuestionsRes.questions,
+        questionsUpdated: updateQuestionsRes.questions,
+        questionsDeleted: deletedQuestionIDs,
+        optionsUpdated: updateOptionsRes.options,
+        optionsDeleted: deletedOptionsIDs,
+    })
 };
 
 /**
@@ -289,12 +280,12 @@ let updateRegQuestions = async (req, res) => {
  *        description: 'Not found'
  */
 let deleteRegQuestion = async (req, res) => {
-    let qid = req.query.qid
+    let qid = req.query.qid;
     if (qid === undefined) {
         return res.status(400).send();
     }
 
-    let deleteRegQuestionRes = await DAL.deleteRegQuestion(qid)
+    let deleteRegQuestionRes = await DAL.deleteRegQuestion(qid);
     if (deleteRegQuestionRes.err) {
         return res.status(deleteRegQuestionRes.err).send();
     }
