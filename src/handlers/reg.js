@@ -562,43 +562,41 @@ let deleteRegOption = async (req, res) => {
  *        schema:
  *          type: string
  *          format: uuid
- *      - name: qid
+ *      - name: answers
  *        in: body
  *        required: true
  *        schema:
- *          type: string
- *          format: uuid
- *      - name: oid
- *        in: body
- *        required: true
- *        schema:
- *          type: string
- *          format: uuid
- *      - name: answer
- *        in: body
- *        required: true
- *        schema:
- *          type: string
+ *          type: array
+ *          items:
+ *            type: object
+ *            properties:
+ *              qid:
+ *                type: string
+ *                format: uuid
+ *              oid:
+ *                type: string
+ *                format: uuid
+ *              answer:
+ *                type: string
  *    responses:
  *      '201':
  *        description: Success
  *        schema:
- *          type: object
- *          properties:
- *            aid:
- *              type: string
- *              format: uuid
- *            oid:
- *              type: string
- *              format: uuid
- *            qid:
- *              type: string
- *              format: uuid
- *            uid:
- *              type: string
- *              format: uuid
- *            answer:
- *              type: string
+ *          type: array
+ *          items:
+ *            type: object
+ *            properties:
+ *              aid:
+ *                type: string
+ *                format: uuid
+ *              oid:
+ *                type: string
+ *                format: uuid
+ *              uid:
+ *                type: string
+ *                format: uuid
+ *              answer:
+ *                type: string
  *      '400':
  *        description: 'Bad request'
  *      '401':
@@ -606,15 +604,10 @@ let deleteRegOption = async (req, res) => {
  *      '403':
  *        description: 'JWT does not have user privileges'
  */
-let createRegAnswer = async (req, res) => {    
-    let qid = req.body.qid,
-        oid = req.body.oid,
-        answer = req.body.answer;
+let createRegAnswers = async (req, res) => {    
+    let answers = req.body.answers;
 
-    if (qid === undefined) {
-        return res.status(400).send();
-    }
-    if (oid === undefined && answer === undefined) {
+    if (answers === undefined) {
         return res.status(400).send();
     }
 
@@ -624,12 +617,12 @@ let createRegAnswer = async (req, res) => {
         res.status(500).send(claims.err)
     }
     
-    let createRegAnswerRes = await DAL.createRegAnswer(qid, claims.uid, oid, answer)
-    if (createRegAnswerRes. err) {
-        return res.status(createRegAnswerRes.err).send();
+    let createRegAnswersRes = await DAL.createRegAnswers(claims.uid, answers)
+    if (createRegAnswersRes.err) {
+        return res.status(createRegAnswersRes.err).send();
     }
 
-    return res.status(201).send(createRegAnswerRes.answer)
+    return res.status(201).send(createRegAnswersRes.answers)
 };
 
 /**
@@ -644,43 +637,44 @@ let createRegAnswer = async (req, res) => {
  *        schema:
  *          type: string
  *          format: uuid
- *      - name: aid
+ *      - name: answers
  *        in: body
  *        required: true
  *        schema:
- *          type: string
- *          format: uuid
- *      - name: oid
- *        in: body
- *        required: true
- *        schema:
- *          type: string
- *          format: uuid
- *      - name: answer
- *        in: body
- *        required: true
- *        schema:
- *          type: string
+ *          type: array
+ *          items:
+ *            type: object
+ *            properties:
+ *              aid:
+ *                type: string
+ *                format: uuid
+ *              qid:
+ *                type: string
+ *                format: uuid
+ *              oid:
+ *                type: string
+ *                format: uuid
+ *              answer:
+ *                type: string
  *    responses:
  *      '200':
  *        description: Success
  *        schema:
- *          type: object
- *          properties:
- *            aid:
- *              type: string
- *              format: uuid
- *            oid:
- *              type: string
- *              format: uuid
- *            qid:
- *              type: string
- *              format: uuid
- *            uid:
- *              type: string
- *              format: uuid
- *            answer:
- *              type: string
+ *          type: array
+ *          items:
+ *            type: object
+ *            properties:
+ *              aid:
+ *                type: string
+ *                format: uuid
+ *              oid:
+ *                type: string
+ *                format: uuid
+ *              uid:
+ *                type: string
+ *                format: uuid
+ *              answer:
+ *                type: string
  *      '400':
  *        description: 'Bad request'
  *      '401':
@@ -689,14 +683,9 @@ let createRegAnswer = async (req, res) => {
  *        description: 'JWT does not have user privileges'
  */
 let updateRegAnswer = async (req, res) => {    
-    let aid = req.body.aid,
-        oid = req.body.oid,
-        answer = req.body.answer;
+    let answers = req.body.answers;
 
-    if (aid === undefined) {
-        return res.status(400).send();
-    }
-    if (oid === undefined && answer === undefined) {
+    if (answers === undefined) {
         return res.status(400).send();
     }
 
@@ -706,12 +695,12 @@ let updateRegAnswer = async (req, res) => {
         res.status(500).send(claims.err)
     }
     
-    let updateRegAnswerRes = await DAL.updateRegAnswer(aid, claims.uid, oid, answer)
-    if (updateRegAnswerRes. err) {
-        return res.status(updateRegAnswerRes.err).send();
+    let updateRegAnswersRes = await DAL.updateRegAnswer(claims.uid, answers)
+    if (updateRegAnswersRes. err) {
+        return res.status(updateRegAnswersRes.err).send();
     }
 
-    return res.status(201).send(updateRegAnswerRes.answer)
+    return res.status(201).send(updateRegAnswersRes.answers)
 };
 
 /**
@@ -844,7 +833,7 @@ module.exports = {
     createRegOption,
     updateRegOption,
     deleteRegOption,
-    createRegAnswer,
+    createRegAnswers,
     updateRegAnswer,
     getRegAnswersCSV,
     getUserRegAnswers

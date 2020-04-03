@@ -6,7 +6,7 @@ const { expect } = chai;
 chai.use(chaiHttp);
 
 describe('registration', function() {
-    let token, userToken, hid, badHid = '8f717842-62e1-11ea-9ba6-0242ac190002', qid = [], oid = [];
+    let token, userToken, hid, badHid = '8f717842-62e1-11ea-9ba6-0242ac190002', qid = [], oid = [], expiredToken = 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiJmYjk3ZjE1YS03MzVjLTExZWEtYTQ0Yi0wMjQyYWMxMjAwMDIiLCJhZG1pbiI6dHJ1ZSwiaWF0IjoxNTg1NjY1NDM3LCJleHAiOjE1ODU3MDg2Mzd9.JGc0c5MnI31S7NcuyPiSII2J1yJMXGdV6ohHrhbrIr6KmLycf5DsVOW6INaio6uXLCeBiLGTWKZf2D2IVPAuS98eBm0hNJYT7mC8KSn6YK41yDDeUtkt6LaFfF6KQJs5N3t9TTLlg9ANJmpyELDjWch7s3_3RDEEcATiraw1Rd3Hw58Acw-nyAjHd4d7waY7Ci6pTHd13gUpShdT-WMCz57--drzsVDQ7EamhCkEdVfb_e4x0DmqOHTJLkOAfLnNpSBnpnkVuFkluNjad5J9izWe2ofqTvlUwVjDTs3-_EyaqLIyqZ5JqYba8_J4Pc1ZCFsRLIqIyWQKoumn40L9i9Katou7nN-X3DU_hsd5Jxvy4u2TY3HC8MvBrk0XbHw_BJIZOhFSHVF_0u6PG9RH4j81jqFqluQYdVQ5621mJue2tc1bVsO-pgXEmRIJxhyLI_8VzEsCdJbpzdsBsszwfyOgrwUCeGO2ScSvEVuoUpvG4FelZl9RtUB8WMb8DtsNDYWL8oo91lUrEtq8PoQUY0YITuikI9dTz48jLcv6XstdKvcT3r1OAHe86-WS0V46eQykl45wOS3h0favyBasD6RmgujsR1ZMCvOEWC4k0kxVAR_tTawH92dDX9TlAAm0BCz_X2NJVWOZ0v5ul9AULZJung-prBV0XZ5NU_9W4rg';
 
     before('logging in to get admin api token should succeed', function(done) {
         chai.request(app)
@@ -671,7 +671,7 @@ describe('registration', function() {
                 chai.request(app)
                 .delete('/a/hacks/reg/quest/:qid')
                 .query({
-                    qid: qid[0],
+                    qid: qid[2],
                 })
                 .set('Accept', 'application/json')
                 .set('ha-api-token', token)
@@ -696,7 +696,7 @@ describe('registration', function() {
                 chai.request(app)
                 .delete('/a/hacks/reg/quest/:qid')
                 .query({
-                    qid: qid[0],
+                    qid: qid[2],
                 })
                 .set('Accept', 'application/json')
                 .set('ha-api-token', token)
@@ -710,7 +710,7 @@ describe('registration', function() {
                 chai.request(app)
                 .delete('/a/hacks/reg/quest/:qid')
                 .query({
-                    qid: qid[0],
+                    qid: qid[2],
                 })
                 .set('Accept', 'application/json')
                 .end((err, res) => {
@@ -723,12 +723,137 @@ describe('registration', function() {
                 chai.request(app)
                 .delete('/a/hacks/reg/quest/:qid')
                 .query({
-                    qid: qid[0],
+                    qid: qid[2],
                 })
                 .set('Accept', 'application/json')
                 .set('ha-api-token', userToken)
                 .end((err, res) => {
                     expect(res).to.have.status(403);
+                    done();
+                })
+            });
+        });
+    });
+
+    describe('reg answers', function() {
+        describe('POST /hacks/reg/ans', function() {
+            it('creating answers should succeed', function(done) {
+                let answers = [
+                    {
+                        qid: qid[0],
+                        oid: oid[1],
+                        answer: null,
+                    },
+                    {
+                        qid: qid[1],
+                        oid: '',
+                        answer: 'some answer',
+                    }
+                ]
+
+                chai.request(app)
+                .post('/u/hacks/reg/ans')
+                .send({
+                    qid: qid[0],
+                    answers: answers,
+                })
+                .set('Accept', 'application/json')
+                .set('ha-api-token', userToken)
+                .end((err, res) => {
+                    expect(res).to.have.status(201);
+                    done();
+                })
+            });
+
+            it('creating answers without token should fail', function(done) {
+                let answers = [
+                    {
+                        qid: qid[0],
+                        oid: oid[1],
+                        answer: null,
+                    },
+                    {
+                        oid: '',
+                        answer: 'some answer',
+                    }
+                ]
+
+                chai.request(app)
+                .post('/u/hacks/reg/ans')
+                .send({
+                    qid: qid[0],
+                    answers: answers,
+                })
+                .set('Accept', 'application/json')
+                .end((err, res) => {
+                    expect(res).to.have.status(401);
+                    done();
+                })
+            });
+
+            it('creating answer with missing fields should fail', function(done) {
+                let answers = [
+                    {
+                        qid: qid[0],
+                    },
+                ]
+
+                chai.request(app)
+                .post('/u/hacks/reg/ans')
+                .send({
+                    qid: qid[0],
+                    answers: answers,
+                })
+                .set('Accept', 'application/json')
+                .set('ha-api-token', userToken)
+                .end((err, res) => {
+                    expect(res).to.have.status(400);
+                    done();
+                })
+            });
+
+            it('creating answer with invalid qid should fail', function(done) {
+                let answers = [
+                    {
+                        qid: badHid,
+                        oid: oid[0],
+                        answer: null,
+                    },
+                ]
+
+                chai.request(app)
+                .post('/u/hacks/reg/ans')
+                .send({
+                    qid: qid[0],
+                    answers: answers,
+                })
+                .set('ha-api-token', userToken)
+                .set('Accept', 'application/json')
+                .end((err, res) => {
+                    expect(res).to.have.status(400);
+                    done();
+                })
+            });
+
+            it('creating answer with invalid oid should fail', function(done) {
+                let answers = [
+                    {
+                        qid: qid[0],
+                        oid: badHid,
+                        answer: null,
+                    },
+                ]
+
+                chai.request(app)
+                .post('/u/hacks/reg/ans')
+                .send({
+                    qid: qid[0],
+                    answers: answers,
+                })
+                .set('ha-api-token', userToken)
+                .set('Accept', 'application/json')
+                .end((err, res) => {
+                    expect(res).to.have.status(400);
                     done();
                 })
             });
