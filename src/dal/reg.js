@@ -118,7 +118,7 @@ async function getRegQuestions(hid) {
 async function createRegOption(qid, option, index) {
     try {
         let res = await pool.query('INSERT INTO reg_options(qid, option, index) VALUES ($1, $2, $3) RETURNING *',
-            [qid, option]);
+            [qid, option, index]);
 
         if (res.rowCount === 0) return {err: 400};
         else return {option: res.rows[0], err: null}
