@@ -1,86 +1,70 @@
 const pool = require('./dal-pool');
 
-async function createRegQuestionsTx(questions) {
-    const client = await pool.connect()
-
+async function createRegQuestions(questions) {
     try {
-
-        let res = await client.query('SELECT * FROM hackathons WHERE hid = $1',
-            [hid]);
-        if (res.rowCount === 0) {
-            return {question: null, options: null, err: 400}
-        }
 
         let questionsCreated = [], optionsCreated = [];
 
         for (q in questions) {
 
-            res = await client.query('INSERT INTO reg_questions(hid, question, descr, required, index, type) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
+            let res = await pool.query('SELECT * FROM hackathons WHERE hid = $1',
+                [questions[q].hid]);
+            if (res.rowCount === 0) {
+                return {questions: null, options: null, err: 400}
+            }
+
+            res = await pool.query('INSERT INTO reg_questions(hid, question, descr, required, index, type) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
                 [questions[q].hid, questions[q].question, questions[q].descr, questions[q].required, questions[q].index, questions[q].type]);
             if (res.rowCount === 0) {
-                return {question: null, options: null, err: 400}
+                return {questions: null, options: null, err: 400}
             }
 
             questionsCreated.push(res.rows[0]);
             let regQuestion = res.rows[0];
             let options = questions[q].options;
 
-            await client.query('BEGIN TRANSACTION');
+        
+            if (options) {
+                for (o in options) {
+                    if (options[o].option === undefined || options[o].index === undefined) {
+                        return {questions: null, options: null, err: 400};
+                    }
 
-            for (o in options) {
-                if (options[o].option === undefined || options[o].index === undefined) {
-                    client.release();
-                    return {question: null, options: null, err: 400};
+                    res = await pool.query('INSERT INTO reg_options(qid, option, index) VALUES ($1, $2, $3) RETURNING *',
+                        [regQuestion.qid, options[o].option, options[o].index]);
+                    if (res.rowCount === 0) {
+                        return {question: null, options: null, err: 400};
+                    }
+
+                    optionsCreated.push(res.rows[0]);
                 }
-
-                res = await client.query('INSERT INTO reg_options(qid, option, index) VALUES ($1, $2, $3) RETURNING *',
-                    [regQuestion.qid, options[o].option, options[o].index]);
-                if (res.rowCount === 0) {
-                    await client.query('ROLLBACK');
-                    client.release();
-                    return {question: null, options: null, err: 400};
-                }
-
-                optionsCreated.push(res.rows[0]);
             }
-
-            await client.query('COMMIT')
         }
 
-        client.release();
         return {questions: questionsCreated, options: optionsCreated, err: null}
     } catch (err) {
-        await client.query('ROLLBACK');
         return {questions: null, options: null, err: 500}
     }
 }
 
-async function updateRegQuestionsTx(questions) {
-    const client = await pool.connect();
-
+async function updateRegQuestions(questions) {
     try {
-        await client.query('BEGIN TRANSACTION');
-
         let resList = [];
-        for (q in questions) {
-            let res = await client.query('UPDATE reg_questions SET question = $1, descr = $2, required = $3, index = $4, type = $5 WHERE qid = $6 RETURNING *',
-                [questions[q].question, questions[q].descr, questions[q].required, questions[q].index, questions[q].type, questions[q].qid]);
+        for (q of questions) {
+            let res = await pool.query('UPDATE reg_questions SET question = $1, descr = $2, required = $3, index = $4, type = $5 WHERE qid = $6 RETURNING *',
+                [q.question, q.descr, q.required, q.index, q.type, q.qid]);
 
             if (res.rowCount === 0) {
-                await client.query('ROLLBACK');
                 return {questions: null, err: 400}
             }
 
             resList.push(res.rows[0])
         }
 
-        await client.query('COMMIT')
-        client.release()
         return {questions: resList, err: null}
     } catch (err) {
         console.error(err)
-        await client.query('ROLLBACK')
-        return {questiosn: null, err: 500}
+        return {questions: null, err: 500}
     }
 }
 
@@ -109,24 +93,27 @@ async function getRegQuestions(hid) {
     }
 }
 
-async function createRegOption(qid, option, index) {
+async function createRegOptions(options) {
     try {
-        let res = await pool.query('INSERT INTO reg_options(qid, option, index) VALUES ($1, $2, $3) RETURNING *',
-            [qid, option, index]);
+    
+        let resList = [];
+        for (o of options) {
+            let res = await pool.query('INSERT INTO reg_options(qid, option, index) VALUES ($1, $2, $3) RETURNING *',
+                [o.qid, o.option, o.index]);
 
-        if (res.rowCount === 0) return {err: 400};
-        else return {option: res.rows[0], err: null}
+            if (res.rowCount === 0) return {err: 400};
+            resList.push(res.rows[0]);
+        }
+
+        return {options: resList, err: null}
     } catch (err) {
         console.error(err)
         return {err: 500}
     }
 }
 
-async function updateRegOptionsTx(options) {
-    const client = await pool.connect()
-
+async function updateRegOptions(options) {
     try {
-        await client.query('BEGIN TRANSACTION');
 
         let updatedOptions = [];
         for (o of options) {
@@ -135,14 +122,11 @@ async function updateRegOptionsTx(options) {
                 [o.option, o.index, o.oid]);
 
             if (res.rowCount === 0) {
-                await client.query('ROLLBACK');
                 return {err: 404};
             }
             updatedOptions.push(res.rows[0]);
         }
 
-        await client.query('COMMIT');
-        client.release();
         return {options: updatedOptions, err: null}
     } catch (err) {
         console.error(err);
@@ -189,29 +173,22 @@ async function getRegOptions(qid) {
 }
 
 async function createRegAnswers(uid, answers) {
-    const client = await pool.connect()
-
     try {
-        await client.query('BEGIN TRANSACTION')
-
         let resList = [];
         for (a in answers) {
             if (answers[a].qid === undefined || answers[a].oid === undefined && answers[a].answer === undefined) {
-                client.release();
                 return {answers: null, err: 400}
             }
 
-            let res = await client.query('SELECT * FROM reg_questions WHERE qid = $1',
+            let res = await pool.query('SELECT * FROM reg_questions WHERE qid = $1',
             [answers[a].qid]);
 
             if (res.rowCount === 0) {
-                await client.query('ROLLBACK')
-                client.release();
                 return {answers: null, err: 400}
             }
     
             if (answers.oid) {
-                res = await client.query('SELECT * FROM reg_options WHERE oid = $1',
+                res = await pool.query('SELECT * FROM reg_options WHERE oid = $1',
                     [answers[a].oid]);
 
                 if (res.rowCount > 0)
@@ -223,16 +200,12 @@ async function createRegAnswers(uid, answers) {
                     [answers[a].qid, uid, answers[a].answer]);
 
             if (res.rowCount === 0) {
-                await client.query('ROLLBACK')
-                client.release();
                 return {answers: null, err: 400}
             }
 
             resList.push(res.rows[0]);
         }
         
-        await client.query('COMMIT');
-        client.release();
         return {answers: resList, err: null}
     } catch (err) {
         console.error(err)
@@ -241,24 +214,17 @@ async function createRegAnswers(uid, answers) {
 }
 
 async function updateRegAnswer(uid, answers) {
-    const client = await pool.connect()
-
     try {
-        await client.query('BEGIN TRANSACTION')
-
         let resList = [];
         for (a in answers) {
             if (answers[a].aid === undefined || answers[a].oid === undefined && answers[a].answer === undefined) {
-                client.release();
                 return {answers: null, err: 400}
             }
 
-            let res = await client.query('SELECT * FROM reg_questions WHERE qid = $1',
+            let res = await pool.query('SELECT * FROM reg_questions WHERE qid = $1',
             [answers[a].qid]);
 
             if (res.rowCount === 0) {
-                await client.query('ROLLBACK')
-                client.release();
                 return {answers: null, err: 400}
             }
     
@@ -266,16 +232,12 @@ async function updateRegAnswer(uid, answers) {
                     [answers[a].oid, answers[a].aid, uid]);  
 
             if (res.rowCount === 0) {
-                await client.query('ROLLBACK')
-                client.release();
                 return {answers: null, err: 400}
             }
 
             resList.push(res.rows[0]);
         }
         
-        await client.query('COMMIT');
-        client.release();
         return {answers: resList, err: null}
     } catch (err) {
         console.error(err)
@@ -312,13 +274,13 @@ async function getUserRegAnswers(hid, uid) {
 }
 
 module.exports = {
-    createRegQuestionsTx,
-    updateRegQuestionsTx,
+    createRegQuestions,
+    updateRegQuestions,
     deleteRegQuestion,
     getRegQuestions,
-    createRegOption,
+    createRegOptions,
     updateRegOption,
-    updateRegOptionsTx,
+    updateRegOptions,
     deleteRegOption,
     getRegOptions,
     createRegAnswers,

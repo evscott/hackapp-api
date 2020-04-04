@@ -52,8 +52,8 @@ CREATE TABLE IF NOT EXISTS Reg_Questions (
     question text NOT NULL,
     descr text NOT NULL,
     required bool,
-    index SMALLINT,
-    type varchar(255),
+    index SMALLINT NOT NULL,
+    type varchar(255) NOT NULL,
     PRIMARY KEY (qid)
 );
 

@@ -61,6 +61,7 @@ describe('registration', function() {
     before('creating registration questions with options to be updated should succeed', function(done) {
         let questions = [
             {
+                hid: hid,
                 question: 'question one',
                 descr: 'description one',
                 required: false,
@@ -82,6 +83,7 @@ describe('registration', function() {
                 ]
             },
             {
+                hid: hid,
                 question: 'question two',
                 descr: 'description two',
                 required: false,
@@ -89,6 +91,7 @@ describe('registration', function() {
                 type: 'type on'
             },
             {
+                hid: hid,
                 question: 'question three',
                 descr: 'description three',
                 required: false,
@@ -100,24 +103,23 @@ describe('registration', function() {
         chai.request(app)
             .post('/a/hacks/reg/quest/')
             .send({
-                hid: hid,
                 questions: questions
             })
             .set('Accept', 'application/json')
             .set('ha-api-token', token)
             .end((err, res) => {
                 expect(res).to.have.status(201);
-                expect(res.body[0].hid).equal(hid);
-                expect(res.body[1].hid).equal(hid);
-                expect(res.body[2].hid).equal(hid);
+                expect(res.body.questionsCreated[0].hid).equal(hid);
+                expect(res.body.questionsCreated[1].hid).equal(hid);
+                expect(res.body.questionsCreated[2].hid).equal(hid);
 
-                qid[0] = res.body[0].qid;
-                qid[1] = res.body[1].qid;
-                qid[2] = res.body[2].qid;
+                qid[0] = res.body.questionsCreated[0].qid;
+                qid[1] = res.body.questionsCreated[1].qid;
+                qid[2] = res.body.questionsCreated[2].qid;
 
-                oid[0] = res.body[0].options[0].oid;
-                oid[1] = res.body[0].options[1].oid;
-                oid[2] = res.body[0].options[2].oid;
+                oid[0] = res.body.optionsCreated[0].oid;
+                oid[1] = res.body.optionsCreated[1].oid;
+                oid[2] = res.body.optionsCreated[2].oid;
 
                 done();
             });
@@ -128,6 +130,7 @@ describe('registration', function() {
             it('creating registration questions without options should succeed', function(done) {
                 let questions = [
                     {
+                        hid: hid,
                         question: 'question one',
                         descr: 'description one',
                         required: false,
@@ -135,6 +138,7 @@ describe('registration', function() {
                         type: 'type on'
                     },
                     {
+                        hid: hid,
                         question: 'question two',
                         descr: 'description two',
                         required: false,
@@ -142,6 +146,7 @@ describe('registration', function() {
                         type: 'type on'
                     },
                     {
+                        hid: hid,
                         question: 'question three',
                         descr: 'description three',
                         required: false,
@@ -153,16 +158,15 @@ describe('registration', function() {
                 chai.request(app)
                     .post('/a/hacks/reg/quest/')
                     .send({
-                        hid: hid,
                         questions: questions
                     })
                     .set('Accept', 'application/json')
                     .set('ha-api-token', token)
                     .end((err, res) => {
                         expect(res).to.have.status(201);
-                        expect(res.body[0].hid).equal(hid);
-                        expect(res.body[1].hid).equal(hid);
-                        expect(res.body[2].hid).equal(hid);
+                        expect(res.body.questionsCreated[0].hid).equal(hid);
+                        expect(res.body.questionsCreated[1].hid).equal(hid);
+                        expect(res.body.questionsCreated[2].hid).equal(hid);
                         done();
                     })
             });
@@ -170,6 +174,7 @@ describe('registration', function() {
             it('creating registration questions with options should succeed', function(done) {
                 let questions = [
                     {
+                        hid: hid,
                         question: 'question one',
                         descr: 'description one',
                         required: false,
@@ -182,15 +187,16 @@ describe('registration', function() {
                             },
                             {
                                 option: "q1, option two",
-                                index: 0
+                                index: 1
                             },
                             {
                                 option: "q1, option three",
-                                index: 0
+                                index: 2
                             }
                         ]
                     },
                     {
+                        hid: hid,
                         question: 'question two',
                         descr: 'description two',
                         required: false,
@@ -198,6 +204,7 @@ describe('registration', function() {
                         type: 'type on'
                     },
                     {
+                        hid: hid,
                         question: 'question three',
                         descr: 'description three',
                         required: false,
@@ -210,11 +217,11 @@ describe('registration', function() {
                             },
                             {
                                 option: "q3, option two",
-                                index: 0
+                                index: 1
                             },
                             {
                                 option: "q3, option three",
-                                index: 0
+                                index: 2
                             }
                         ]
                     },
@@ -223,16 +230,15 @@ describe('registration', function() {
                 chai.request(app)
                     .post('/a/hacks/reg/quest/')
                     .send({
-                        hid: hid,
                         questions: questions
                     })
                     .set('Accept', 'application/json')
                     .set('ha-api-token', token)
                     .end((err, res) => {
                         expect(res).to.have.status(201);
-                        expect(res.body[0].hid).equal(hid);
-                        expect(res.body[1].hid).equal(hid);
-                        expect(res.body[2].hid).equal(hid);
+                        expect(res.body.questionsCreated[0].hid).equal(hid);
+                        expect(res.body.questionsCreated[1].hid).equal(hid);
+                        expect(res.body.questionsCreated[2].hid).equal(hid);
                         done();
                     })
             });
@@ -240,6 +246,7 @@ describe('registration', function() {
             it('creating registration question with option that is missing some fields should fail', function(done) {
                 let questions = [
                     {
+                        hid: hid,
                         question: 'question one',
                         descr: 'description one',
                         required: false,
@@ -256,31 +263,6 @@ describe('registration', function() {
                 chai.request(app)
                     .post('/a/hacks/reg/quest/')
                     .send({
-                        hid: hid,
-                        questions: questions
-                    })
-                    .set('Accept', 'application/json')
-                    .set('ha-api-token', token)
-                    .end((err, res) => {
-                        expect(res).to.have.status(400);
-                        done();
-                    })
-            });
-
-            it('creating registration question that is missing some fields should fail', function(done) {
-                let questions = [
-                    {
-                        question: 'question one',
-                        descr: 'description one',
-                        required: false,
-                        index: 0,
-                    },
-                ];
-
-                chai.request(app)
-                    .post('/a/hacks/reg/quest/')
-                    .send({
-                        hid: hid,
                         questions: questions
                     })
                     .set('Accept', 'application/json')
@@ -318,6 +300,7 @@ describe('registration', function() {
             it('creating registration question with bad hid should fail', function(done) {
                 let questions = [
                     {
+                        hid: badHid,
                         question: 'question one',
                         descr: 'description one',
                         required: false,
@@ -329,7 +312,6 @@ describe('registration', function() {
                 chai.request(app)
                     .post('/a/hacks/reg/quest/')
                     .send({
-                        hid: badHid,
                         questions: questions
                     })
                     .set('Accept', 'application/json')
@@ -391,236 +373,91 @@ describe('registration', function() {
         });
 
         describe('PUT /a/hacks/reg/quest', function() {
-            it('updating registration questions without options should succeed', function(done) {
-                let questions = [
+            it('creating, updating, and deleting questions and options should succeed', function(done) {
+                let questionsToCreate = [
+                    {
+                        hid: hid,
+                        question: 'question four',
+                        descr: 'description one',
+                        required: false,
+                        index: 3,
+                        type: 'type on',
+                    },
+                    {
+                        hid: hid,
+                        question: 'question five',
+                        descr: 'description two',
+                        required: false,
+                        index: 4,
+                        type: 'type on',
+                        options: [
+                            {
+                                option: "q5, option one",
+                                index: 0
+                            },
+                            {
+                                option: "q5, option two",
+                                index: 1
+                            },
+                            {
+                                option: "q5, option three",
+                                index: 2
+                            }
+                        ]
+                    }
+                ];
+
+                let questionsToUpdate = [
+                    {
+                        qid: qid[0],
+                        question: 'question one',
+                        descr: 'description one',
+                        required: false,
+                        index: 0,
+                        type: 'type on',
+                    },
                     {
                         qid: qid[1],
-                        question: 'question two updated',
+                        question: 'question two',
                         descr: 'description two',
                         required: false,
                         index: 1,
                         type: 'type on'
                     },
-                    {
-                        qid: qid[2],
-                        question: 'question three updated',
-                        descr: 'description three',
-                        required: false,
-                        index: 2,
-                        type: 'type on'
-                    },
                 ];
 
+                let optionsToUpdate = [
+                    {
+                        oid: oid[0],
+                        option: "1, option one updated",
+                        index: 0
+                    },
+                    {
+                        oid: oid[1],
+                        option: "1, option one updated",
+                        index: 0
+                    },
+                ]
+
+                let questionsToDelete = [qid[2]]
+        
+                let optionsToDelete = [oid[2]]
+                
                 chai.request(app)
-                    .put('/a/hacks/reg/quest/')
+                    .put('/a/hacks/reg/quest')
                     .send({
-                        hid: hid,
-                        questions: questions
+                        questionsToBeCreated: questionsToCreate,
+                        questionsToBeUpdated: questionsToUpdate,
+                        questionsToBeDeleted: questionsToDelete,
+                        optionsToBeUpdated: optionsToUpdate,
+                        optionsToBeDeleted: optionsToDelete,
                     })
                     .set('Accept', 'application/json')
                     .set('ha-api-token', token)
                     .end((err, res) => {
                         expect(res).to.have.status(200);
-                        expect(res.body[0].hid).equal(hid);
-                        expect(res.body[1].hid).equal(hid);
-                        expect(res.body[0].question).equal('question two updated')
-                        expect(res.body[1].question).equal('question three updated')
                         done();
-                    })
-            });
-
-            it('updating registration questions with options should succeed', function(done) {
-                let questions = [
-                    {
-                        qid: qid[0],
-                        question: 'question one',
-                        descr: 'description one',
-                        required: false,
-                        index: 0,
-                        type: 'type on',
-                        options: [
-                            {
-                                oid: oid[0],
-                                option: "q1, option one updated",
-                                index: 0
-                            },
-                            {
-                                oid: oid[1],
-                                option: "q1, option two updated",
-                                index: 1
-                            },
-                            {
-                                oid: oid[2],
-                                option: "q1, option three updated",
-                                index: 2
-                            }
-                        ]
-                    },
-                ];
-
-                chai.request(app)
-                    .put('/a/hacks/reg/quest/')
-                    .send({
-                        hid: hid,
-                        questions: questions
-                    })
-                    .set('Accept', 'application/json')
-                    .set('ha-api-token', token)
-                    .end((err, res) => {
-                        expect(res).to.have.status(200);
-                        expect(res.body[0].hid).equal(hid);
-                        expect(res.body[0].options[0].qid).equal(qid[0]);
-                        expect(res.body[0].options[1].qid).equal(qid[0]);
-                        expect(res.body[0].options[2].qid).equal(qid[0]);
-                        expect(res.body[0].options[0].oid).equal(oid[0]);
-                        expect(res.body[0].options[1].oid).equal(oid[1]);
-                        expect(res.body[0].options[2].oid).equal(oid[2]);
-                        expect(res.body[0].options[0].option).equal('q1, option one updated');
-                        expect(res.body[0].options[1].option).equal('q1, option two updated');
-                        expect(res.body[0].options[2].option).equal('q1, option three updated');
-                        done();
-                    })
-            });
-
-            it('updating registration question with bad qid should fail', function(done) {
-                let questions = [
-                    {
-                        qid: badHid,
-                        question: 'question one',
-                        descr: 'description one',
-                        required: false,
-                        index: 0,
-                        type: 'type on',
-                        options: [
-                            {
-                                oid: oid[0],
-                                option: "q1, option one updated",
-                                index: 0
-                            },
-                            {
-                                oid: oid[1],
-                                option: "q1, option two updated",
-                                index: 1
-                            },
-                            {
-                                oid: oid[2],
-                                option: "q1, option three updated",
-                                index: 2
-                            }
-                        ]
-                    },
-                ];
-
-                chai.request(app)
-                    .put('/a/hacks/reg/quest/')
-                    .send({
-                        hid: hid,
-                        questions: questions
-                    })
-                    .set('Accept', 'application/json')
-                    .set('ha-api-token', token)
-                    .end((err, res) => {
-                        expect(res).to.have.status(400);
-                        done();
-                    })
-            });
-
-            it('updating registration question with option with bad oid should fail', function(done) {
-                let questions = [
-                    {
-                        qid: qid[0],
-                        question: 'question one',
-                        descr: 'description one',
-                        required: false,
-                        index: 0,
-                        type: 'type on',
-                        options: [
-                            {
-                                oid: badHid,
-                                option: "q1, option one updated",
-                                index: 0
-                            },
-                        ]
-                    },
-                ];
-
-                chai.request(app)
-                    .put('/a/hacks/reg/quest/')
-                    .send({
-                        hid: hid,
-                        questions: questions
-                    })
-                    .set('Accept', 'application/json')
-                    .set('ha-api-token', token)
-                    .end((err, res) => {
-                        expect(res).to.have.status(400);
-                        done();
-                    })
-            });
-
-            it('updating registration question without token should fail', function(done) {
-                let questions = [
-                    {
-                        qid: qid[0],
-                        question: 'question one',
-                        descr: 'description one',
-                        required: false,
-                        index: 0,
-                        type: 'type on',
-                        options: [
-                            {
-                                oid: oid[0],
-                                option: "q1, option one updated",
-                                index: 0
-                            },
-                        ]
-                    },
-                ];
-
-                chai.request(app)
-                    .put('/a/hacks/reg/quest/')
-                    .send({
-                        hid: hid,
-                        questions: questions
-                    })
-                    .set('Accept', 'application/json')
-                    .end((err, res) => {
-                        expect(res).to.have.status(401);
-                        done();
-                    })
-            });
-
-            it('updating registration question with token without admin privileges should fail', function(done) {
-                let questions = [
-                    {
-                        qid: qid[0],
-                        question: 'question one',
-                        descr: 'description one',
-                        required: false,
-                        index: 0,
-                        type: 'type on',
-                        options: [
-                            {
-                                oid: oid[0],
-                                option: "q1, option one updated",
-                                index: 0
-                            },
-                        ]
-                    },
-                ];
-
-                chai.request(app)
-                    .put('/a/hacks/reg/quest/')
-                    .send({
-                        hid: hid,
-                        questions: questions
-                    })
-                    .set('Accept', 'application/json')
-                    .set('ha-api-token', userToken)
-                    .end((err, res) => {
-                        expect(res).to.have.status(403);
-                        done();
-                });
+                    });
             });
         });
 
@@ -671,7 +508,7 @@ describe('registration', function() {
                 chai.request(app)
                 .delete('/a/hacks/reg/quest/:qid')
                 .query({
-                    qid: qid[2],
+                    qid: qid[1],
                 })
                 .set('Accept', 'application/json')
                 .set('ha-api-token', token)
@@ -723,7 +560,7 @@ describe('registration', function() {
                 chai.request(app)
                 .delete('/a/hacks/reg/quest/:qid')
                 .query({
-                    qid: qid[2],
+                    qid: qid[1],
                 })
                 .set('Accept', 'application/json')
                 .set('ha-api-token', userToken)
@@ -744,11 +581,6 @@ describe('registration', function() {
                         oid: oid[1],
                         answer: null,
                     },
-                    {
-                        qid: qid[1],
-                        oid: '',
-                        answer: 'some answer',
-                    }
                 ]
 
                 chai.request(app)
@@ -817,29 +649,6 @@ describe('registration', function() {
                     {
                         qid: badHid,
                         oid: oid[0],
-                        answer: null,
-                    },
-                ]
-
-                chai.request(app)
-                .post('/u/hacks/reg/ans')
-                .send({
-                    qid: qid[0],
-                    answers: answers,
-                })
-                .set('ha-api-token', userToken)
-                .set('Accept', 'application/json')
-                .end((err, res) => {
-                    expect(res).to.have.status(400);
-                    done();
-                })
-            });
-
-            it('creating answer with invalid oid should fail', function(done) {
-                let answers = [
-                    {
-                        qid: qid[0],
-                        oid: badHid,
                         answer: null,
                     },
                 ]

@@ -14,12 +14,6 @@ const createCsvStringifier = require('csv-writer').createObjectCsvStringifier;
  *        schema:
  *          type: string
  *          format: uuid
- *      - name: hid
- *        in: body
- *        required: true
- *        schema:
- *          type: string
- *          format: uuid
  *      - name: questions
  *        in: body
  *        required: true
@@ -40,10 +34,11 @@ const createCsvStringifier = require('csv-writer').createObjectCsvStringifier;
  *              options:
  *                type: array
  *                items:
- *                  type: string
+ *                  type: object
  *                  properties:
  *                    option: 
  *                      type: string
+ *                      format: uuid
  *                    index: 
  *                      type: number
  *    responses:
@@ -99,8 +94,8 @@ let createRegQuestions = async (req, res) => {
         return res.status(400).send();
     }
 
-    let createQuestionsRes = await DAL.createRegQuestionsTx(questions);
-    if (createQuestionshidRes.err) {
+    let createQuestionsRes = await DAL.createRegQuestions(questions);
+    if (createQuestionsRes.err) {
         return res.status(createQuestionsRes.err).send();
     }
 
@@ -119,7 +114,7 @@ let createRegQuestions = async (req, res) => {
  *        schema:
  *          type: string
  *          format: uuid
- *      - name: questions
+ *      - name: questionsToCreated
  *        in: body
  *        required: true
  *        schema:
@@ -153,9 +148,9 @@ let createRegQuestions = async (req, res) => {
  *                      type: string
  *                    index: 
  *                      type: number
- *    responses:
- *      '200':
- *        description: Success
+ *      - name: questionsToUpdated
+ *        in: body
+ *        required: true
  *        schema:
  *          type: array
  *          items:
@@ -164,11 +159,9 @@ let createRegQuestions = async (req, res) => {
  *              qid:
  *                type: string
  *                format: uuid
- *              hid:
- *                type: string
- *                format: uuid
  *              question:
  *                type: string
+ *                format: uuid
  *              descr:
  *                type: string
  *              required:
@@ -177,7 +170,104 @@ let createRegQuestions = async (req, res) => {
  *                type: number
  *              type:
  *                type: string
- *              options:
+ *      - name: optionsToBeCreated
+ *        in: body
+ *        required: true
+ *        schema:
+ *          type: array
+ *          items:
+ *            type: object
+ *            properties:
+ *              qid:
+ *                type: string
+ *                format: uuid
+ *              option:
+ *                type: string
+ *              index:
+ *                type: number
+ *      - name: questionsToBeDeleted
+ *        in: body
+ *        required: true
+ *        schema:
+ *          type: array
+ *          items:
+ *            type: string
+ *            format: uuid
+ *      - name: optionsToBeUpdated
+ *        in: body
+ *        required: true
+ *        schema:
+ *          type: array
+ *          items:
+ *            type: object
+ *            properties:
+ *              oid:
+ *                type: string
+ *                format: uuid
+ *              option:
+ *                type: string
+ *              index:
+ *                type: number
+ *      - name: optionsToBeDeleted
+ *        in: body
+ *        required: true
+ *        schema:
+ *          type: array
+ *          items:
+ *            type: string
+ *            format: uuid
+ *    responses:
+ *      '200':
+ *        description: Success
+ *        schema:
+ *          type: array
+ *          items:
+ *            type: object
+ *            properties:
+ *              questionsCreated:
+ *                type: array
+ *                items:
+ *                  type: object
+ *                  properties:
+ *                    qid:
+ *                      type: string
+ *                      format: uuid
+ *                    hid:
+ *                      type: string
+ *                      format: uuid
+ *                    question:
+ *                      type: string
+ *                    descr:
+ *                      type: string    
+ *                    index:
+ *                      type: number
+ *                    required:
+ *                      type: boolean
+ *              questionsUpdated:
+ *                type: array
+ *                items:
+ *                  type: object
+ *                  properties:
+ *                    qid:
+ *                      type: string
+ *                      format: uuid
+ *                    hid:
+ *                      type: string
+ *                      format: uuid
+ *                    question:
+ *                      type: string
+ *                    descr:
+ *                      type: string    
+ *                    index:
+ *                      type: number
+ *                    required:
+ *                      type: boolean
+ *              questionsDeleted:
+ *                type: array
+ *                items:
+ *                  type: string
+ *                  format: uuid
+ *              optionsCreated:
  *                type: array
  *                items:
  *                  type: object
@@ -191,7 +281,27 @@ let createRegQuestions = async (req, res) => {
  *                    option:
  *                      type: string
  *                    index:
- *                      type: number
+ *                      type: number 
+ *              optionsUpdated:
+ *                type: array
+ *                items:
+ *                  type: object
+ *                  properties:
+ *                    oid:
+ *                      type: string
+ *                      format: uuid
+ *                    qid:
+ *                      type: string
+ *                      format: uuid
+ *                    option:
+ *                      type: string
+ *                    index:
+ *                      type: number  
+ *              optionsDeleted:
+ *                type: array
+ *                items:
+ *                  type: string
+ *                  format: uuid   
  *      '400':
  *        description: 'Bad request'
  *      '401':
@@ -200,52 +310,85 @@ let createRegQuestions = async (req, res) => {
  *        description: 'JWT does not have admin privileges'
  */
 let updateRegQuestions = async (req, res) => {
-    let questionsToBeCreated = req.body.questionsToBeCreated,
+    let questionsToBeCreated = req.body.questionsToBeCreated,       
         questionsToBeUpdated = req.body.questionsToBeUpdated,
         questionsToBeDeleted = req.body.questionsToBeDeleted,
+        optionsToBeCreated = req.body.optionsToBeCreated,
         optionsToBeUpdated = req.body.optionsToBeUpdated,
         optionsToBeDeleted = req.body.optionsToBeDeleted;
 
-    let createQuestionsRes = await DAL.createRegQuestionTx(questionsToBeCreated);
-    if (createQuestionsRes.err) {
-        return res.status(createQuestionsRes.err).send();
-    }
+    let questionsCreated = [],
+        questionsUpdated = [],
+        questionsDeleted = [],
+        optionsCreated = [],
+        optionsUpdated = [],
+        optionsDeleted = [];
 
-    let updateQuestionsRes = await DAL.updateRegQuestionsTx(questionsToBeUpdated);
-    if (updateQuestionsRes.err) {
-        return res.status(updateQuestionsRes.err).send();
-    }
-
-    let deletedQuestionIDs = [];
-    for (const qid of questionsToBeDeleted) {
-        let deleteQuestionRes = await DAL.deleteRegQuestion(qid);
-        if (deleteQuestionRes.err) {
-            return res.status(deleteQuestionRes.err).send();
+    if (questionsToBeCreated) {
+        createQuestionsRes = await DAL.createRegQuestions(questionsToBeCreated);
+        if (createQuestionsRes.err) {
+            return res.status(createQuestionsRes.err).send();
         }
-        deletedQuestionIDs.push(qid)
+
+        questionsCreated = createQuestionsRes.questions;
+        optionsCreated = createQuestionsRes.options;
     }
 
-    let updateOptionsRes = await DAL.updateRegOptionsTx(optionsToBeUpdated)
-    if (updateOptionsRes.err) {
-        return res.status(updateQuestionsRes.err).send();
-    }
-
-    let deletedOptionsIDs = [];
-    for (const oid of optionsToBeDeleted) {
-        let deleteOptionRes = await DAL.deleteRegOption(oid);
-        if (deleteOptionRes.err) {
-            return res.status(deleteOptionRes.err).send();
+    if (questionsToBeUpdated) {
+        updateQuestionsRes = await DAL.updateRegQuestions(questionsToBeUpdated);
+        if (updateQuestionsRes.err) {
+            return res.status(updateQuestionsRes.err).send();
         }
-        deletedOptionsIDs.push(oid)
+
+        questionsUpdated = updateQuestionsRes.questions;
     }
 
+    if (questionsToBeDeleted) {
+        for (const qid of questionsToBeDeleted) {
+            let deleteQuestionRes = await DAL.deleteRegQuestion(qid);
+            if (deleteQuestionRes.err) {
+                return res.status(deleteQuestionRes.err).send();
+            }
+
+            questionsDeleted.push(qid)
+        }
+    }
+
+    if (optionsToBeCreated) {
+        createOptionsRes = await DAL.createRegOptions(optionsToBeCreated)
+        if (createOptionsRes.err) {
+            return res.status(createOptionsRes.err).send();
+        }
+
+        optionsCreated = optionsCreated.concat(createOptionsRes.options);
+    }
+    
+    if (optionsToBeUpdated) {
+        updateOptionsRes = await DAL.updateRegOptions(optionsToBeUpdated)
+        if (updateOptionsRes.err) {
+            return res.status(updateQuestionsRes.err).send();
+        } 
+
+        optionsUpdated = updateOptionsRes.options;
+    }
+    
+    if (optionsToBeDeleted) {
+        for (const oid of optionsToBeDeleted) {
+            let deleteOptionRes = await DAL.deleteRegOption(oid);
+            if (deleteOptionRes.err) {
+                return res.status(deleteOptionRes.err).send();
+            }
+            optionsDeleted.push(oid)
+        }
+    }
 
     return res.status(200).send({
-        questionsCreated: createQuestionsRes.questions,
-        questionsUpdated: updateQuestionsRes.questions,
-        questionsDeleted: deletedQuestionIDs,
-        optionsUpdated: updateOptionsRes.options,
-        optionsDeleted: deletedOptionsIDs,
+        questionsCreated: optionsCreated,
+        questionsUpdated: optionsUpdated,
+        questionsDeleted: optionsDeleted,
+        optionsCreated: optionsCreated,
+        optionsUpdated: optionsUpdated,
+        optionsDeleted: optionsDeleted,
     })
 };
 
