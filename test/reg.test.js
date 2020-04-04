@@ -101,7 +101,7 @@ describe('registration', function() {
         ];
 
         chai.request(app)
-            .post('/a/hacks/reg/quest/')
+            .post('/a/hacks/reg/')
             .send({
                 questions: questions
             })
@@ -126,7 +126,7 @@ describe('registration', function() {
     });
 
     describe('reg questions', function() {
-        describe('POST /a/hacks/reg/quest', function() {
+        describe('POST /a/hacks/reg', function() {
             it('creating registration questions without options should succeed', function(done) {
                 let questions = [
                     {
@@ -156,7 +156,7 @@ describe('registration', function() {
                 ];
 
                 chai.request(app)
-                    .post('/a/hacks/reg/quest/')
+                    .post('/a/hacks/reg/')
                     .send({
                         questions: questions
                     })
@@ -228,7 +228,7 @@ describe('registration', function() {
                 ];
 
                 chai.request(app)
-                    .post('/a/hacks/reg/quest/')
+                    .post('/a/hacks/reg/')
                     .send({
                         questions: questions
                     })
@@ -261,7 +261,7 @@ describe('registration', function() {
                 ];
 
                 chai.request(app)
-                    .post('/a/hacks/reg/quest/')
+                    .post('/a/hacks/reg/')
                     .send({
                         questions: questions
                     })
@@ -285,7 +285,7 @@ describe('registration', function() {
                 ];
 
                 chai.request(app)
-                    .post('/a/hacks/reg/quest/')
+                    .post('/a/hacks/reg/')
                     .send({
                         questions: questions
                     })
@@ -310,7 +310,7 @@ describe('registration', function() {
                 ];
 
                 chai.request(app)
-                    .post('/a/hacks/reg/quest/')
+                    .post('/a/hacks/reg/')
                     .send({
                         questions: questions
                     })
@@ -334,7 +334,7 @@ describe('registration', function() {
                 ];
 
                 chai.request(app)
-                    .post('/a/hacks/reg/quest/')
+                    .post('/a/hacks/reg/')
                     .send({
                         hid: hid,
                         questions: questions
@@ -358,7 +358,7 @@ describe('registration', function() {
                 ];
 
                 chai.request(app)
-                    .post('/a/hacks/reg/quest/')
+                    .post('/a/hacks/reg/')
                     .send({
                         hid: hid,
                         questions: questions
@@ -372,7 +372,7 @@ describe('registration', function() {
             });
         });
 
-        describe('PUT /a/hacks/reg/quest', function() {
+        describe('PUT /a/hacks/reg', function() {
             it('creating, updating, and deleting questions and options should succeed', function(done) {
                 let questionsToCreate = [
                     {
@@ -444,7 +444,7 @@ describe('registration', function() {
                 let optionsToDelete = [oid[2]]
                 
                 chai.request(app)
-                    .put('/a/hacks/reg/quest')
+                    .put('/a/hacks/reg')
                     .send({
                         questionsToBeCreated: questionsToCreate,
                         questionsToBeUpdated: questionsToUpdate,
