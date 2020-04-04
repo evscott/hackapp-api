@@ -106,7 +106,7 @@ let createRegForm = async (req, res) => {
  * @swagger
  * /a/hacks/reg/:
  *  put:
- *    description: Use to update a registration question
+ *    description: Use to update registration questions
  *    parameters:
  *      - name: ha-api-token
  *        in: header
@@ -114,7 +114,7 @@ let createRegForm = async (req, res) => {
  *        schema:
  *          type: string
  *          format: uuid
- *      - name: questionsToCreated
+ *      - name: questionsToCreate
  *        in: body
  *        required: true
  *        schema:
@@ -148,7 +148,7 @@ let createRegForm = async (req, res) => {
  *                      type: string
  *                    index: 
  *                      type: number
- *      - name: questionsToUpdated
+ *      - name: questionsToUpdate
  *        in: body
  *        required: true
  *        schema:
@@ -170,7 +170,7 @@ let createRegForm = async (req, res) => {
  *                type: number
  *              type:
  *                type: string
- *      - name: optionsToBeCreated
+ *      - name: optionsToCreate
  *        in: body
  *        required: true
  *        schema:
@@ -193,7 +193,7 @@ let createRegForm = async (req, res) => {
  *          items:
  *            type: string
  *            format: uuid
- *      - name: optionsToBeUpdated
+ *      - name: optionsToUpdate
  *        in: body
  *        required: true
  *        schema:
@@ -208,7 +208,7 @@ let createRegForm = async (req, res) => {
  *                type: string
  *              index:
  *                type: number
- *      - name: optionsToBeDeleted
+ *      - name: optionsToDelete
  *        in: body
  *        required: true
  *        schema:
@@ -309,13 +309,13 @@ let createRegForm = async (req, res) => {
  *      '403':
  *        description: 'JWT does not have admin privileges'
  */
-let updateRegForm= async (req, res) => {
-    let questionsToBeCreated = req.body.questionsToBeCreated,       
-        questionsToBeUpdated = req.body.questionsToBeUpdated,
-        questionsToBeDeleted = req.body.questionsToBeDeleted,
-        optionsToBeCreated = req.body.optionsToBeCreated,
-        optionsToBeUpdated = req.body.optionsToBeUpdated,
-        optionsToBeDeleted = req.body.optionsToBeDeleted;
+let updateRegForm = async (req, res) => {
+    let questionsToCreate = req.body.questionsToCreate,       
+        questionsToUpdate = req.body.questionsToUpdate,
+        questionsToDelete = req.body.questionsToDelete,
+        optionsToCreate = req.body.optionsToCreate,
+        optionsToUpdate = req.body.optionsToUpdate,
+        optionsToDelete = req.body.optionsToDelete;
 
     let questionsCreated = [],
         questionsUpdated = [],
@@ -324,8 +324,8 @@ let updateRegForm= async (req, res) => {
         optionsUpdated = [],
         optionsDeleted = [];
 
-    if (questionsToBeCreated) {
-        createQuestionsRes = await DAL.createRegQuestions(questionsToBeCreated);
+    if (questionsToCreate) {
+        createQuestionsRes = await DAL.createRegQuestions(questionsToCreate);
         if (createQuestionsRes.err) {
             return res.status(createQuestionsRes.err).send();
         }
@@ -334,8 +334,8 @@ let updateRegForm= async (req, res) => {
         optionsCreated = createQuestionsRes.options;
     }
 
-    if (questionsToBeUpdated) {
-        updateQuestionsRes = await DAL.updateRegQuestions(questionsToBeUpdated);
+    if (questionsToUpdate) {
+        updateQuestionsRes = await DAL.updateRegQuestions(questionsToUpdate);
         if (updateQuestionsRes.err) {
             return res.status(updateQuestionsRes.err).send();
         }
@@ -343,8 +343,8 @@ let updateRegForm= async (req, res) => {
         questionsUpdated = updateQuestionsRes.questions;
     }
 
-    if (questionsToBeDeleted) {
-        for (const qid of questionsToBeDeleted) {
+    if (questionsToDelete) {
+        for (const qid of questionsToDelete) {
             let deleteQuestionRes = await DAL.deleteRegQuestion(qid);
             if (deleteQuestionRes.err) {
                 return res.status(deleteQuestionRes.err).send();
@@ -354,8 +354,8 @@ let updateRegForm= async (req, res) => {
         }
     }
 
-    if (optionsToBeCreated) {
-        createOptionsRes = await DAL.createRegOptions(optionsToBeCreated)
+    if (optionsToCreate) {
+        createOptionsRes = await DAL.createRegOptions(optionsToCreate)
         if (createOptionsRes.err) {
             return res.status(createOptionsRes.err).send();
         }
@@ -363,8 +363,8 @@ let updateRegForm= async (req, res) => {
         optionsCreated = optionsCreated.concat(createOptionsRes.options);
     }
     
-    if (optionsToBeUpdated) {
-        updateOptionsRes = await DAL.updateRegOptions(optionsToBeUpdated)
+    if (optionsToUpdate) {
+        updateOptionsRes = await DAL.updateRegOptions(optionsToUpdate)
         if (updateOptionsRes.err) {
             return res.status(updateQuestionsRes.err).send();
         } 
@@ -372,8 +372,8 @@ let updateRegForm= async (req, res) => {
         optionsUpdated = updateOptionsRes.options;
     }
     
-    if (optionsToBeDeleted) {
-        for (const oid of optionsToBeDeleted) {
+    if (optionsToDelete) {
+        for (const oid of optionsToDelete) {
             let deleteOptionRes = await DAL.deleteRegOption(oid);
             if (deleteOptionRes.err) {
                 return res.status(deleteOptionRes.err).send();
@@ -759,11 +759,12 @@ let createRegAnswers = async (req, res) => {
     return res.status(201).send(createRegAnswersRes.answers)
 };
 
+
 /**
  * @swagger
- * /u/hacks/reg/ans/:
+ * /u/hacks/reg/ans:
  *  put:
- *    description: Use to update a registration answer
+ *    description: Use to update registration answers
  *    parameters:
  *      - name: ha-api-token
  *        in: header
@@ -771,7 +772,23 @@ let createRegAnswers = async (req, res) => {
  *        schema:
  *          type: string
  *          format: uuid
- *      - name: answers
+ *      - name: answersToCreate
+ *        in: body
+ *        required: true
+ *        schema:
+ *          type: array
+ *          items:
+ *            type: object
+ *            properties:
+ *              qid:
+ *                type: string
+ *                format: uuid
+ *              oid:
+ *                type: string
+ *                format: uuid
+ *              answer:
+ *                type: string
+ *      - name: answersToUpdate
  *        in: body
  *        required: true
  *        schema:
@@ -782,14 +799,19 @@ let createRegAnswers = async (req, res) => {
  *              aid:
  *                type: string
  *                format: uuid
- *              qid:
- *                type: string
- *                format: uuid
  *              oid:
  *                type: string
  *                format: uuid
  *              answer:
  *                type: string
+ *      - name: answersToDelete
+ *        in: body
+ *        required: true
+ *        schema:
+ *          type: array
+ *          items:
+ *            type: string
+ *            format: uuid
  *    responses:
  *      '200':
  *        description: Success
@@ -798,17 +820,43 @@ let createRegAnswers = async (req, res) => {
  *          items:
  *            type: object
  *            properties:
- *              aid:
- *                type: string
- *                format: uuid
- *              oid:
- *                type: string
- *                format: uuid
- *              uid:
- *                type: string
- *                format: uuid
- *              answer:
- *                type: string
+ *              answersCreated:
+ *                type: array
+ *                items:
+ *                  type: object
+ *                  properties:
+ *                    aid:
+ *                      type: string
+ *                      format: uuid
+ *                    qid:
+ *                      type: string
+ *                      format: uuid
+ *                    oid:
+ *                      type: string
+ *                      format: uuid
+ *                    answer:
+ *                      type: string
+ *              answersUpdated:
+ *                type: array
+ *                items:
+ *                  type: object
+ *                  properties:
+ *                    aid:
+ *                      type: string
+ *                      format: uuid
+ *                    qid:
+ *                      type: string
+ *                      format: uuid
+ *                    oid:
+ *                      type: string
+ *                      format: uuid
+ *                    answer:
+ *                      type: string
+ *              answersDeleted:
+ *                type: array
+ *                items:
+ *                  type: string
+ *                  format: uuid
  *      '400':
  *        description: 'Bad request'
  *      '401':
@@ -817,24 +865,52 @@ let createRegAnswers = async (req, res) => {
  *        description: 'JWT does not have user privileges'
  */
 let updateRegAnswer = async (req, res) => {    
-    let answers = req.body.answers;
+    let answersToBeCreated = req.body.answersToBeCreated,
+        answersToBeUpdated = req.body.answersToBeUpdated,
+        answersToBeDeleted = req.body.answersToBeDeleted;
 
-    if (answers === undefined) {
-        return res.status(400).send();
-    }
+    let answersCreated = [],
+        answersUpdated = [],
+        answersDeleted = [];
 
     let t = req.headers['ha-api-token'];
     let claims = await JWT.getUIDFromToken(t);
     if (claims.err) {
         res.status(500).send(claims.err)
     }
+    let uid = claims.uid;
     
-    let updateRegAnswersRes = await DAL.updateRegAnswer(claims.uid, answers)
-    if (updateRegAnswersRes. err) {
-        return res.status(updateRegAnswersRes.err).send();
+    if (answersToBeCreated) {
+        let createRegAnswersRes = await DAL.createRegAnswers(uid, answersToBeCreated)
+        if (createRegAnswersRes.err) {
+            return res.status(createRegAnswersRes.err).send();
+        }
+        answersCreated = createRegAnswersRes.answers;
     }
 
-    return res.status(201).send(updateRegAnswersRes.answers)
+    if (answersToBeUpdated) {
+        let updateRegAnswersRes = await DAL.updateRegAnswer(uid, answersToBeUpdated)
+        if (updateRegAnswersRes. err) {
+            return res.status(updateRegAnswersRes.err).send();
+        }
+        answersUpdated = updateRegAnswersRes.answers;
+    }
+
+    if (answersToBeDeleted) {
+        for (const aid of answersToBeDeleted) {
+            let deleteAnswerRes = await DAL.deleteRegAnswer(aid);
+            if (deleteAnswerRes.err) {
+                return res.status(deleteAnswerRes.err).send();
+            }
+            answersDeleted.push(aid)
+        }
+    }
+
+    return res.status(200).send({
+        answersCreated: answersCreated,
+        answersUpdated: answersUpdated,
+        answersDeleted: answersDeleted
+    })
 };
 
 /**

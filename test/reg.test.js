@@ -446,11 +446,11 @@ describe('registration', function() {
                 chai.request(app)
                     .put('/a/hacks/reg')
                     .send({
-                        questionsToBeCreated: questionsToCreate,
-                        questionsToBeUpdated: questionsToUpdate,
-                        questionsToBeDeleted: questionsToDelete,
-                        optionsToBeUpdated: optionsToUpdate,
-                        optionsToBeDeleted: optionsToDelete,
+                        questionsToCreate: questionsToCreate,
+                        questionsToUpdate: questionsToUpdate,
+                        questionsToDelete: questionsToDelete,
+                        optionsToUpdate: optionsToUpdate,
+                        optionsToDelete: optionsToDelete,
                     })
                     .set('Accept', 'application/json')
                     .set('ha-api-token', token)

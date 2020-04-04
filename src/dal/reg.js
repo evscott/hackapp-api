@@ -245,6 +245,20 @@ async function updateRegAnswer(uid, answers) {
     }
 }
 
+
+async function deleteRegAnswer(aid) {
+    try {
+        let res = await pool.query('DELETE FROM reg_answers WHERE aid = $1',
+            [aid]);
+
+        if (res.rowCount === 0) return {err: 404};
+        else return {err: null}
+    } catch (err) {
+        console.error(err)
+        return {err: 500}
+    }
+}
+
 async function getRegAnswers(hid) {
     try {
         let res = await pool.query('SELECT question, COALESCE(o.option, a.answer) as answer, a.uid ' +
@@ -285,6 +299,7 @@ module.exports = {
     getRegOptions,
     createRegAnswers,
     updateRegAnswer,
+    deleteRegAnswer,
     getRegAnswers,
     getUserRegAnswers
 };
