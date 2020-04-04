@@ -4,7 +4,7 @@ const createCsvStringifier = require('csv-writer').createObjectCsvStringifier;
 
 /**
  * @swagger
- * /a/hacks/reg/quest/:
+ * /a/hacks/reg/:
  *  post:
  *    description: Use to create registration questions
  *    parameters:
@@ -87,7 +87,7 @@ const createCsvStringifier = require('csv-writer').createObjectCsvStringifier;
  *      '403':
  *        description: 'JWT does not have admin privileges'
  */
-let createRegQuestions = async (req, res) => {
+let createRegForm = async (req, res) => {
     let questions = req.body.questions;
 
     if (questions === undefined) {
@@ -104,7 +104,7 @@ let createRegQuestions = async (req, res) => {
 
 /**
  * @swagger
- * /a/hacks/reg/quest/:
+ * /a/hacks/reg/:
  *  put:
  *    description: Use to update a registration question
  *    parameters:
@@ -309,7 +309,7 @@ let createRegQuestions = async (req, res) => {
  *      '403':
  *        description: 'JWT does not have admin privileges'
  */
-let updateRegQuestions = async (req, res) => {
+let updateRegForm= async (req, res) => {
     let questionsToBeCreated = req.body.questionsToBeCreated,       
         questionsToBeUpdated = req.body.questionsToBeUpdated,
         questionsToBeDeleted = req.body.questionsToBeDeleted,
@@ -960,8 +960,8 @@ let getUserRegAnswers = async (req, res) => {
 };
 
 module.exports = {
-    createRegQuestions,
-    updateRegQuestions,
+    createRegForm,
+    updateRegForm,
     deleteRegQuestion,
     getRegQuestions,
     createRegOption,

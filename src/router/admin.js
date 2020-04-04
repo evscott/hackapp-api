@@ -11,8 +11,8 @@ router.delete('/hacks/:hid', JWT.validateAdminToken, Handlers.hack.deleteHackath
 router.post('/hacks/det', JWT.validateAdminToken, Handlers.hack.createHackathonDetails);
 router.put('/hacks/det', JWT.validateAdminToken, Handlers.hack.updateHackathonDetails);
 router.delete('/hacks/det/:did', JWT.validateAdminToken, Handlers.hack.deleteHackathonDetail);
-router.post('/hacks/reg/quest', JWT.validateAdminToken, Handlers.reg.createRegQuestions);
-router.put('/hacks/reg/quest', JWT.validateAdminToken, Handlers.reg.updateRegQuestions);
+router.post('/hacks/reg', JWT.validateAdminToken, Handlers.reg.createRegForm);
+router.put('/hacks/reg', JWT.validateAdminToken, Handlers.reg.updateRegForm);
 router.delete('/hacks/reg/quest/:qid', JWT.validateAdminToken, Handlers.reg.deleteRegQuestion);
 router.post('/hacks/reg/opt', JWT.validateAdminToken, Handlers.reg.createRegOption);
 router.put('/hacks/reg/opt', JWT.validateAdminToken, Handlers.reg.updateRegOption);
