@@ -58,12 +58,26 @@ let getUser = async (req, res) => {
  *        schema:
  *          type: string
  *          format: uuid
- *      - name: uid
- *        in: header
+ *      - name: firstName
+ *        in: body
  *        required: true
  *        schema:
  *          type: string
- *          format: uuid
+ *      - name: lastName
+ *        in: body
+ *        required: true
+ *        schema:
+ *          type: string
+ *      - name: email
+ *        in: body
+ *        required: true
+ *        schema:
+ *          type: string
+ *      - name: password
+ *        in: body
+ *        required: true
+ *        schema:
+ *          type: string
  *    responses:
  *      '200':
  *        description: Success
@@ -77,7 +91,28 @@ let getUser = async (req, res) => {
  *        description: 'Not found'
  */
 let updateUser = async (req, res) => {
-    
+    let firstName = req.body.firstName,
+        lastName = req.body.lastName,
+        email = req.body.email,
+        password = req.body.password;
+
+    if (firstName === undefined || lastName === undefined || email === undefined || password === undefined) {
+        return res.status(400).send();
+    }
+
+    let token = req.headers['ha-api-token'];
+    let claims = await JWT.getUIDFromToken(token);
+    if (claims.err) {
+        res.status(500).send();
+    }
+    let uid = claims.uid;
+
+    let updateUserRes = await DAL.updateUser(firstName, latName, email, password, uid);
+    if (updateUserRes.err) {
+        return res.status(updateUserRes.err).send();
+    }
+
+    return res.status(200).send(updateUserRes.user);
 };
 
 /**

@@ -187,7 +187,7 @@ async function createRegAnswers(uid, answers) {
                 return {answers: null, err: 400}
             }
     
-            if (answers.oid) {
+            if (answers[a].oid) {
                 res = await pool.query('SELECT * FROM reg_options WHERE oid = $1',
                     [answers[a].oid]);
 
@@ -261,8 +261,8 @@ async function deleteRegAnswer(aid) {
 
 async function getRegAnswers(hid) {
     try {
-        let res = await pool.query('SELECT question, COALESCE(o.option, a.answer) as answer, a.uid ' +
-                                   'FROM reg_questions AS q JOIN reg_answers AS a ON q.qid = a.qid FULL JOIN reg_options as o ON o.oid = a.oid ' +
+        let res = await pool.query('SELECT question, COALESCE(o.option, a.answer) as answer, u.first_name as "firstName", u.last_name as "lastName", u.email ' +
+                                   'FROM reg_questions AS q JOIN reg_answers AS a ON q.qid = a.qid FULL JOIN reg_options as o ON o.oid = a.oid FULL JOIN users as u ON u.uid = a.uid ' +
                                    'WHERE a.oid IS NOT NULL OR a.answer IS NOT NULL AND q.hid = $1',
             [hid]);
 
@@ -275,7 +275,7 @@ async function getRegAnswers(hid) {
 
 async function getUserRegAnswers(hid, uid) {
     try {
-        let res = await pool.query('SELECT question, COALESCE(o.option, a.answer) as answer ' +
+        let res = await pool.query('SELECT q.question, COALESCE(o.option, a.answer) as answer, q.qid, a.aid, a.oid ' +
                                    'FROM reg_questions AS q JOIN reg_answers AS a ON q.qid = a.qid FULL JOIN reg_options as o ON o.oid = a.oid ' +
                                    'WHERE a.oid IS NOT NULL OR a.answer IS NOT NULL AND q.hid = $1 AND a.uid = $2',
             [hid, uid]);

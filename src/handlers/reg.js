@@ -915,7 +915,7 @@ let updateRegAnswer = async (req, res) => {
 
 /**
  * @swagger
- * /a/hacks/reg/users/csv/:hid/:
+ * /a/hacks/reg/csv/:hid/:
  *  get:
  *    description: Get a user registration form
  *    parameters:
@@ -964,12 +964,15 @@ let getRegAnswersCSV = async (req, res) => {
         header: [
             {id: 'question', title: 'QUESTION'},
             {id: 'answer', title: 'ANSWER'},
-            {id: 'uid', title: 'UID'}
+            {id: 'uid', title: 'UID'},
+            {id: 'firstName', title: 'FIRST_NAME'},
+            {id: 'lastName', title: 'LAST_NAME'},
+            {id: 'email', title: 'EMAIL'},
         ]
     });
-    let records = csvStringifier.stringifyRecords(getRegAnswersRes.answers);
+    let csv = csvStringifier.getHeaderString() + csvStringifier.stringifyRecords(getRegAnswersRes.answers);
 
-    return res.status(200).send({csv: records})
+    return res.status(200).send({csv: csv})
 };
 
 /**
