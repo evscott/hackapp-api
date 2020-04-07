@@ -107,7 +107,7 @@ let updateUser = async (req, res) => {
     }
     let uid = claims.uid;
 
-    let updateUserRes = await DAL.updateUser(firstName, latName, email, password, uid);
+    let updateUserRes = await DAL.updateUser(firstName, lastName, email, password, uid);
     if (updateUserRes.err) {
         return res.status(updateUserRes.err).send();
     }
