@@ -228,8 +228,8 @@ async function updateRegAnswer(uid, answers) {
                 return {answers: null, err: 400}
             }
     
-            res = await pool.query('UPDATE reg_answers SET oid = $1, answer = $1 WHERE aid = $2 AND uid = $3 RETURNING *',
-                    [answers[a].oid, answers[a].aid, uid]);  
+            res = await pool.query('UPDATE reg_answers SET oid = $1, answer = $2 WHERE aid = $3 AND uid = $4 RETURNING *',
+                    [answers[a].oid, answers[a].answer, answers[a].aid, uid]);  
 
             if (res.rowCount === 0) {
                 return {answers: null, err: 400}
@@ -287,6 +287,20 @@ async function getUserRegAnswers(hid, uid) {
     }
 }
 
+async function deleteRegistrant(uid, hid) {
+    try {
+        let res = await pool.query('DELETE FROM reg_answers WHERE uid = $1 AND qid IN (SELECT qid FROM reg_questions WHERE hid = $2)',
+            [uid, hid]);
+        if (res.rowCount === 0) {
+            return {err: 404}
+        }
+        return {err: null}
+    } catch (err) {
+        console.error(err)
+        return {err: 500}
+    }
+}
+
 module.exports = {
     createRegQuestions,
     updateRegQuestions,
@@ -301,5 +315,6 @@ module.exports = {
     updateRegAnswer,
     deleteRegAnswer,
     getRegAnswers,
-    getUserRegAnswers
+    getUserRegAnswers,
+    deleteRegistrant
 };

@@ -1038,6 +1038,57 @@ let getUserRegAnswers = async (req, res) => {
     return res.status(200).send(getRegAnswersRes.answers)
 };
 
+/**
+ * @swagger
+ * /u/hacks/:hid/:
+ *  delete:
+ *    description: Deletes a hackathon registrant
+ *    parameters:
+ *      - name: ha-api-token
+ *        in: header
+ *        required: true
+ *        schema:
+ *          type: string
+ *          format: uuid
+ *      - name: hid
+ *        in: path
+ *        required: true
+ *        schema:
+ *          type: string
+ *          format: uuid
+ *    responses:
+ *      '200':
+ *        description: Success
+ *      '400':
+ *        description: 'Bad request'
+ *      '401':
+ *        description: 'JWT not found in header'
+ *      '403':
+ *        description: 'JWT does not have user privileges'
+ *      '404':
+ *        description: 'Not found'
+ */
+let deleteRegistrant = async (req, res) => {
+    let hid = req.query.hid;
+
+    if (hid === undefined) {
+        return res.status(400).send();
+    }
+
+    let t = req.headers['ha-api-token'];
+    let claims = await JWT.getUIDFromToken(t);
+    if (claims.err) {
+        res.status(500).send(claims.err)
+    }
+
+    let deleteRegistrantRes = await DAL.deleteRegistrant(claims.uid, hid);
+    if (deleteRegistrantRes. err) {
+        return res.status(deleteRegistrantRes.err).send();
+    }
+
+    return res.status(200).send();
+};
+
 module.exports = {
     createRegForm,
     updateRegForm,
@@ -1049,5 +1100,6 @@ module.exports = {
     createRegAnswers,
     updateRegAnswer,
     getRegAnswersCSV,
-    getUserRegAnswers
+    getUserRegAnswers,
+    deleteRegistrant,
 };
