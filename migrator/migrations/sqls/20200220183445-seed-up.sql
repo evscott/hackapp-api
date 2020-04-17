@@ -26,60 +26,50 @@ CREATE TABLE IF NOT EXISTS Hackathons (
     end_date timestamp NOT NULL,
     location varchar(255) NOT NULL,
     max_reg smallint,
-    regDeadline timestamp NOT NULL,
+    reg_deadline timestamp NOT NULL,
     draft boolean DEFAULT true,
     PRIMARY KEY (hid)
 );
 
+CREATE TABLE IF NOT EXISTS Hackathon_Details (
+    did uuid DEFAULT uuid_generate_v1() UNIQUE,
+    hid uuid REFERENCES Hackathons(hid) ON DELETE CASCADE NOT NULL,
+    detail text NOT NULL,
+    index SMALLINT,
+    PRIMARY KEY(did)
+);
+
 CREATE TABLE IF NOT EXISTS Registrants (
-    uid uuid REFERENCES Users(uid) NOT NULL,
-    hid uuid REFERENCES Hackathons(hid) NOT NULL,
+    uid uuid REFERENCES Users(uid) ON DELETE CASCADE NOT NULL,
+    hid uuid REFERENCES Hackathons(hid) ON DELETE CASCADE NOT NULL,
     state reg_state DEFAULT 'unregistered',
     PRIMARY KEY (uid, hid)
 );
 
-CREATE TABLE IF NOT EXISTS Questions (
+CREATE TABLE IF NOT EXISTS Reg_Questions (
     qid uuid DEFAULT uuid_generate_v1() UNIQUE,
-    hid uuid REFERENCES Hackathons(hid) NOT NULL,
+    hid uuid REFERENCES Hackathons(hid) ON DELETE CASCADE NOT NULL,
+    question text NOT NULL,
+    descr text NOT NULL,
+    required bool,
+    index SMALLINT NOT NULL,
+    type varchar(255) NOT NULL,
     PRIMARY KEY (qid)
 );
 
-CREATE TABLE IF NOT EXISTS Txt_Answers (
-    uid uuid REFERENCES Users(uid) NOT NULL,
-    qid uuid REFERENCES Questions(qid) NOT NULL,
-    answer varchar(255) NOT NULL,
-    PRIMARY KEY (uid, qid)
-);
-
-CREATE TABLE IF NOT EXISTS Options (
+CREATE TABLE IF NOT EXISTS Reg_Options (
     oid uuid DEFAULT uuid_generate_v1() UNIQUE,
-    qid uuid REFERENCES Questions(qid) NOT NULL,
+    qid uuid REFERENCES Reg_Questions(qid) ON DELETE CASCADE NOT NULL,
     option varchar(255) NOT NULL,
+    index SMALLINT,
     PRIMARY KEY (oid)
 );
 
-CREATE TABLE IF NOT EXISTS MC_Answers (
-    uid uuid REFERENCES Users(uid) NOT NULL,
-    oid uuid DEFAULT uuid_generate_v1() UNIQUE,
-    PRIMARY KEY (uid, oid)
-);
-
-CREATE TABLE IF NOT EXISTS Img_Files (
-    iid uuid DEFAULT uuid_generate_v1() UNIQUE,
-    path varchar(255) NOT NULL,
-    description varchar(255) NOT NULL,
-    PRIMARY KEY (iid)
-);
-
-CREATE TABLE IF NOT EXISTS Txt_Files (
-    tid uuid DEFAULT uuid_generate_v1() UNIQUE,
-    hid uuid REFERENCES Hackathons(hid) NOT NULL,
-    path varchar(255) NOT NULL,
-    PRIMARY KEY (tid)
-);
-
-CREATE TABLE IF NOT EXISTS File_Links (
-    iid uuid REFERENCES Img_Files(iid) NOT NULL,
-    tid uuid REFERENCES Txt_Files(tid) NOT NULL,
-    PRIMARY KEY (iid, tid)
+CREATE TABLE IF NOT EXISTS Reg_Answers (
+    aid uuid DEFAULT uuid_generate_v1() UNIQUE,
+    uid uuid REFERENCES Users(uid) ON DELETE CASCADE NOT NULL,
+    qid uuid REFERENCES Reg_Questions(qid) ON DELETE CASCADE NOT NULL,
+    oid uuid REFERENCES Reg_Options(oid) ON DELETE CASCADE,
+    answer text,
+    PRIMARY KEY (aid)
 );

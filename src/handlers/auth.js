@@ -37,6 +37,8 @@ const JWT = require('../shared/jwt');
  *                  type: string
  *                email:
  *                  type: string
+ *                admin:
+ *                  type: boolean
  *            token:
  *              type: string
  *      '400':
@@ -61,13 +63,7 @@ let signUp = async (req, res) => {
 
     let token = JWT.issueToken(signUpRes.user.uid, signUpRes.user.admin);
 
-    return res.status(201).send({user: {
-        uid: signUpRes.user.uid,
-        firstName: signUpRes.user.first_name,
-        lastName: signUpRes.user.last_name,
-        email: signUpRes.user.email,
-        admin: signUpRes.user.admin
-    }, token: token});
+    return res.status(201).send({ ...signUpRes.user, token: token })
 };
 
 /**
@@ -102,6 +98,8 @@ let signUp = async (req, res) => {
  *                  type: string
  *                email:
  *                  type: string
+ *                admin:
+ *                  type: boolean
  *            token:
  *              type: string
  *      '400':
@@ -126,13 +124,7 @@ let signIn = async (req, res) => {
 
     let token = JWT.issueToken(signInRes.user.uid, signInRes.user.admin);
 
-    return res.status(200).send({user: {
-        uid: signInRes.user.uid,
-        firstName: signInRes.user.first_name,
-        lastName: signInRes.user.last_name,
-        email: signInRes.user.email,
-        admin: signInRes.user.admin
-    }, token: token});
+    return res.status(200).send({ ...signInRes.user, token: token });
 };
 
 module.exports = {

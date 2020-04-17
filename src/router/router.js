@@ -4,8 +4,8 @@ const adminRoutes = require('./admin');
 
 function init(app) {
     app.use(openRoutes);
-    app.use(userRoutes);
-    app.use(adminRoutes);
+    app.use('/u', userRoutes);
+    app.use('/a', adminRoutes);
 }
 
 module.exports = {

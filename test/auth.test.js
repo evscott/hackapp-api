@@ -22,10 +22,10 @@ describe('authentication', () => {
                 .end((err, res) => {
                     expect(err).equal(null);
                     expect(res).to.have.status(200);
-                    expect(res.body.user.firstName).equal('admin');
-                    expect(res.body.user.lastName).equal('admin');
-                    expect(res.body.user.email).equal('admin');
-                    expect(res.body.user.admin).equal(true);
+                    expect(res.body.firstName).equal('admin');
+                    expect(res.body.lastName).equal('admin');
+                    expect(res.body.email).equal('admin');
+                    expect(res.body.admin).equal(true);
                     done();
                 })
         });
@@ -65,10 +65,10 @@ describe('authentication', () => {
                 .end((err, res) => {
                     expect(err).equal(null);
                     expect(res.body.token.length).greaterThan(0);
-                    expect(res.body.user.firstName).equal('john');
-                    expect(res.body.user.lastName).equal('doe');
-                    expect(res.body.user.email).equal('johndoe@email.com');
-                    expect(res.body.user.admin).equal(false);
+                    expect(res.body.firstName).equal('john');
+                    expect(res.body.lastName).equal('doe');
+                    expect(res.body.email).equal('johndoe@email.com');
+                    expect(res.body.admin).equal(false);
                     done();
                 });
         });

@@ -23,12 +23,12 @@ let getOrganization = async (req, res) => {
         return res.status(getOrgRes.err).send();
     }
 
-    return res.status(200).send({org: getOrgRes.org})
+    return res.status(200).send(getOrgRes.org)
 };
 
 /**
  * @swagger
- * /org/:
+ * /a/org/:
  *  post:
  *    description: Use to create an organization
  *    parameters:
@@ -88,12 +88,12 @@ let createOrganization = async (req, res) => {
         return res.status(createOrgRes.err).send();
     }
 
-    return res.status(201).send({org: createOrgRes.org})
+    return res.status(201).send(createOrgRes.org)
 };
 
 /**
  * @swagger
- * /org/:
+ * /a/org/:
  *  put:
  *    description: Use to update an organization
  *    parameters:
@@ -148,7 +148,7 @@ let updateOrganization = async (req, res) => {
         return res.status(updateOrgRes.err).send();
     }
 
-    return res.status(200).send({org: updateOrgRes.org})
+    return res.status(200).send(updateOrgRes.org)
 };
 
 

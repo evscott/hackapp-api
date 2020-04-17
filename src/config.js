@@ -9,7 +9,7 @@ const Config = {
         );
         res.header(
             'Access-Control-Allow-Headers',
-            'X-Requested-With, content-type, x-access-token'
+            'X-Requested-With, content-type, ha-api-token'
         );
         res.header('Access-Control-Allow-Credentials', true);
         if (process.env.PROD) {
